@@ -3,6 +3,7 @@ package com.html5parser.Classes;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.html5parser.Error.ParseError;
@@ -49,6 +50,11 @@ public class ParserContext {
 	private Element adjustedCurrentNode;
 	private Element headElementPointer;
 	private Element formElementPointer;
+	
+	/*
+	 *  Document
+	 */
+	Document doc;
 	
 	
 	public TokenizerContext getTokenizerContext() {
@@ -211,6 +217,13 @@ public class ParserContext {
 		this.flagReconsumeToken = flagReconsumeToken;
 	}
 
-	
+	public Document getDocument() {
+		return doc;
+	}
+
+	public void setDocument(Document doc) {
+		this.doc = doc;
+	}
+
 	
 }

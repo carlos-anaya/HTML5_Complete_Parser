@@ -10,7 +10,7 @@ public class Initial implements IInsertionMode {
 
 	public ParserContext process(ParserContext parserContext) {
 
-		InsertionModeFactory factory;
+		InsertionModeFactory factory = InsertionModeFactory.getInstance();
 		Token token = parserContext.getTokenizerContext().getCurrentToken();
 
 		switch (token.getType()) {
@@ -30,6 +30,7 @@ public class Initial implements IInsertionMode {
 			if ((currentChar == 0x0009 || currentChar == 0x000A
 					|| currentChar == 0x000C || currentChar == 0x000D || currentChar == 0x0020))
 				return parserContext;
+			break;
 
 			// Anything else
 			// TODO If the document is not an iframe srcdoc document, then this
@@ -41,7 +42,6 @@ public class Initial implements IInsertionMode {
 		case start_tag:
 		case end_tag:
 		default:
-			factory = InsertionModeFactory.getInstance();
 			parserContext.setInsertionMode(factory
 					.getInsertionMode(InsertionMode.before_html));
 			parserContext.setFlagReconsumeToken(true);

@@ -7,9 +7,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.w3c.dom.Document;
 
 import com.html5parser.Classes.ParserContext;
+import com.html5parser.Classes.Token;
 import com.html5parser.Classes.TokenizerContext;
 import com.html5parser.Interfaces.IParser;
 
@@ -20,14 +25,21 @@ public class Parser implements IParser {
 	}
 
 	public Document parse(InputStream stream) {
-		Document doc = null;
 
 		ParserContext parserContext = new ParserContext();
 		Tokenizer tokenizer = new Tokenizer();
 		TreeConstructor treeConstructor = new TreeConstructor();
-
+		
 		BufferedReader in;
 		try {
+			
+			Document doc;
+			DocumentBuilderFactory dbf = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder builder = dbf.newDocumentBuilder();
+			doc = builder.newDocument();
+			parserContext.setDocument(doc);
+			
 			in = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 
 			int currentChar = in.read();
@@ -46,7 +58,10 @@ public class Parser implements IParser {
 					currentChar = in.read();
 				}
 
-				System.out.println(parserContext.getTokenizerContext().getTokens());
+				for(Token tok : parserContext.getTokenizerContext().getTokens()){
+					System.out.println(tok.getType()+" : "+tok.getValue());
+				}
+				
 				
 				/*
 				 * Consume all the tokens emited
@@ -67,6 +82,8 @@ public class Parser implements IParser {
 					}
 					parserContext.getTokenizerContext().setFlagEmitToken(false);
 				}
+				
+				
 			}
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
@@ -74,8 +91,11 @@ public class Parser implements IParser {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
-		return doc;
+		return parserContext.getDocument();
 	}
 }
