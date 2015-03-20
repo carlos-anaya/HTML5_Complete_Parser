@@ -53,9 +53,9 @@ public class Parser implements IParser {
 				 * If not reconsume, then read next character of the stream
 				 */
 				if (!tokenizerContext.isFlagReconsumeCurrentInputCharacter()) {
-					tokenizerContext
-							.setFlagReconsumeCurrentInputCharacter(false);
 					currentChar = in.read();
+				}else{
+					tokenizerContext.setFlagReconsumeCurrentInputCharacter(false);					
 				}
 
 				for(Token tok : parserContext.getTokenizerContext().getTokens()){
