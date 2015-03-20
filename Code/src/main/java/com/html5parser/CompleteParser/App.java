@@ -1,5 +1,17 @@
 package com.html5parser.CompleteParser;
 
+import java.io.StringWriter;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+
 /**
  * Hello world!
  *
@@ -10,6 +22,32 @@ public class App
     {
         System.out.println( "Hello World!" );
         
-        new Parser().parse("aaa");
+        Document doc = new Parser().parse("aaa");
+        System.out.println(serializeDocument(doc));
     }
+    
+    private static String serializeDocument(Document doc) {
+		boolean indent = true;
+		try {
+			StringWriter writer = new StringWriter();
+			TransformerFactory tf = TransformerFactory.newInstance();
+			Transformer transformer = tf.newTransformer();
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,
+					"yes");
+			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+			transformer.setOutputProperty(OutputKeys.INDENT, indent ? "yes"
+					: "no");
+			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+			transformer.setOutputProperty(
+					"{http://xml.apache.org/xslt}indent-amount", "4");
+
+			transformer.transform(new DOMSource(doc), new StreamResult(writer));
+			return writer.toString();
+		} catch (IllegalArgumentException
+				| TransformerFactoryConfigurationError | TransformerException e) {
+			e.printStackTrace();
+			return null;
+
+		}
+	}
 }
