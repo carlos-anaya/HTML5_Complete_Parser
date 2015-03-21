@@ -1,10 +1,10 @@
-package com.html5parser.Classes;
+package com.html5parser.classes;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.html5parser.Interfaces.ITokenizerState;
-import com.html5parser.TokenizerStates.Data_state;
+import com.html5parser.interfaces.ITokenizerState;
+import com.html5parser.tokenizerStates.Data_state;
 
 public class TokenizerContext {
 

@@ -1,4 +1,4 @@
-package com.html5parser.CompleteParser;
+package com.html5parser.parser;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -13,10 +13,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 
-import com.html5parser.Classes.ParserContext;
-import com.html5parser.Classes.Token;
-import com.html5parser.Classes.TokenizerContext;
-import com.html5parser.Interfaces.IParser;
+import com.html5parser.classes.ParserContext;
+import com.html5parser.classes.Token;
+import com.html5parser.classes.TokenizerContext;
+import com.html5parser.interfaces.IParser;
 
 public class Parser implements IParser {
 

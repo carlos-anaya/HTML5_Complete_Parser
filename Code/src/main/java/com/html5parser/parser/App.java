@@ -1,4 +1,4 @@
-package com.html5parser.CompleteParser;
+package com.html5parser.parser;
 
 import java.io.StringWriter;
 

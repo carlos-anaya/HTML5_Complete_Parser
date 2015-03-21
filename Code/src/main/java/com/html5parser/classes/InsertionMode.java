@@ -1,4 +1,4 @@
-package com.html5parser.Classes;
+package com.html5parser.classes;
 
 public enum InsertionMode {
 	initial,

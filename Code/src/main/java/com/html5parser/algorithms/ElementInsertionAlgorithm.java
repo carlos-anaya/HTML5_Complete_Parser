@@ -3,8 +3,8 @@ package com.html5parser.algorithms;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.html5parser.Classes.ParserContext;
-import com.html5parser.Classes.Token;
+import com.html5parser.classes.ParserContext;
+import com.html5parser.classes.Token;
 import com.html5parser.constants.Namespace;
 
 public class ElementInsertionAlgorithm {

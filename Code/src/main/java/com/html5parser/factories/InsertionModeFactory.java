@@ -1,11 +1,12 @@
-package com.html5parser.Factories;
+package com.html5parser.factories;
 
-import com.html5parser.Classes.InsertionMode;
-import com.html5parser.InsertionModes.BeforeHTML;
-import com.html5parser.InsertionModes.Initial;
-import com.html5parser.Interfaces.IInsertionMode;
+import com.html5parser.classes.InsertionMode;
+import com.html5parser.insertionModes.BeforeHTML;
+import com.html5parser.insertionModes.Initial;
+import com.html5parser.interfaces.IInsertionMode;
 
 public class InsertionModeFactory {
+	
 	private static InsertionModeFactory factory;
 
 	private InsertionModeFactory() {
@@ -22,8 +23,6 @@ public class InsertionModeFactory {
 		switch (insertionMode) {
 		case initial:
 			return new Initial();
-			// case Character_reference_in_data_state:
-			// case Tag_open_state:
 		case before_html:
 			return new BeforeHTML();
 		default:

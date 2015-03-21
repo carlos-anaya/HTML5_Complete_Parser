@@ -1,17 +1,17 @@
-package com.html5parser.InsertionModes;
+package com.html5parser.insertionModes;
 
 import java.util.Stack;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.html5parser.Classes.InsertionMode;
-import com.html5parser.Classes.ParserContext;
-import com.html5parser.Classes.Token;
-import com.html5parser.Classes.Token.TokenType;
-import com.html5parser.Factories.InsertionModeFactory;
-import com.html5parser.Interfaces.IInsertionMode;
 import com.html5parser.algorithms.ElementInsertionAlgorithm;
+import com.html5parser.classes.InsertionMode;
+import com.html5parser.classes.ParserContext;
+import com.html5parser.classes.Token;
+import com.html5parser.classes.Token.TokenType;
+import com.html5parser.factories.InsertionModeFactory;
+import com.html5parser.interfaces.IInsertionMode;
 
 public class BeforeHTML implements IInsertionMode {
 

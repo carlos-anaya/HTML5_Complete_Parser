@@ -1,13 +1,13 @@
-package com.html5parser.TokenizerStates;
+package com.html5parser.tokenizerStates;
 
-import com.html5parser.Classes.Token;
-import com.html5parser.Classes.Token.TokenType;
-import com.html5parser.Classes.TokenizerContext;
-import com.html5parser.Classes.TokenizerState;
-import com.html5parser.Classes.ParserContext;
-import com.html5parser.Error.ParseErrorType;
-import com.html5parser.Factories.TokenizerStateFactory;
-import com.html5parser.Interfaces.ITokenizerState;
+import com.html5parser.classes.ParserContext;
+import com.html5parser.classes.Token;
+import com.html5parser.classes.TokenizerContext;
+import com.html5parser.classes.TokenizerState;
+import com.html5parser.classes.Token.TokenType;
+import com.html5parser.factories.TokenizerStateFactory;
+import com.html5parser.interfaces.ITokenizerState;
+import com.html5parser.parseError.ParseErrorType;
 
 public class Data_state implements ITokenizerState {
 
@@ -38,7 +38,7 @@ public class Data_state implements ITokenizerState {
 		// U+0000 NULL
 		// Parse error. Emit the current input character as a character token.
 		case 0x0000:
-			context.addParseErrors(ParseErrorType.UnexpectedChar);
+			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 			token = new Token(TokenType.character, currentChar);
 			tokenizerContext.emitCurrentToken(token);
 			break;

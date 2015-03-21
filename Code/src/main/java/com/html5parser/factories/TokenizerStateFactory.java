@@ -1,8 +1,8 @@
-package com.html5parser.Factories;
+package com.html5parser.factories;
 
-import com.html5parser.Classes.TokenizerState;
-import com.html5parser.Interfaces.ITokenizerState;
-import com.html5parser.TokenizerStates.Data_state;
+import com.html5parser.classes.TokenizerState;
+import com.html5parser.interfaces.ITokenizerState;
+import com.html5parser.tokenizerStates.Data_state;
 
 public class TokenizerStateFactory {
 

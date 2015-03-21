@@ -1,10 +1,10 @@
-package com.html5parser.InsertionModes;
+package com.html5parser.insertionModes;
 
-import com.html5parser.Classes.InsertionMode;
-import com.html5parser.Classes.ParserContext;
-import com.html5parser.Classes.Token;
-import com.html5parser.Factories.InsertionModeFactory;
-import com.html5parser.Interfaces.IInsertionMode;
+import com.html5parser.classes.InsertionMode;
+import com.html5parser.classes.ParserContext;
+import com.html5parser.classes.Token;
+import com.html5parser.factories.InsertionModeFactory;
+import com.html5parser.interfaces.IInsertionMode;
 
 public class Initial implements IInsertionMode {
 

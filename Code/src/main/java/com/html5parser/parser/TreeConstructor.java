@@ -1,7 +1,7 @@
-package com.html5parser.CompleteParser;
+package com.html5parser.parser;
 
-import com.html5parser.Classes.ParserContext;
-import com.html5parser.Interfaces.ITreeConstructor;
+import com.html5parser.classes.ParserContext;
+import com.html5parser.interfaces.ITreeConstructor;
 
 public class TreeConstructor implements ITreeConstructor {
 	public ParserContext consumeToken(ParserContext parserContext) {

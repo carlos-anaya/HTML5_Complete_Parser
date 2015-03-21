@@ -1,4 +1,4 @@
-package com.html5parser.Interfaces;
+package com.html5parser.interfaces;
 
 import java.io.InputStream;
 

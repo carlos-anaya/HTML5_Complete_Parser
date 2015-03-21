@@ -1,18 +1,16 @@
-package com.html5parser.Error;
+package com.html5parser.parseError;
 
-import com.html5parser.Classes.ParserContext;
+import com.html5parser.classes.ParserContext;
 
 public class ParseError {
-	
-	
-	String message="";
-	
+		
+	String message="";	
 	
 	public ParseError(ParseErrorType type, ParserContext context){
 		
 		switch(type){
 		
-		case UnexpectedChar:
+		case UnexpectedInputCharacter:
 			message = "Unexpected character: "+ context.getTokenizerContext().getCurrentInputCharacter() 
 				+ " at "+ context.getTokenizerContext().getNextState();
 			

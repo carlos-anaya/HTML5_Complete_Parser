@@ -1,4 +1,4 @@
-package com.html5parser.Classes;
+package com.html5parser.classes;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -6,10 +6,10 @@ import java.util.Stack;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.html5parser.Error.ParseError;
-import com.html5parser.Error.ParseErrorType;
-import com.html5parser.InsertionModes.Initial;
-import com.html5parser.Interfaces.IInsertionMode;
+import com.html5parser.insertionModes.Initial;
+import com.html5parser.interfaces.IInsertionMode;
+import com.html5parser.parseError.ParseError;
+import com.html5parser.parseError.ParseErrorType;
 
 public class ParserContext {
 
