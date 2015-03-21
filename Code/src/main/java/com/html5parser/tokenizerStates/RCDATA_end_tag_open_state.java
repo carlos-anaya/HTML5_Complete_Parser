@@ -38,6 +38,11 @@ public class RCDATA_end_tag_open_state implements ITokenizerState {
 			tokenizerContext.setNextState(factory.getState(TokenizerState.Tag_name_state));
 			break;
 		case LATIN_SMALL_LETTER:
+			/* Create a new end tag token, and set its tag name to the current input character. 
+			 * Append the current input character to the temporary buffer. Finally, 
+			 * switch to the RCDATA end tag name state. (Don't emit the token yet; 
+			 * further details will be filled in before it is emitted.)
+			 */
 			String addedChar_1 = String.valueOf(Character.toChars(currentChar));
 			Token token_2 = new Token(TokenType.end_tag, addedChar_1);
 			tokenizerContext.getTemporaryBuffer().concat(addedChar_1);
