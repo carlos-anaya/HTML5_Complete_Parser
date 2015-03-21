@@ -91,6 +91,10 @@ public class TokenizerContext {
 		setCurrentToken(value);
 		setFlagEmitToken(true);
 	}
+	public void emitCurrentToken() {
+		setCurrentToken(currentToken);
+		setFlagEmitToken(true);
+	}
 
 	public ASCIICharacter getCurrentASCIICharacter() {
 
