@@ -17,10 +17,10 @@ public class Data_state implements ITokenizerState {
 		TokenizerContext tokenizerContext = context.getTokenizerContext();
 		int currentChar = tokenizerContext.getCurrentInputCharacter();
 
-		switch (currentChar) {
+		switch (tokenizerContext.getCurrentASCIICharacter()) {
 		// U+0026 AMPERSAND (&)
 		// Switch to the character reference in data state.
-		case 0x0026:
+		case AMPERSAND:
 			factory = TokenizerStateFactory.getInstance();
 			tokenizerContext
 					.setNextState(factory
@@ -29,7 +29,7 @@ public class Data_state implements ITokenizerState {
 
 		// U+003C LESS-THAN SIGN (<)
 		// Switch to the character reference in data state.
-		case 0x003C:
+		case LESS_THAN_SIGN:
 			factory = TokenizerStateFactory.getInstance();
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Tag_open_state));
@@ -37,7 +37,7 @@ public class Data_state implements ITokenizerState {
 
 		// U+0000 NULL
 		// Parse error. Emit the current input character as a character token.
-		case 0x0000:
+		case NULL:
 			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 			token = new Token(TokenType.character, currentChar);
 			tokenizerContext.emitCurrentToken(token);
@@ -45,7 +45,7 @@ public class Data_state implements ITokenizerState {
 
 		// EOF
 		// Emit an end-of-file token.
-		case -1:
+		case EOF:
 			token = new Token(TokenType.end_of_file, null);
 			tokenizerContext.emitCurrentToken(token);
 			break;

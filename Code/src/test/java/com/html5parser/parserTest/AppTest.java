@@ -1,4 +1,4 @@
-package com.html5parser.naiveCompleteParser;
+package com.html5parser.parserTest;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
