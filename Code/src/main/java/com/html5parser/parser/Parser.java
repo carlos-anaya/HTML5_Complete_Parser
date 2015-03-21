@@ -58,15 +58,18 @@ public class Parser implements IParser {
 					currentChar = in.read();
 				}
 
+				
 				for(Token tok : parserContext.getTokenizerContext().getTokens()){
 					System.out.println(tok.getType()+" : "+tok.getValue());
 				}
-				
 				
 				/*
 				 * Consume all the tokens emited
 				 */
 				if (tokenizerContext.isFlagEmitToken()) {
+					
+					
+					
 					while (!parserContext.getTokenizerContext().getTokens()
 							.isEmpty()) {
 						/*

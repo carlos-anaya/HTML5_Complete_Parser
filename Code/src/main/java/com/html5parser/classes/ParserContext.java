@@ -12,6 +12,8 @@ import com.html5parser.parseError.ParseError;
 import com.html5parser.parseError.ParseErrorType;
 
 public class ParserContext {
+	
+	//TODO extra validation when emit tokens. see tokenization in spec
 
 	/*
 	 * Tokenizer context

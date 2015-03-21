@@ -35,6 +35,7 @@ public class TokenizerContext {
 	}
 
 	public void setCurrentToken(Token value) {
+		currentToken = value;
 		this.tokens.add(value);
 	}
 
