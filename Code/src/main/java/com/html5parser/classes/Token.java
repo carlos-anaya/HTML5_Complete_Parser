@@ -54,4 +54,12 @@ public class Token {
 	public void setValue(int value) {
 		this.value = String.valueOf(Character.toChars(value));
 	}
+	
+	public void appendValue(int value) {
+		this.value = this.value.concat(String.valueOf(Character.toChars(value)));
+	}
+	
+	public void appendValue(String value) {
+		this.value = this.value.concat(value);
+	}
 }
