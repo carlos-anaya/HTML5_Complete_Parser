@@ -3,6 +3,7 @@ package com.html5parser.tokenizerStates;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.TokenizerContext;
 import com.html5parser.classes.TokenizerState;
+import com.html5parser.classes.token.TagToken;
 import com.html5parser.factories.TokenizerStateFactory;
 import com.html5parser.interfaces.ITokenizerState;
 import com.html5parser.parseError.ParseErrorType;
@@ -19,7 +20,8 @@ public class Self_closing_start_tag_state implements ITokenizerState {
 		// data state. Emit the current tag token.
 		case GREATER_THAN_SIGN:
 			// TODO SelfClosingTag
-//			tokenizerContext.getCurrentToken().setFlagSelfClosingTag(true);
+			((TagToken) tokenizerContext.getCurrentToken())
+					.setSelfClosingFlag(true);
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Data_state));
 			tokenizerContext.setFlagEmitToken(true);

@@ -1,8 +1,11 @@
 package com.html5parser.tokenizerStates;
 
 import com.html5parser.classes.ParserContext;
+import com.html5parser.classes.Token;
 import com.html5parser.classes.TokenizerContext;
 import com.html5parser.classes.TokenizerState;
+import com.html5parser.classes.Token.TokenType;
+import com.html5parser.classes.token.TagToken;
 import com.html5parser.factories.TokenizerStateFactory;
 import com.html5parser.interfaces.ITokenizerState;
 import com.html5parser.parseError.ParseErrorType;
@@ -57,7 +60,7 @@ public class Tag_name_state implements ITokenizerState {
 					.getState(TokenizerState.Data_state));
 			tokenizerContext.setFlagReconsumeCurrentInputCharacter(true);
 			break;
-
+			
 		// U+0041 LATIN CAPITAL LETTER A through to U+005A LATIN CAPITAL LETTER
 		// Z
 		// Append the lowercase version of the current input character (add

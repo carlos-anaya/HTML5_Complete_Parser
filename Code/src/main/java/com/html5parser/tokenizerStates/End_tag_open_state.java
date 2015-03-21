@@ -1,11 +1,11 @@
 package com.html5parser.tokenizerStates;
 
-import com.html5parser.classes.ASCIICharacter;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
 import com.html5parser.classes.Token.TokenType;
 import com.html5parser.classes.TokenizerContext;
 import com.html5parser.classes.TokenizerState;
+import com.html5parser.classes.token.TagToken;
 import com.html5parser.factories.TokenizerStateFactory;
 import com.html5parser.interfaces.ITokenizerState;
 import com.html5parser.parseError.ParseErrorType;
@@ -52,19 +52,18 @@ public class End_tag_open_state implements ITokenizerState {
 			currentChar += 0x0020;
 
 			// U+0061 LATIN SMALL LETTER A through to U+007A LATIN SMALL LETTER
-			// Z Create a new end tag token, set its tag name to the current input
-			// character,
-			// then switch to the tag name state. (Don't emit the token yet;
-			// further
-			// details
-			// will be filled in before it is emitted.)
+			// Z Create a new end tag token, set its tag name to the current
+			// input character, then switch to the tag name state. (Don't emit
+			// the token yet; further details will be filled in before it is
+			// emitted.)
 		case LATIN_SMALL_LETTER:
-			Token currentToken = new Token(TokenType.end_tag, currentChar);
+			Token currentToken = new TagToken(TokenType.end_tag, currentChar);
 			tokenizerContext.setCurrentToken(currentToken);
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Tag_name_state));
-			// Anything else
-			// Parse error. Switch to the bogus comment state.
+			break;
+		// Anything else
+		// Parse error. Switch to the bogus comment state.
 		default:
 			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 			tokenizerContext.setNextState(factory
