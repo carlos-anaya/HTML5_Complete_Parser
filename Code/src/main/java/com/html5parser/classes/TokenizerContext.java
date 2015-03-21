@@ -39,6 +39,8 @@ public class TokenizerContext {
 	}
 
 	public Token getCurrentToken() {
+		if (currentToken == null)
+			currentToken = tokens.peek();
 		return currentToken;
 	}
 
@@ -91,10 +93,6 @@ public class TokenizerContext {
 		setCurrentToken(value);
 		setFlagEmitToken(true);
 	}
-	public void emitCurrentToken() {
-		setCurrentToken(currentToken);
-		setFlagEmitToken(true);
-	}
 
 	public ASCIICharacter getCurrentASCIICharacter() {
 
@@ -126,6 +124,8 @@ public class TokenizerContext {
 			return ASCIICharacter.DASH;
 		case 0x0021:			
 			return ASCIICharacter.EXCLAMATION_MARK;
+		case 0x003F:			
+			return ASCIICharacter.QUESTION_MARK;
 		case -1:
 			return ASCIICharacter.EOF;
 		case 0x002D:			
