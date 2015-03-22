@@ -4,8 +4,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
-import org.w3c.dom.Element;
-
 import com.html5parser.classes.Token.TokenType;
 import com.html5parser.interfaces.ITokenizerState;
 import com.html5parser.tokenizerStates.Data_state;
