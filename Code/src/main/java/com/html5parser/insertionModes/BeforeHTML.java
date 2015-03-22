@@ -12,6 +12,7 @@ import com.html5parser.classes.Token;
 import com.html5parser.classes.Token.TokenType;
 import com.html5parser.factories.InsertionModeFactory;
 import com.html5parser.interfaces.IInsertionMode;
+import com.html5parser.parseError.ParseErrorType;
 
 public class BeforeHTML implements IInsertionMode {
 
@@ -26,12 +27,13 @@ public class BeforeHTML implements IInsertionMode {
 		// A DOCTYPE token
 		// Parse error. Ignore the token.
 		case DOCTYPE:
-			throw new UnsupportedOperationException();
+			parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+			break;
 
-			// A comment token
-			// Append a Comment node to the Document object with the data
-			// attribute
-			// set to the data given in the comment token.
+		// A comment token
+		// Append a Comment node to the Document object with the data
+		// attribute
+		// set to the data given in the comment token.
 		case comment:
 			throw new UnsupportedOperationException();
 
@@ -44,14 +46,14 @@ public class BeforeHTML implements IInsertionMode {
 			if ((currentChar == 0x0009 || currentChar == 0x000A
 					|| currentChar == 0x000C || currentChar == 0x000D || currentChar == 0x0020))
 				return parserContext;
-			break;
 
-		case start_tag:
-			throw new UnsupportedOperationException();
 
+			// An end tag whose tag name is one of: "head", "body", "html", "br"
+			// Act as described in the "anything else" entry below.
+			// Any other end tag
+			// Parse error. Ignore the token.
 		case end_tag:
-			throw new UnsupportedOperationException();
-
+			if(token.getValue().equals("head"));
 			// Anything else
 		case end_of_file:
 		default:
@@ -60,17 +62,18 @@ public class BeforeHTML implements IInsertionMode {
 			doc.appendChild(html);
 			Stack<Element> stackOpenElements = parserContext.getOpenElements();
 			stackOpenElements.push(html);
-			
-			//TODO delete this, it just simulates next state
+
+			// TODO delete this, it just simulates next state
 			Token headT = new Token(TokenType.start_tag, "head");
-			Element head = ElementInsertionAlgorithm.insertHTMLElement(parserContext, headT);
+			Element head = ElementInsertionAlgorithm.insertHTMLElement(
+					parserContext, headT);
 			parserContext.setHeadElementPointer(head);
-			
-			
-			//TODO uncomment
-			/*parserContext.setInsertionMode(factory
-					.getInsertionMode(InsertionMode.before_head));
-			  parserContext.setFlagReconsumeToken(true);
+
+			// TODO uncomment
+			/*
+			 * parserContext.setInsertionMode(factory
+			 * .getInsertionMode(InsertionMode.before_head));
+			 * parserContext.setFlagReconsumeToken(true);
 			 */
 			break;
 		}

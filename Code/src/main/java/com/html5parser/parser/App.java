@@ -22,7 +22,7 @@ public class App
     {
         System.out.println( "Hello World!" );
         
-        Document doc = new Parser().parse("aaa");
+        Document doc = new Parser().parse("<html><foo/>");
         System.out.println(serializeDocument(doc));
     }
     

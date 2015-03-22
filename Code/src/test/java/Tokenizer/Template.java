@@ -24,10 +24,13 @@ public class Template {
 
 			ParserContext parserContext = new ParserContext();
 
-			String string = "";
+			String string = "<html>< foo/>";
 
 			tokenize(parserContext, string);
-
+			printTokens(parserContext);
+			
+			System.out.println(parserContext.getParseErrors());
+			
 			Token tok = parserContext.getTokenizerContext().getTokens().poll();
 
 			assertTrue("No EOF token",
@@ -35,7 +38,7 @@ public class Template {
 			assertTrue("No more tokens expected", parserContext
 					.getTokenizerContext().getTokens().isEmpty());
 
-			printTokens(parserContext);
+			
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -76,12 +79,13 @@ public class Template {
 				tokenizerContext.setFlagReconsumeCurrentInputCharacter(false);
 			}
 
-			for (Token tok : parserContext.getTokenizerContext().getTokens()) {
-				lastToken = tok;// get the last token emitted from the queue
-			}
-
-		} while (lastToken != null
-				&& lastToken.getType() != TokenType.end_of_file);
+//			for (Token tok : parserContext.getTokenizerContext().getTokens()) {
+//				lastToken = tok;// get the last token emitted from the queue
+//			}
+//
+//		} while (lastToken != null
+//				&& lastToken.getType() != TokenType.end_of_file);
+		} while (currentChar != -1);
 	}
 
 }
