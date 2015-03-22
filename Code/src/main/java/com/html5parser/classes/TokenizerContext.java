@@ -2,7 +2,11 @@ package com.html5parser.classes;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
+import org.w3c.dom.Element;
+
+import com.html5parser.classes.Token.TokenType;
 import com.html5parser.interfaces.ITokenizerState;
 import com.html5parser.tokenizerStates.Data_state;
 
@@ -21,6 +25,8 @@ public class TokenizerContext {
 	private boolean flagReconsumeCurrentInputCharacter = false;
 	// emit the token so it is consumed by the tree constructor
 	private boolean flagEmitToken = false;
+	
+	private Stack<String> emittedStartTags= new Stack<String>();
 
 	public ITokenizerState getNextState() {
 		return nextState;
@@ -92,6 +98,18 @@ public class TokenizerContext {
 	public void emitCurrentToken(Token value) {
 		setCurrentToken(value);
 		setFlagEmitToken(true);
+		
+		if (value.getType().equals(TokenType.start_tag)) {
+			emittedStartTags.push(value.getValue());
+		}
+	}
+
+	public Stack<String> getEmittedStartTags() {
+		return emittedStartTags;
+	}
+	
+	public String getLatestEmittedStartTag(){
+		return this.emittedStartTags.pop();
 	}
 
 	public ASCIICharacter getCurrentASCIICharacter() {
