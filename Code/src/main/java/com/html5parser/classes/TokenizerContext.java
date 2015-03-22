@@ -115,9 +115,9 @@ public class TokenizerContext {
 
 		int currentChar = this.currentInputCharacter;
 
-		if (currentChar > 64 && currentChar < 91)
+		if (currentChar >= 0x0041 && currentChar <= 0x005A)
 			return ASCIICharacter.LATIN_CAPITAL_LETTER;
-		else if (currentChar > 96 && currentChar < 123)
+		else if (currentChar >= 0x0061 && currentChar <= 0x007A)
 			return ASCIICharacter.LATIN_SMALL_LETTER;
 
 		switch (currentChar) {
@@ -143,16 +143,18 @@ public class TokenizerContext {
 			return ASCIICharacter.EXCLAMATION_MARK;
 		case 0x003F:			
 			return ASCIICharacter.QUESTION_MARK;
-		case -1:
-			return ASCIICharacter.EOF;
 		case 0x002D:			
 			return ASCIICharacter.HYPHEN_MINUS;
 		case 0x0022:
 			return ASCIICharacter.QUOTATION_MARK;
-		case 0X0027:			
+		case 0x0027:			
 			return ASCIICharacter.APOSTROPHE;
-		case 0X003D:			
+		case 0x003D:			
 			return ASCIICharacter.EQUALS_SIGN;
+		case 0x0060:
+			return ASCIICharacter.GRAVE_ACCENT;
+		case -1:
+			return ASCIICharacter.EOF;
 		default:
 			return ASCIICharacter.OTHER;
 		}

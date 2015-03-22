@@ -7,7 +7,7 @@ import com.html5parser.classes.Token;
 
 public class TagToken extends Token {
 
-	boolean selfClosingFlag = false;
+	boolean flagSelfClosingTag = false;
 	List<Attribute> attributes = new ArrayList<TagToken.Attribute>();
 	Attribute lasttAttribute;
 
@@ -19,12 +19,12 @@ public class TagToken extends Token {
 		super(_type, _value);
 	}
 
-	public boolean isSelfClosingFlag() {
-		return selfClosingFlag;
+	public boolean isFlagSelfClosingTag() {
+		return flagSelfClosingTag;
 	}
 
-	public void setSelfClosingFlag(boolean selfClosingFlag) {
-		this.selfClosingFlag = selfClosingFlag;
+	public void setFlagSelfClosingTag(boolean value) {
+		this.flagSelfClosingTag = value;
 	}
 
 	public List<Attribute> getAttributes() {

@@ -1,39 +1,44 @@
 package com.html5parser.classes;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.html5parser.classes.token.TagToken;
+import com.html5parser.classes.token.TagToken.Attribute;
 import com.html5parser.insertionModes.Initial;
 import com.html5parser.interfaces.IInsertionMode;
 import com.html5parser.parseError.ParseError;
 import com.html5parser.parseError.ParseErrorType;
 
 public class ParserContext {
-	
-	//TODO extra validation when emit tokens. see tokenization in spec
+
+	// TODO extra validation when emit tokens. see tokenization in spec
 
 	/*
 	 * Tokenizer context
 	 */
 	private TokenizerContext tokenizerContext = new TokenizerContext();
-	
+
 	/*
 	 * Insertion modes
-	 */	
-	private IInsertionMode insertionMode= new Initial();
+	 */
+	private IInsertionMode insertionMode = new Initial();
 	private IInsertionMode originalInsertionMode;
 	private IInsertionMode currentTemplateInsertionMode;
 
 	/*
 	 * Stacks
 	 */
-	private Stack<Element> openElements= new Stack<Element>();
+	private Stack<Element> openElements = new Stack<Element>();
 	private Stack<ParseError> parseErrors = new Stack<ParseError>();
 	private Stack<IInsertionMode> templateInsertionModes = new Stack<IInsertionMode>();
-	
+
 	/*
 	 * Flags
 	 */
@@ -52,13 +57,12 @@ public class ParserContext {
 	private Element adjustedCurrentNode;
 	private Element headElementPointer;
 	private Element formElementPointer;
-	
+
 	/*
-	 *  Document
+	 * Document
 	 */
 	Document doc;
-	
-	
+
 	public TokenizerContext getTokenizerContext() {
 		return tokenizerContext;
 	}
@@ -66,7 +70,7 @@ public class ParserContext {
 	public void setTokenizerContext(TokenizerContext value) {
 		this.tokenizerContext = value;
 	}
-	
+
 	public IInsertionMode getInsertionMode() {
 		return insertionMode;
 	}
@@ -74,16 +78,13 @@ public class ParserContext {
 	public void setInsertionMode(IInsertionMode value) {
 		this.insertionMode = value;
 	}
-	
 
-/*	public IInsertionMode getInsertionMode() {
-		return IInsertionMode;
-	}
-
-	public void setInsertionMode(IInsertionMode IInsertionMode) {
-		this.insertionMode = IInsertionMode;
-	}
-*/
+	/*
+	 * public IInsertionMode getInsertionMode() { return IInsertionMode; }
+	 * 
+	 * public void setInsertionMode(IInsertionMode IInsertionMode) {
+	 * this.insertionMode = IInsertionMode; }
+	 */
 	public IInsertionMode getOriginalInsertionMode() {
 		return originalInsertionMode;
 	}
@@ -116,9 +117,9 @@ public class ParserContext {
 	public void setParseErrors(Stack<ParseError> parseErrors) {
 		this.parseErrors = parseErrors;
 	}
-	
+
 	public void addParseErrors(ParseErrorType parseErrorType) {
-		parseErrors.push(new ParseError(parseErrorType,this));		
+		parseErrors.push(new ParseError(parseErrorType, this));
 	}
 
 	public Stack<IInsertionMode> getTemplateInsertionModes() {
@@ -227,5 +228,22 @@ public class ParserContext {
 		this.doc = doc;
 	}
 
-	
+	// Remove duplicate attributes and generate parse errors
+	public void validateAttributeNames() {
+		List<Attribute> attributes = ((TagToken) this.tokenizerContext
+				.getCurrentToken()).getAttributes();
+		final List<Attribute> setToReturn = new ArrayList<>();
+		final Set<String> set1 = new HashSet<String>();
+
+		for (Attribute att : attributes) {
+			if (set1.add(att.getName())) {
+				setToReturn.add(att);
+			} else {
+				this.parseErrors.push(new ParseError(
+						ParseErrorType.DuplicatedAttributeName, att.getName()));
+			}
+		}
+		((TagToken) this.tokenizerContext.getCurrentToken())
+				.setAttributes(setToReturn);
+	}
 }

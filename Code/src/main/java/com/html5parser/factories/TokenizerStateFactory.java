@@ -2,8 +2,20 @@ package com.html5parser.factories;
 
 import com.html5parser.classes.TokenizerState;
 import com.html5parser.interfaces.ITokenizerState;
+import com.html5parser.tokenizerStates.After_attribute_name_state;
+import com.html5parser.tokenizerStates.After_attribute_value_quoted_state;
+import com.html5parser.tokenizerStates.Attribute_name_state;
+import com.html5parser.tokenizerStates.Attribute_value_double_quoted_state;
+import com.html5parser.tokenizerStates.Attribute_value_single_quoted_state;
+import com.html5parser.tokenizerStates.Attribute_value_unquoted_state;
+import com.html5parser.tokenizerStates.Before_attribute_name_state;
+import com.html5parser.tokenizerStates.Before_attribute_value_state;
 import com.html5parser.tokenizerStates.Data_state;
 import com.html5parser.tokenizerStates.End_tag_open_state;
+import com.html5parser.tokenizerStates.RCDATA_end_tag_name_state;
+import com.html5parser.tokenizerStates.RCDATA_end_tag_open_state;
+import com.html5parser.tokenizerStates.RCDATA_less_than_sign_state;
+import com.html5parser.tokenizerStates.RCDATA_state;
 import com.html5parser.tokenizerStates.Self_closing_start_tag_state;
 import com.html5parser.tokenizerStates.Tag_name_state;
 import com.html5parser.tokenizerStates.Tag_open_state;
@@ -34,6 +46,31 @@ public class TokenizerStateFactory {
 			return new Tag_name_state();
 		case Tag_open_state:
 			return new Tag_open_state();
+		case After_attribute_name_state:
+			return new After_attribute_name_state();
+		case After_attribute_value_quoted_state:
+			return new After_attribute_value_quoted_state();
+		case Attribute_name_state:
+			return new Attribute_name_state();
+		case Attribute_value_double_quoted_state:
+			return new Attribute_value_double_quoted_state();
+		case Attribute_value_single_quoted_state:
+			return new Attribute_value_single_quoted_state();
+		case Attribute_value_unquoted_state:
+			return new Attribute_value_unquoted_state();
+		case Before_attribute_name_state:
+			return new Before_attribute_name_state();
+		case Before_attribute_value_state:
+			return new Before_attribute_value_state();
+		
+		case RCDATA_end_tag_name_state:
+			return new RCDATA_end_tag_name_state();
+		case RCDATA_end_tag_open_state:
+			return new RCDATA_end_tag_open_state();
+		case RCDATA_less_than_sign_state:
+			return new RCDATA_less_than_sign_state();
+		case RCDATA_state:
+			return new RCDATA_state();
 			
 		case After_DOCTYPE_name_state:
 			
@@ -45,28 +82,12 @@ public class TokenizerStateFactory {
 			
 		case After_DOCTYPE_system_keyword_state:
 			
-		case After_attribute_name_state:
-			
-		case After_attribute_value_quoted_state:
-			
-		case Attribute_name_state:
-			
-		case Attribute_value_double_quoted_state:
-			
-		case Attribute_value_single_quoted_state:
-			
-		case Attribute_value_unquoted_state:
-			
 		case Before_DOCTYPE_name_state:
 			
 		case Before_DOCTYPE_public_identifier_state:
 			
 		case Before_DOCTYPE_system_identifier_state:
-			
-		case Before_attribute_name_state:
-			
-		case Before_attribute_value_state:
-			
+					
 		case Between_DOCTYPE_public_and_system_identifiers_state:
 			
 		case Bogus_DOCTYPE_state:
@@ -118,14 +139,7 @@ public class TokenizerStateFactory {
 			
 		case RAWTEXT_state:
 			
-		case RCDATA_end_tag_name_state:
-			
-		case RCDATA_end_tag_open_state:
-			
-		case RCDATA_less_than_sign_state:
-			
-		case RCDATA_state:
-			
+
 		case Script_data_double_escape_end_state:
 			
 		case Script_data_double_escape_start_state:

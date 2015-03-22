@@ -13,6 +13,10 @@ import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
 import com.html5parser.classes.Token.TokenType;
 import com.html5parser.classes.TokenizerContext;
+import com.html5parser.classes.token.DocTypeToken;
+import com.html5parser.classes.token.TagToken;
+import com.html5parser.classes.token.TagToken.Attribute;
+import com.html5parser.parseError.ParseError;
 import com.html5parser.parser.Tokenizer;
 
 public class Template {
@@ -24,21 +28,17 @@ public class Template {
 
 			ParserContext parserContext = new ParserContext();
 
-			String string = "<html>< foo/>";
+			String string = "<html><foo abcd=xyz />";
 
 			tokenize(parserContext, string);
 			printTokens(parserContext);
-			
-			System.out.println(parserContext.getParseErrors());
-			
+
 			Token tok = parserContext.getTokenizerContext().getTokens().poll();
 
 			assertTrue("No EOF token",
 					tok.getType().equals(TokenType.end_of_file));
 			assertTrue("No more tokens expected", parserContext
 					.getTokenizerContext().getTokens().isEmpty());
-
-			
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -47,8 +47,43 @@ public class Template {
 	}
 
 	private void printTokens(ParserContext parserContext) {
-		for (Token tok : parserContext.getTokenizerContext().getTokens()) {
-			System.out.println(tok.getType() + " : " + tok.getValue());
+		for (Token token : parserContext.getTokenizerContext().getTokens()) {
+			switch (token.getType()) {
+			case end_of_file:
+				System.out.println("EOF");
+				break;
+			case character:
+			case comment:
+				System.out.println(token.getType() + " : " + token.getValue());
+				break;
+			case DOCTYPE:
+				DocTypeToken docTypeToken = (DocTypeToken) token;
+				System.out.println(docTypeToken.getType() + " : "
+						+ docTypeToken.getValue() + " public id. "
+						+ docTypeToken.getPublicIdentifier() + " system id. "
+						+ docTypeToken.getSystemIdentifier()
+						+ " force-quirks flag "
+						+ docTypeToken.isForceQuircksFlag());
+				break;
+			case end_tag:
+			case start_tag:
+				TagToken tagToken = (TagToken) token;
+				System.out.println(tagToken.getType() + " : "
+						+ tagToken.getValue() + " self-closing flag "
+						+ tagToken.isFlagSelfClosingTag() + " attributes: ");
+				for (Attribute att : tagToken.getAttributes()) {
+					System.out.println(att.getName() + " : " + att.getValue());
+				}
+				break;
+			default:
+				System.out.println("Error");
+				break;
+			}
+
+		}
+
+		for (ParseError error : parserContext.getParseErrors()) {
+			System.out.println(error.getMessage());
 		}
 	}
 
@@ -79,12 +114,13 @@ public class Template {
 				tokenizerContext.setFlagReconsumeCurrentInputCharacter(false);
 			}
 
-//			for (Token tok : parserContext.getTokenizerContext().getTokens()) {
-//				lastToken = tok;// get the last token emitted from the queue
-//			}
-//
-//		} while (lastToken != null
-//				&& lastToken.getType() != TokenType.end_of_file);
+			// for (Token tok : parserContext.getTokenizerContext().getTokens())
+			// {
+			// lastToken = tok;// get the last token emitted from the queue
+			// }
+			//
+			// } while (lastToken != null
+			// && lastToken.getType() != TokenType.end_of_file);
 		} while (currentChar != -1);
 	}
 
