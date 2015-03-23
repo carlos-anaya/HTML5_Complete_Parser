@@ -16,9 +16,9 @@ public class Attribute_value_single_quoted_state implements ITokenizerState {
 		int currentChar = tokenizerContext.getCurrentInputCharacter();
 
 		switch (tokenizerContext.getCurrentASCIICharacter()) {
-		// U+0022 QUOTATION MARK (")
-		//Switch to the after attribute value (quoted) state.
-		case QUOTATION_MARK:
+		// "'" (U+0027)
+		// Switch to the after attribute value (quoted) state.
+		case APOSTROPHE:
 			tokenizerContext
 					.setNextState(factory
 							.getState(TokenizerState.After_attribute_value_quoted_state));

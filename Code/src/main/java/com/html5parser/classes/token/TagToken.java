@@ -98,11 +98,11 @@ public class TagToken extends Token {
 		}
 
 		public void appendCharacterToName(String character) {
-			name.concat(character);
+			this.name = name.concat(character);
 		}
 
 		public void appendCharacterToValue(String character) {
-			value.concat(character);
+			this.value = value.concat(character);
 		}
 
 	}

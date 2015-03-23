@@ -11,8 +11,9 @@ public class ParseError {
 		switch (type) {
 		case UnexpectedInputCharacter:
 			this.message = "Unexpected character: "
-					+ context.getTokenizerContext().getCurrentInputCharacter()
-					+ " at " + context.getTokenizerContext().getNextState();
+			+ String.valueOf(Character.toChars(context.getTokenizerContext().getCurrentInputCharacter()))
+					+ " (" + context.getTokenizerContext().getCurrentInputCharacter()
+					+ ") at " + context.getTokenizerContext().getNextState();
 			break;
 		case UnexpectedToken:
 			this.message = "Unexpected token: "
