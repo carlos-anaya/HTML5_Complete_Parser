@@ -1,5 +1,7 @@
 package Tokenizer;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -9,9 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
+import javax.xml.stream.events.StartDocument;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -21,19 +26,21 @@ import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
 import com.html5parser.classes.Token.TokenType;
 import com.html5parser.classes.TokenizerContext;
+import com.html5parser.classes.token.DocTypeToken;
+import com.html5parser.classes.token.TagToken;
 import com.html5parser.parser.Tokenizer;
 
-/* HTML5LIB FORMAT		
- * 		
- * {"tests": [		
- {"description": "Test description",		
- "input": "input_string",		
- "output": [expected_output_tokens],		
- "initialStates": [initial_states],		
- "lastStartTag": last_start_tag,		
- "ignoreErrorOrder": ignore_error_order		
- }		
- ]}		
+/* HTML5LIB FORMAT
+ * 
+ * {"tests": [
+ {"description": "Test description",
+ "input": "input_string",
+ "output": [expected_output_tokens],
+ "initialStates": [initial_states],
+ "lastStartTag": last_start_tag,
+ "ignoreErrorOrder": ignore_error_order
+ }
+ ]}
  */
 
 @RunWith(value = Parameterized.class)
@@ -51,14 +58,25 @@ public class TokenizerTesthtml5libsuite {
 	// Declares parameters here
 	@Parameters(name = "Test name: {0}")
 	public static Iterable<Object[]> data1() {
-
 		List<Object[]> testList = new ArrayList<Object[]>();
+
+		String[] resources = { "https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test1.test",
+		// "https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test2.test",
+		};
+
+		for (String resource : resources) {
+			testList = addTestFile(testList, resource);
+		}
+
+		return testList;
+	}
+
+	private static List<Object[]> addTestFile(List<Object[]> testList,
+			String resource) {
 		BufferedReader in = null;
 
 		URL url;
 		try {
-
-			String resource = "https://raw.githubusercontent.com/html5lib/html5libtests/master/tokenizer/test1.test";
 			url = new URL(resource);
 			in = new BufferedReader(new InputStreamReader(url.openStream()));
 
@@ -74,11 +92,10 @@ public class TokenizerTesthtml5libsuite {
 			for (int i = 0; i < tests.size(); i++) {
 				JSONObject test = (JSONObject) tests.get(i);
 				String testName = (String) test.get("description");
-				// if(testName.equals("Ampersand EOF"))
 				testList.add(new Object[] { testName, test });
 			}
 
-		} catch (IOException | org.json.simple.parser.ParseException e) {
+		} catch (IOException | ParseException e) {
 			e.printStackTrace();
 		} finally {
 			try {
@@ -88,7 +105,6 @@ public class TokenizerTesthtml5libsuite {
 				e.printStackTrace();
 			}
 		}
-
 		return testList;
 	}
 
@@ -97,7 +113,23 @@ public class TokenizerTesthtml5libsuite {
 		try {
 			ParserContext parserContext = new ParserContext();
 			tokenize(parserContext, (String) test.get("input"));
-			printTokens(parserContext);
+			String output = serializeTokens(parserContext.getTokenizerContext()
+					.getTokens());
+			
+			JSONArray expectedOutput = (JSONArray) test.get("output");
+			String expected = expectedOutput.toString()
+					.replaceAll("\"ParseError\"(,)|(,)?\"ParseError\"", "");
+			assertEquals("Wrong tokens",expected, output);
+			
+			int expectedParseErrors=0;
+			for (int i = 0; i < expectedOutput.size(); i++) {
+				Object obj = expectedOutput.get(i);
+				if(obj.toString().equals("ParseError")) expectedParseErrors++;
+			}
+			
+			int parseErrors=parserContext.getParseErrors().size();;
+			assertEquals("Different number of parse errors",expectedParseErrors, parseErrors);
+			
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -115,28 +147,32 @@ public class TokenizerTesthtml5libsuite {
 
 		// tokenize
 		Token lastToken = null;
-		int currentChar = in.read();
+		int currentChar = -1;
 		do {
+
 			TokenizerContext tokenizerContext = parserContext
 					.getTokenizerContext();
-			tokenizerContext.setCurrentInputCharacter(currentChar);
-			parserContext = tokenizer.tokenize(parserContext);
 
 			/*
 			 * If not reconsume, then read next character of the stream
 			 */
-			if (!tokenizerContext.isFlagReconsumeCurrentInputCharacter()) {
+			if (!tokenizerContext.isFlagReconsumeCurrentInputCharacter())
 				currentChar = in.read();
-			} else {
-				tokenizerContext.setFlagReconsumeCurrentInputCharacter(false);
-			}
 
-			for (Token tok : parserContext.getTokenizerContext().getTokens()) {
-				lastToken = tok;// get the last token emitted from the queue
-			}
+			// If not specified by the spec, not reconsume in the next state
+			tokenizerContext.setFlagReconsumeCurrentInputCharacter(false);
 
-		} while (lastToken != null
-				&& lastToken.getType() != TokenType.end_of_file);
+			tokenizerContext.setCurrentInputCharacter(currentChar);
+			parserContext = tokenizer.tokenize(parserContext);
+
+			// for (Token tok : parserContext.getTokenizerContext().getTokens())
+			// {
+			// lastToken = tok;// get the last token emitted from the queue
+			// }
+			//
+			// } while (lastToken != null
+			// && lastToken.getType() != TokenType.end_of_file);
+		} while (currentChar != -1);
 	}
 
 	private void printTokens(ParserContext parserContext) {
@@ -146,34 +182,52 @@ public class TokenizerTesthtml5libsuite {
 	}
 
 	private String serializeTokens(Queue<Token> tokens) {
-		StringBuilder output = new StringBuilder("[");
+		JSONArray tokenArray, tokensArray = new JSONArray();
+		tokens:
 		for (Token token : tokens) {
-			output.append("[");
+			tokenArray = new JSONArray();
 
 			switch (token.getType()) {
 
 			case DOCTYPE:
-				output.append("\"DOCTYPE\"").append(", ");
-				output.append(token.getValue()).append(", ");
+				tokenArray.add("DOCTYPE");
+				tokenArray.add((token.getValue()));
+				tokenArray.add(((DocTypeToken) token).getPublicIdentifier());
+				tokenArray.add(((DocTypeToken) token).getSystemIdentifier());
+				tokenArray.add(!((DocTypeToken) token).isForceQuircksFlag());
+				// true corresponds to the force-quirks flag being false, and
+				// vice-versa. check
+				// https://github.com/html5lib/html5lib-tests/tree/master/tokenizer
+				// for more info
 				break;
 			case character:
+				tokenArray.add("Character");
+				tokenArray.add((token.getValue()));
 				break;
 			case comment:
+				tokenArray.add("Comment");
+				tokenArray.add((token.getValue()));
 				break;
 			case end_of_file:
-				break;
+				break tokens;
 			case end_tag:
+				tokenArray.add("EndTag");
+				tokenArray.add((token.getValue()));
 				break;
 			case start_tag:
+				tokenArray.add("StartTag");
+				tokenArray.add((token.getValue()));
+				//TODO add attributes
+				if (((TagToken) token).isFlagSelfClosingTag()) {
+					tokenArray.add(true);
+				}
 				break;
 			default:
 				break;
 
 			}
-
-			output.append("]");
+			tokensArray.add(tokenArray);
 		}
-		output.append("]");
-		return output.toString();
+		return tokensArray.toString();
 	}
 }

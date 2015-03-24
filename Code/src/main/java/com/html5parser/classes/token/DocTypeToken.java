@@ -39,4 +39,12 @@ public class DocTypeToken extends Token {
 	public void setForceQuircksFlag(boolean forceQuircksFlag) {
 		this.forceQuircksFlag = forceQuircksFlag;
 	}
+	
+	public void appendPublicIdentifier(int value) {
+		this.publicIdentifier = this.publicIdentifier.concat(String.valueOf(Character.toChars(value)));
+	}
+	
+	public void appendSystemIdentifier(int value) {
+		this.systemIdentifier = this.systemIdentifier.concat(String.valueOf(Character.toChars(value)));
+	}
 }

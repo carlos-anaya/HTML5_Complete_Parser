@@ -29,17 +29,16 @@ public class Parser implements IParser {
 		ParserContext parserContext = new ParserContext();
 		Tokenizer tokenizer = new Tokenizer();
 		TreeConstructor treeConstructor = new TreeConstructor();
-		
+
 		BufferedReader in;
 		try {
-			
+
 			Document doc;
-			DocumentBuilderFactory dbf = DocumentBuilderFactory
-					.newInstance();
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = dbf.newDocumentBuilder();
 			doc = builder.newDocument();
 			parserContext.setDocument(doc);
-			
+
 			in = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 
 			int currentChar = in.read();
@@ -53,23 +52,22 @@ public class Parser implements IParser {
 				 * If not reconsume, then read next character of the stream
 				 */
 				if (!tokenizerContext.isFlagReconsumeCurrentInputCharacter()) {
-					tokenizerContext
-							.setFlagReconsumeCurrentInputCharacter(false);
 					currentChar = in.read();
 				}
 
-				
-				for(Token tok : parserContext.getTokenizerContext().getTokens()){
-					System.out.println(tok.getType()+" : "+tok.getValue());
-				}
-				
+				// If not specified by the spec, not reconsume in the next state
+				tokenizerContext.setFlagReconsumeCurrentInputCharacter(false);
+
 				/*
 				 * Consume all the tokens emited
 				 */
 				if (tokenizerContext.isFlagEmitToken()) {
 					
-					
-					
+					for (Token tok : parserContext.getTokenizerContext()
+							.getTokens()) {
+						System.out.println(tok.getType() + " : " + tok.getValue());
+					}
+
 					while (!parserContext.getTokenizerContext().getTokens()
 							.isEmpty()) {
 						/*
@@ -85,8 +83,7 @@ public class Parser implements IParser {
 					}
 					parserContext.getTokenizerContext().setFlagEmitToken(false);
 				}
-				
-				
+
 			}
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
