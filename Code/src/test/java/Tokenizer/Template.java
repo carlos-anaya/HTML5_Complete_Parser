@@ -28,7 +28,7 @@ public class Template {
 
 			ParserContext parserContext = new ParserContext();
 
-			String string = "<html><foo abcd=xyz />";
+			String string = "<html><foo abcd=xyz  abcd='r' bcd=\"u\" e f  =  i />";
 
 			tokenize(parserContext, string);
 			printTokens(parserContext);
@@ -47,6 +47,7 @@ public class Template {
 	}
 
 	private void printTokens(ParserContext parserContext) {
+		System.out.println("*** TOKENS ***\n");
 		for (Token token : parserContext.getTokenizerContext().getTokens()) {
 			switch (token.getType()) {
 			case end_of_file:
@@ -82,6 +83,8 @@ public class Template {
 
 		}
 
+		System.out.println("\n\n*** ERRORS ***\n");
+		
 		for (ParseError error : parserContext.getParseErrors()) {
 			System.out.println(error.getMessage());
 		}
