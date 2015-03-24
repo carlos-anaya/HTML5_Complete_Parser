@@ -28,7 +28,8 @@ public class Template {
 
 			ParserContext parserContext = new ParserContext();
 
-			String string = "<html><foo abcd=xyz  abcd='r' bcd=\"u\" e f  =  i />";
+			String string = "<html><? comment1 ,>\n"
+					+ "<!><!$%><!12345678></$comment2><foo abcd=xyz  abcd='r' bcd=\"u\" e f  =  i />";
 
 			tokenize(parserContext, string);
 			printTokens(parserContext);

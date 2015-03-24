@@ -11,8 +11,10 @@ public class ParseError {
 		switch (type) {
 		case UnexpectedInputCharacter:
 			this.message = "Unexpected character: "
-			+ String.valueOf(Character.toChars(context.getTokenizerContext().getCurrentInputCharacter()))
-					+ " (" + context.getTokenizerContext().getCurrentInputCharacter()
+					+ String.valueOf(Character.toChars(context
+							.getTokenizerContext().getCurrentInputCharacter()))
+					+ " ("
+					+ context.getTokenizerContext().getCurrentInputCharacter()
 					+ ") at " + context.getTokenizerContext().getNextState();
 			break;
 		case UnexpectedToken:
@@ -21,6 +23,12 @@ public class ParseError {
 					+ " value: "
 					+ context.getTokenizerContext().getCurrentToken()
 							.getValue() + " at " + context.getInsertionMode();
+			break;
+		case EndTagWithAttributes:
+			this.message = "End tag token emitted with attributes.";
+			break;
+		case EndTagWithSelfClosingFlag:
+			this.message = "End tag token emitted with its self-closing flag set.";
 			break;
 		default:
 			break;

@@ -3,6 +3,7 @@ package com.html5parser.tokenizerStates;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.TokenizerContext;
 import com.html5parser.classes.TokenizerState;
+import com.html5parser.classes.Token.TokenType;
 import com.html5parser.classes.token.TagToken;
 import com.html5parser.factories.TokenizerStateFactory;
 import com.html5parser.interfaces.ITokenizerState;
@@ -95,6 +96,13 @@ public class Before_attribute_name_state implements ITokenizerState {
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Attribute_name_state));
 			break;
+		}
+
+		// If end tag token is emitted with attributes, it is a parse error.
+		if (tokenizerContext.getCurrentToken().getType() == TokenType.end_tag) {
+			TagToken token = (TagToken) tokenizerContext.getCurrentToken();
+			if (token.getAttributes().size() == 1)
+				context.addParseErrors(ParseErrorType.EndTagWithAttributes);
 		}
 
 		context.setTokenizerContext(tokenizerContext);

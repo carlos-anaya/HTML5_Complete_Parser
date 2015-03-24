@@ -35,9 +35,25 @@ public class TokenizerContext {
 	}
 
 	public String getTemporaryBuffer() {
+		if(temporaryBuffer == null)
+			temporaryBuffer = "";
 		return temporaryBuffer;
 	}
 
+	public void setTemporaryBuffer(String value) {
+		this.temporaryBuffer = value;
+	}
+	
+	public void appendCharacterToTemporaryBuffer(int value) {
+		appendCharacterToTemporaryBuffer(String.valueOf(Character.toChars(value)));
+	}
+	
+	public void appendCharacterToTemporaryBuffer(String value) {
+		if(temporaryBuffer == null)
+			temporaryBuffer = "";
+		this.temporaryBuffer = temporaryBuffer.concat(value);
+	}
+	
 	public void setCurrentToken(Token value) {
 		currentToken = value;
 		this.tokens.add(value);
@@ -56,10 +72,6 @@ public class TokenizerContext {
 
 	public Queue<Token> getTokens() {
 		return tokens;
-	}
-
-	public void setTemporaryBuffer(String value) {
-		this.temporaryBuffer = value;
 	}
 
 	public int getCurrentInputCharacter() {

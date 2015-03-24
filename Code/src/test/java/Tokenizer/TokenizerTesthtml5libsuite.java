@@ -8,10 +8,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-
-import javax.xml.stream.events.StartDocument;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -28,6 +27,7 @@ import com.html5parser.classes.Token.TokenType;
 import com.html5parser.classes.TokenizerContext;
 import com.html5parser.classes.token.DocTypeToken;
 import com.html5parser.classes.token.TagToken;
+import com.html5parser.classes.token.TagToken.Attribute;
 import com.html5parser.parser.Tokenizer;
 
 /* HTML5LIB FORMAT
@@ -113,23 +113,25 @@ public class TokenizerTesthtml5libsuite {
 		try {
 			ParserContext parserContext = new ParserContext();
 			tokenize(parserContext, (String) test.get("input"));
-			String output = serializeTokens(parserContext.getTokenizerContext()
-					.getTokens());
-			
+			String output = serializeTokens(simplifyCharacterTokens(parserContext
+					.getTokenizerContext().getTokens()));
+
 			JSONArray expectedOutput = (JSONArray) test.get("output");
-			String expected = expectedOutput.toString()
-					.replaceAll("\"ParseError\"(,)|(,)?\"ParseError\"", "");
-			assertEquals("Wrong tokens",expected, output);
-			
-			int expectedParseErrors=0;
+			String expected = expectedOutput.toString().replaceAll(
+					"\"ParseError\"(,)|(,)?\"ParseError\"", "");
+			assertEquals("Wrong tokens", expected, output);
+
+			int expectedParseErrors = 0;
 			for (int i = 0; i < expectedOutput.size(); i++) {
 				Object obj = expectedOutput.get(i);
-				if(obj.toString().equals("ParseError")) expectedParseErrors++;
+				if (obj.toString().equals("ParseError"))
+					expectedParseErrors++;
 			}
-			
-			int parseErrors=parserContext.getParseErrors().size();;
-			assertEquals("Different number of parse errors",expectedParseErrors, parseErrors);
-			
+
+			int parseErrors = parserContext.getParseErrors().size();
+			;
+			assertEquals("Different number of parse errors",
+					expectedParseErrors, parseErrors);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -146,7 +148,7 @@ public class TokenizerTesthtml5libsuite {
 				string.getBytes()), "UTF8"));
 
 		// tokenize
-		Token lastToken = null;
+		// Token lastToken = null;
 		int currentChar = -1;
 		do {
 
@@ -182,8 +184,11 @@ public class TokenizerTesthtml5libsuite {
 	}
 
 	private String serializeTokens(Queue<Token> tokens) {
-		JSONArray tokenArray, tokensArray = new JSONArray();
+		JSONArray tokenArray = new JSONArray();
+		JSONArray tokensArray = new JSONArray();
+		JSONObject attributesArray = new JSONObject();
 		tokens:
+
 		for (Token token : tokens) {
 			tokenArray = new JSONArray();
 
@@ -206,7 +211,7 @@ public class TokenizerTesthtml5libsuite {
 				break;
 			case comment:
 				tokenArray.add("Comment");
-				tokenArray.add((token.getValue()));
+				tokenArray.add(token.getValue());
 				break;
 			case end_of_file:
 				break tokens;
@@ -217,7 +222,11 @@ public class TokenizerTesthtml5libsuite {
 			case start_tag:
 				tokenArray.add("StartTag");
 				tokenArray.add((token.getValue()));
-				//TODO add attributes
+				for (Attribute att : ((TagToken) token).getAttributes()) {
+					attributesArray.put(att.getName(), att.getValue());
+				}
+				tokenArray.add(attributesArray);
+				// TODO add attributes
 				if (((TagToken) token).isFlagSelfClosingTag()) {
 					tokenArray.add(true);
 				}
@@ -229,5 +238,25 @@ public class TokenizerTesthtml5libsuite {
 			tokensArray.add(tokenArray);
 		}
 		return tokensArray.toString();
+	}
+
+	private Queue<Token> simplifyCharacterTokens(Queue<Token> tokens) {
+		Queue<Token> tokens2 = new LinkedList<Token>();
+		Boolean charTokenBefore = false;
+		String temp = "";
+		for (Token token : tokens)
+			if (token.getType() != TokenType.character) {
+				if (charTokenBefore) {
+					tokens2.add(new Token(TokenType.character, temp));
+					temp = "";
+					charTokenBefore = false;
+				}
+				tokens2.add(token);
+			} else {
+				temp = temp.concat(token.getValue());
+				charTokenBefore = true;
+			}
+
+		return tokens2;
 	}
 }

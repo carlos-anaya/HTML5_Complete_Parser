@@ -121,6 +121,10 @@ public class ParserContext {
 	public void addParseErrors(ParseErrorType parseErrorType) {
 		parseErrors.push(new ParseError(parseErrorType, this));
 	}
+	
+	public void addParseErrors(ParseErrorType parseErrorType, String message) {
+		parseErrors.push(new ParseError(parseErrorType, message));
+	}
 
 	public Stack<IInsertionMode> getTemplateInsertionModes() {
 		return templateInsertionModes;

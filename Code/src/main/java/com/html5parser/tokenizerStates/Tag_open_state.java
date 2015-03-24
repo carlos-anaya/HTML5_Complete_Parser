@@ -39,6 +39,10 @@ public class Tag_open_state implements ITokenizerState {
 			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Bogus_comment_state));
+
+			// Create a comment token for the Bogus_comment_state
+			Token commentToken = new Token(TokenType.comment, currentChar);
+			tokenizerContext.setCurrentToken(commentToken);
 			break;
 
 		// U+0041 LATIN CAPITAL LETTER A through to U+005A LATIN CAPITAL LETTER
