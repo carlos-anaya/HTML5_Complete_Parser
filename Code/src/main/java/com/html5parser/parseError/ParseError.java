@@ -10,10 +10,10 @@ public class ParseError {
 
 		switch (type) {
 		case UnexpectedInputCharacter:
-			this.message = "Unexpected character: "
-					+ String.valueOf(Character.toChars(context
-							.getTokenizerContext().getCurrentInputCharacter()))
-					+ " ("
+			int currentChar = context.getTokenizerContext()
+					.getCurrentInputCharacter();
+			this.message = "Unexpected character: " + (currentChar != -1 ? String
+					.valueOf(Character.toChars(currentChar)) : "EOF") + " ("
 					+ context.getTokenizerContext().getCurrentInputCharacter()
 					+ ") at " + context.getTokenizerContext().getNextState();
 			break;
