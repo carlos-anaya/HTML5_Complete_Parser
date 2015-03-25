@@ -21,7 +21,13 @@ import com.html5parser.tokenizerStates.Before_attribute_value_state;
 import com.html5parser.tokenizerStates.Between_DOCTYPE_public_and_system_identifiers_state;
 import com.html5parser.tokenizerStates.Bogus_DOCTYPE_state;
 import com.html5parser.tokenizerStates.Bogus_comment_state;
+import com.html5parser.tokenizerStates.CData_section_state;
+import com.html5parser.tokenizerStates.Comment_end_bang_state;
+import com.html5parser.tokenizerStates.Comment_end_dash_state;
+import com.html5parser.tokenizerStates.Comment_end_state;
+import com.html5parser.tokenizerStates.Comment_start_dash_state;
 import com.html5parser.tokenizerStates.Comment_start_state;
+import com.html5parser.tokenizerStates.Comment_state;
 import com.html5parser.tokenizerStates.DOCTYPE_name_state;
 import com.html5parser.tokenizerStates.DOCTYPE_public_identifier_double_quoted_state;
 import com.html5parser.tokenizerStates.DOCTYPE_public_identifier_single_quoted_state;
@@ -140,22 +146,28 @@ public class TokenizerStateFactory {
 			return new RCDATA_state();
 
 		case CDATA_section_state:
+			return new CData_section_state();
+
+		case Comment_end_bang_state:
+			return new Comment_end_bang_state();
+
+		case Comment_end_dash_state:
+			return new Comment_end_dash_state();
+
+		case Comment_end_state:
+			return new Comment_end_state();
+
+		case Comment_start_dash_state:
+			return new Comment_start_dash_state();
+
+		case Comment_state:
+			return new Comment_state();
 
 		case Character_reference_in_RCDATA_state:
 
 		case Character_reference_in_attribute_value_state:
 
 		case Character_reference_in_data_state:
-
-		case Comment_end_bang_state:
-
-		case Comment_end_dash_state:
-
-		case Comment_end_state:
-
-		case Comment_start_dash_state:
-
-		case Comment_state:
 
 		case RAWTEXT_end_tag_name_state:
 
