@@ -66,7 +66,7 @@ public class Before_DOCTYPE_name_state implements ITokenizerState {
 			docToken.setForceQuircksFlag(true);
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Data_state));
-			tokenizerContext.setFlagEmitToken(true);
+			tokenizerContext.emitCurrentToken(docToken);
 			break;
 
 		// EOF

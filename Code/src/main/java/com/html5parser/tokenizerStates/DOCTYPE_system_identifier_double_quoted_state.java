@@ -64,10 +64,10 @@ public class DOCTYPE_system_identifier_double_quoted_state implements
 
 		// Anything else
 		// Append the current input character to the current DOCTYPE token's
-		// public identifier.
+		// system identifier.
 		default:
 			docToken = (DocTypeToken) tokenizerContext.getCurrentToken();
-			docToken.appendPublicIdentifier(currentChar);
+			docToken.appendSystemIdentifier(currentChar);
 			break;
 		}
 
