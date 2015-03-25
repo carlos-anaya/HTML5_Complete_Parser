@@ -165,6 +165,8 @@ public class TokenizerContext {
 			return ASCIICharacter.EQUALS_SIGN;
 		case 0x0060:
 			return ASCIICharacter.GRAVE_ACCENT;
+		case 0x005D:
+			return ASCIICharacter.RIGHT_SQUARE_BRACKET;
 		case -1:
 			return ASCIICharacter.EOF;
 		default:
