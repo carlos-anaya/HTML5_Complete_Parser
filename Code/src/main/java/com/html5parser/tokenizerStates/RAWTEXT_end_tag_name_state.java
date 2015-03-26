@@ -9,7 +9,7 @@ import com.html5parser.classes.TokenizerState;
 import com.html5parser.factories.TokenizerStateFactory;
 import com.html5parser.interfaces.ITokenizerState;
 
-public class RCDATA_end_tag_name_state implements ITokenizerState {
+public class RAWTEXT_end_tag_name_state implements ITokenizerState {
 
 	public ParserContext process(ParserContext context) {
 		TokenizerStateFactory factory = TokenizerStateFactory.getInstance();
@@ -27,9 +27,9 @@ public class RCDATA_end_tag_name_state implements ITokenizerState {
 		case FF:
 		case SPACE:
 			/*
-			 * If the current end tag token is an appropriate end tag token,
-			 * then switch to the before attribute name state. Otherwise, treat
-			 * it as per the "anything else" entry below.
+			 * If the current end tag token is an appropriate end tag token, 
+			 * then switch to the before attribute name state. 
+			 * Otherwise, treat it as per the "anything else" entry below.
 			 */
 			if (currentToken.getValue().equals(
 					tokenizerContext.getLatestEmittedStartTag())) {
@@ -79,10 +79,8 @@ public class RCDATA_end_tag_name_state implements ITokenizerState {
 
 		case LATIN_SMALL_LETTER:
 			/*
-			 * Append the lowercase version of the current input character (add
-			 * 0x0020 to the character's code point) to the current tag token's
-			 * tag name. Append the current input character to the temporary
-			 * buffer.
+			 * Append the current input character to the current tag token's tag name. 
+			 * Append the current input character to the temporary buffer.
 			 */
 			currentToken.setValue(currentToken.getValue().concat(
 					String.valueOf(Character.toChars(currentChar))));
@@ -100,7 +98,7 @@ public class RCDATA_end_tag_name_state implements ITokenizerState {
 	}
 
 	/*
-	 * Switch to the RCDATA state. Emit a U+003C LESS-THAN SIGN character token,
+	 * Switch to the RAWTEXT state. Emit a U+003C LESS-THAN SIGN character token,
 	 * a U+002F SOLIDUS character token, and a character token for each of the
 	 * characters in the temporary buffer (in the order they were added to the
 	 * buffer). Reconsume the current input character.
@@ -108,7 +106,7 @@ public class RCDATA_end_tag_name_state implements ITokenizerState {
 	private void defaultProcess(TokenizerContext tokenizerContext) {
 		TokenizerStateFactory factory = TokenizerStateFactory.getInstance();
 		tokenizerContext.setNextState(factory
-				.getState(TokenizerState.RCDATA_state));
+				.getState(TokenizerState.RAWTEXT_state));
 		tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
 				.valueOf(0x003C)));
 		tokenizerContext.emitCurrentToken(new Token(TokenType.character, String

@@ -43,7 +43,8 @@ public class RCDATA_end_tag_open_state implements ITokenizerState {
 			 */
 			String addedChar = String.valueOf(Character.toChars(currentChar));
 			Token token = new Token(TokenType.end_tag, addedChar);
-			tokenizerContext.getTemporaryBuffer().concat(addedChar);
+			tokenizerContext.setTemporaryBuffer(tokenizerContext.getTemporaryBuffer().concat(
+					String.valueOf(Character.toChars(currentChar))));
 			tokenizerContext.setCurrentToken(token);
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Tag_name_state));
