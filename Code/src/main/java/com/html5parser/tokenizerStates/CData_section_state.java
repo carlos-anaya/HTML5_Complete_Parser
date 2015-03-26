@@ -2,12 +2,11 @@ package com.html5parser.tokenizerStates;
 
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
+import com.html5parser.classes.Token.TokenType;
 import com.html5parser.classes.TokenizerContext;
 import com.html5parser.classes.TokenizerState;
-import com.html5parser.classes.Token.TokenType;
 import com.html5parser.factories.TokenizerStateFactory;
 import com.html5parser.interfaces.ITokenizerState;
-import com.html5parser.parseError.ParseErrorType;
 
 public class CData_section_state implements ITokenizerState {
 
@@ -28,7 +27,7 @@ public class CData_section_state implements ITokenizerState {
 		switch (tokenizerContext.getCurrentASCIICharacter()) {
 
 		case EOF:
-			while (bracketCount>0){
+			while (bracketCount > 0) {
 				tokenizerContext.emitCurrentToken(new Token(
 						TokenType.character, 0x005D));
 				bracketCount--;
@@ -40,25 +39,25 @@ public class CData_section_state implements ITokenizerState {
 
 		case RIGHT_SQUARE_BRACKET:
 			bracketCount++;
-//			if (bracketCount == 2) {
-//				tokenizerContext.emitCurrentToken(new Token(
-//						TokenType.character, 0x005D));
-//				bracketCount=1;
-//			}
+			// if (bracketCount == 2) {
+			// tokenizerContext.emitCurrentToken(new Token(
+			// TokenType.character, 0x005D));
+			// bracketCount=1;
+			// }
 			break;
 
 		case GREATER_THAN_SIGN:
 			if (bracketCount >= 2) {
 				tokenizerContext.setNextState(factory
 						.getState(TokenizerState.Data_state));
-				bracketCount=bracketCount-2;
-				while (bracketCount>0){
+				bracketCount = bracketCount - 2;
+				while (bracketCount > 0) {
 					tokenizerContext.emitCurrentToken(new Token(
 							TokenType.character, 0x005D));
 					bracketCount--;
 				}
 			} else {
-				while (bracketCount>0){
+				while (bracketCount > 0) {
 					tokenizerContext.emitCurrentToken(new Token(
 							TokenType.character, 0x005D));
 					bracketCount--;
@@ -72,7 +71,7 @@ public class CData_section_state implements ITokenizerState {
 
 		// Anything else
 		default:
-			while (bracketCount>0){
+			while (bracketCount > 0) {
 				tokenizerContext.emitCurrentToken(new Token(
 						TokenType.character, 0x005D));
 				bracketCount--;

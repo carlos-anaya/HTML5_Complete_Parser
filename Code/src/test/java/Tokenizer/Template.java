@@ -103,12 +103,13 @@ public class Template {
 		// tokenize
 		Token lastToken = null;
 		int currentChar = in.read();
+		Boolean stop = false;
 		do {
 			TokenizerContext tokenizerContext = parserContext
 					.getTokenizerContext();
 			tokenizerContext.setCurrentInputCharacter(currentChar);
 			parserContext = tokenizer.tokenize(parserContext);
-
+			stop = currentChar == -1 && !tokenizerContext.isFlagReconsumeCurrentInputCharacter();
 			/*
 			 * If not reconsume, then read next character of the stream
 			 */
@@ -125,7 +126,7 @@ public class Template {
 			//
 			// } while (lastToken != null
 			// && lastToken.getType() != TokenType.end_of_file);
-		} while (currentChar != -1);
+		} while (!stop);
 	}
 
 }
