@@ -28,6 +28,7 @@ import com.html5parser.classes.TokenizerContext;
 import com.html5parser.classes.token.DocTypeToken;
 import com.html5parser.classes.token.TagToken;
 import com.html5parser.classes.token.TagToken.Attribute;
+import com.html5parser.parser.Parser;
 import com.html5parser.parser.Tokenizer;
 
 /* HTML5LIB FORMAT
@@ -61,6 +62,9 @@ public class TokenizerTesthtml5libsuite {
 		List<Object[]> testList = new ArrayList<Object[]>();
 
 		String[] resources = { "https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test1.test",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test2.test", 
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test3.test", 
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test4.test"
 		// "https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test2.test",
 		};
 
@@ -110,77 +114,73 @@ public class TokenizerTesthtml5libsuite {
 
 	@Test
 	public final void tests() {
-		try {
-			ParserContext parserContext = new ParserContext();
-			tokenize(parserContext, (String) test.get("input"));
-			String output = serializeTokens(simplifyCharacterTokens(parserContext
-					.getTokenizerContext().getTokens()));
+		ParserContext parserContext = new ParserContext();
+		Parser parser = new Parser();
+		parserContext = parser.tokenize(parserContext, (String) test.get("input"));
+		String output = serializeTokens(simplifyCharacterTokens(parserContext
+				.getTokenizerContext().getTokens()));
 
-			JSONArray expectedOutput = (JSONArray) test.get("output");
-			String expected = expectedOutput.toString().replaceAll(
-					"\"ParseError\"(,)|(,)?\"ParseError\"", "");
-			assertEquals("Wrong tokens", expected, output);
+		JSONArray expectedOutput = (JSONArray) test.get("output");
+		String expected = expectedOutput.toString().replaceAll(
+				"\"ParseError\"(,)|(,)?\"ParseError\"", "");
+		assertEquals("Wrong tokens", expected, output);
 
-			int expectedParseErrors = 0;
-			for (int i = 0; i < expectedOutput.size(); i++) {
-				Object obj = expectedOutput.get(i);
-				if (obj.toString().equals("ParseError"))
-					expectedParseErrors++;
-			}
-
-			int parseErrors = parserContext.getParseErrors().size();
-			;
-			assertEquals("Different number of parse errors",
-					expectedParseErrors, parseErrors);
-
-		} catch (IOException e) {
-			e.printStackTrace();
+		int expectedParseErrors = 0;
+		for (int i = 0; i < expectedOutput.size(); i++) {
+			Object obj = expectedOutput.get(i);
+			if (obj.toString().equals("ParseError"))
+				expectedParseErrors++;
 		}
+
+		int parseErrors = parserContext.getParseErrors().size();
+		;
+		assertEquals("Different number of parse errors",
+				expectedParseErrors, parseErrors);
 	}
 
-	private void tokenize(ParserContext parserContext, String string)
-			throws IOException {
-		BufferedReader in = null;
-
-		Tokenizer tokenizer = new Tokenizer();
-
-		in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(
-				string.getBytes()), "UTF8"));
-
-		// tokenize
-		// Token lastToken = null;
-		int currentChar = in.read();
-		Boolean stop = false;
-		do {
-			TokenizerContext tokenizerContext = parserContext
-					.getTokenizerContext();
-			tokenizerContext.setCurrentInputCharacter(currentChar);
-			parserContext = tokenizer.tokenize(parserContext);
-			stop = currentChar == -1 && !tokenizerContext.isFlagReconsumeCurrentInputCharacter();
-			/*
-			 * If not reconsume, then read next character of the stream
-			 */
-			if (!tokenizerContext.isFlagReconsumeCurrentInputCharacter()) {
-				currentChar = in.read();
-			} else {
-				tokenizerContext.setFlagReconsumeCurrentInputCharacter(false);
-			}
-
-			// for (Token tok : parserContext.getTokenizerContext().getTokens())
-			// {
-			// lastToken = tok;// get the last token emitted from the queue
-			// }
-			//
-			// } while (lastToken != null
-			// && lastToken.getType() != TokenType.end_of_file);
-		} while (!stop);
-	}
-
-	private void printTokens(ParserContext parserContext) {
-		for (Token tok : parserContext.getTokenizerContext().getTokens()) {
-			System.out.println(tok.getType() + " : " + tok.getValue());
-		}
-	}
+//	private void tokenize(ParserContext parserContext, String string)
+//			throws IOException {
+//		BufferedReader in = null;
+//
+//		Tokenizer tokenizer = new Tokenizer();
+//
+//		in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(
+//				string.getBytes()), "UTF8"));
+//
+//		// tokenize
+//		// Token lastToken = null;
+//		int currentChar = in.read();
+//		Boolean stop = false;
+//		do {
+//			TokenizerContext tokenizerContext = parserContext
+//					.getTokenizerContext();
+//			tokenizerContext.setCurrentInputCharacter(currentChar);
+//			parserContext = tokenizer.tokenize(parserContext);
+//			stop = currentChar == -1 && !tokenizerContext.isFlagReconsumeCurrentInputCharacter();
+//			/*
+//			 * If not reconsume, then read next character of the stream
+//			 */
+//			if (!tokenizerContext.isFlagReconsumeCurrentInputCharacter()) {
+//				currentChar = in.read();
+//			} else {
+//				tokenizerContext.setFlagReconsumeCurrentInputCharacter(false);
+//			}
+//
+//			// for (Token tok : parserContext.getTokenizerContext().getTokens())
+//			// {
+//			// lastToken = tok;// get the last token emitted from the queue
+//			// }
+//			//
+//			// } while (lastToken != null
+//			// && lastToken.getType() != TokenType.end_of_file);
+//		} while (!stop);
+//	}
+//
+//	private void printTokens(ParserContext parserContext) {
+//		for (Token tok : parserContext.getTokenizerContext().getTokens()) {
+//			System.out.println(tok.getType() + " : " + tok.getValue());
+//		}
+//	}
 
 	private String serializeTokens(Queue<Token> tokens) {
 		JSONArray tokenArray = new JSONArray();

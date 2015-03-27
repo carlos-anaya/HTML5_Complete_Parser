@@ -8,14 +8,24 @@ public class ParseError {
 
 	public ParseError(ParseErrorType type, ParserContext context) {
 
+		int currentChar;
+
 		switch (type) {
-		case UnexpectedInputCharacter:
-			int currentChar = context.getTokenizerContext()
+		case InvalidInputCharacter:
+			currentChar = context.getTokenizerContext()
 					.getCurrentInputCharacter();
-			this.message = "Unexpected character: " + (currentChar != -1 ? String
-					.valueOf(Character.toChars(currentChar)) : "EOF") + " ("
-					+ context.getTokenizerContext().getCurrentInputCharacter()
-					+ ") at " + context.getTokenizerContext().getNextState();
+			this.message = "Invalid input character: "
+					+ String.valueOf(Character.toChars(currentChar)) + " ("
+					+ currentChar + ") while preprocessing the stream.";
+			break;
+		case UnexpectedInputCharacter:
+			currentChar = context.getTokenizerContext()
+					.getCurrentInputCharacter();
+			this.message = "Unexpected character: "
+					+ (currentChar != -1 ? String.valueOf(Character
+							.toChars(currentChar)) : "EOF") + " ("
+					+ currentChar + ") at "
+					+ context.getTokenizerContext().getNextState();
 			break;
 		case UnexpectedToken:
 			this.message = "Unexpected token: "
