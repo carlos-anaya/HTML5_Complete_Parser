@@ -1,5 +1,6 @@
 package com.html5parser.tokenizerStates;
 
+import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -9,11 +10,11 @@ import com.html5parser.classes.Token.TokenType;
 import com.html5parser.classes.token.DocTypeToken;
 import com.html5parser.classes.token.TagToken;
 import com.html5parser.classes.token.TagToken.Attribute;
+import com.html5parser.constants.NamedCharacterReference;
 import com.html5parser.parseError.ParseError;
 import com.html5parser.parseError.ParseErrorType;
 
 public class Tokenizing_character_references {
-
 
 	/**
 	 * 
@@ -22,8 +23,8 @@ public class Tokenizing_character_references {
 	 * @return Token. Is null if Not a character reference. No characters are
 	 *         consumed, and nothing is returned
 	 */
-	public static Queue<Token> getTokenCharactersFromReference(Queue<Token> referenceTokens,
-			ParserContext context) {
+	public static Queue<Token> getTokenCharactersFromReference(
+			Queue<Token> referenceTokens, ParserContext context) {
 		return getTokenCharactersFromReference(referenceTokens, context, 0);
 	}
 
@@ -35,21 +36,22 @@ public class Tokenizing_character_references {
 	 * @return Token. Is null if Not a character reference. No characters are
 	 *         consumed, and nothing is returned
 	 */
-	public static Queue<Token> getTokenCharactersFromReference(Queue<Token> referenceTokens,
-			ParserContext context, int additionalAllowedCharacter) {
+	public static Queue<Token> getTokenCharactersFromReference(
+			Queue<Token> referenceTokens, ParserContext context,
+			int additionalAllowedCharacter) {
 		Queue<Token> queue = new LinkedList<Token>(referenceTokens);
-		Queue<Token> result= new LinkedList<Token>();
+		Queue<Token> result = new LinkedList<Token>();
 
-		if (queue.isEmpty() || queue.peek().getValue() == null){
-			result.add(new Token(TokenType.character,0x0026)); // return &
+		if (queue.isEmpty() || queue.peek().getValue() == null) {
+			result.add(new Token(TokenType.character, 0x0026)); // return &
 			return result;
 		}
-			
-		Token token = queue.poll();
+
+		Token token = queue.peek();
 		String character = token.getValue();
 
 		if (character.codePointAt(0) == additionalAllowedCharacter) {
-			result.add(new Token(TokenType.character,0x0026)); // return &
+			result.add(new Token(TokenType.character, 0x0026)); // return &
 			return result;
 		}
 
@@ -65,7 +67,7 @@ public class Tokenizing_character_references {
 			// U+0026 AMPERSAND
 		case 0x0026:
 			// U+0026 AMPERSAND
-			result.add(new Token(TokenType.character,0x0026)); // return &
+			result.add(new Token(TokenType.character, 0x0026)); // return &
 			return result;
 
 			// U+0023 NUMBER SIGN (#
@@ -73,6 +75,7 @@ public class Tokenizing_character_references {
 			// The behavior further depends on the character after the
 			// U+0023 NUMBER SIGN:
 		case 0x0023:
+			queue.peek();// consume #
 			token = queue.peek();
 			character = token.getValue();
 			boolean processAsHex = false;
@@ -82,30 +85,32 @@ public class Tokenizing_character_references {
 			}
 			Token resultToken = getUnicodeCharacterForNumber(queue,
 					processAsHex, context);
-			
-			if(resultToken == null){
-				result.add(new Token(TokenType.character,0x0026)); // return &
-				result.add(new Token(TokenType.character,0x0023)); // return #
-				if (processAsHex) result.add(token);// return X
-			}else{
+
+			if (resultToken == null) {
+				result.add(new Token(TokenType.character, 0x0026)); // return &
+				result.add(new Token(TokenType.character, 0x0023)); // return #
+				if (processAsHex)
+					result.add(token);// return X
+			} else {
 				result.add(resultToken);
 			}
-			return result ;
+			return result;
 			// break;
 		default:
-			throw new UnsupportedOperationException();
+			return result = getNamedCharacterReference(queue, context);
 		}
 
 	}
 
 	private static Token getUnicodeCharacterForNumber(Queue<Token> characters,
 			boolean processAsHex, ParserContext context) {
-		
 
 		// If no characters match the range, then don't consume any characters
 		// (and unconsume the U+0023 NUMBER SIGN character and, if appropriate,
 		// the X character). This is a parse error; nothing is returned.
-		if (characters.isEmpty() || !isDigit(characters.peek().getValue().codePointAt(0), processAsHex)) {
+		if (characters.isEmpty()
+				|| !isDigit(characters.peek().getValue().codePointAt(0),
+						processAsHex)) {
 			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 			return null;
 		}
@@ -113,22 +118,25 @@ public class Tokenizing_character_references {
 		Token token = characters.peek();
 		String character = token.getValue();
 		String reference = "";
-		
+
 		// Consume as many characters as match the range of characters(ASCII hex
 		// digits or ASCII digits).
-		while (!characters.isEmpty() && isDigit(characters.peek().getValue().codePointAt(0), processAsHex)) {
-			token = characters.poll();//consume
+		while (!characters.isEmpty()
+				&& isDigit(characters.peek().getValue().codePointAt(0),
+						processAsHex)) {
+			token = characters.poll();// consume
 			character = token.getValue();
 			reference = reference.concat(character);
-			//codePoint = characters.peek().getValue().codePointAt(0);//peek next char
+			// codePoint = characters.peek().getValue().codePointAt(0);//peek
+			// next char
 		}
 
 		// if the next character is a U+003B SEMICOLON, consume that
 		// too. If it isn't, there is a parse error.
 		if (characters.peek() != null
 				&& characters.peek().getValue().equals(";")) {
-			token = characters.poll();//consume
-		}else{
+			token = characters.poll();// consume
+		} else {
 			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 		}
 
@@ -145,7 +153,8 @@ public class Tokenizing_character_references {
 				.toChars(unicodeValue)));
 	}
 
-	private static int getUnicodeCodePoint(int referenceNumber, ParserContext context) {
+	private static int getUnicodeCodePoint(int referenceNumber,
+			ParserContext context) {
 		int unicodeValue = 0;
 		switch (referenceNumber) {
 		case 0x00:
@@ -303,7 +312,7 @@ public class Tokenizing_character_references {
 		case 0x10FFFF:
 			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 		}
-		
+
 		return referenceNumber;
 	}
 
@@ -326,30 +335,104 @@ public class Tokenizing_character_references {
 	private static boolean isDecDigit(int codePoint) {
 		return (codePoint >= 0x0030 && codePoint <= 0x0039);
 	}
+	
+	private static boolean isAlphanumeric(int codePoint) {
+		return isDecDigit(codePoint) || isUpercasseAscii(codePoint) || isLowercaseAscii(codePoint);
+	}
+	
+	private static boolean isUpercasseAscii(int codePoint) {
+		return (codePoint >= 0x0041 && codePoint <= 0x005A);
+	}
+	
+	private static boolean isLowercaseAscii(int codePoint) {
+		return (codePoint >= 0x0061 && codePoint <= 0x007A);
+	}
+	
+	private static Queue<Token> getNamedCharacterReference(Queue<Token> queue,
+			ParserContext context) {
+		StringBuilder buffer = new StringBuilder();
+		int[] values=null;
+		int charsConsumed=0;
+		for (Token token : queue) {
+			buffer.append(token.getValue());
+			int[] res = NamedCharacterReference.MAP.get(buffer.toString());
+			if(res!=null){
+				values = res;
+				charsConsumed = buffer.length();
+			}
+		}
+
+		Queue<Token> result = new LinkedList<Token>();
+
+		// If no match can be made, then no characters are consumed, and nothing
+		// is returned. In this case, if the characters after the U+0026
+		// AMPERSAND character (&) consist of a sequence of one or more
+		// alphanumeric ASCII characters followed by a U+003B SEMICOLON
+		// character (;), then this is a parse error.
+		if (values == null) {
+			for (int i=0;i<buffer.length();i++) {
+				int codePoint = buffer.codePointAt(i);
+				if(!isAlphanumeric(codePoint)){
+					if(codePoint!=59) return queue;
+				}
+			}
+			if (buffer.toString().endsWith(";")) {
+				context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
+			}
+			return queue;
+		} else{
+			for (int value : values) {
+				result.add(new Token(TokenType.character, value));
+			}
+			while(charsConsumed>0){
+				queue.poll();
+				charsConsumed--;
+			}
+			result.addAll(queue);//add tokens not processed
+		}
+		if (!buffer.toString().endsWith(";")) {
+			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
+		}
+
+		return result;
+	}
 
 	public static void main(String[] args) {
-		Queue<Token> queue = new LinkedList<Token>(), result ;
+		Queue<Token> queue = new LinkedList<Token>(), result;
 		ParserContext pc = new ParserContext();
-//		pc.getTokenizerContext().addTokenWithoutEmit(new Token(TokenType.character, "#"));
-//		pc.getTokenizerContext().addTokenWithoutEmit(new Token(TokenType.character, "x"));
-//		pc.getTokenizerContext().addTokenWithoutEmit(new Token(TokenType.character, "1"));
-//		pc.getTokenizerContext().addTokenWithoutEmit(new Token(TokenType.character, "0"));
-//		pc.getTokenizerContext().addTokenWithoutEmit(new Token(TokenType.character, "F"));
-		
-		queue.add(new Token(TokenType.character, "#"));
-		queue.add(new Token(TokenType.character, "x"));
-		queue.add(new Token(TokenType.character, "1"));
-		queue.add(new Token(TokenType.character, "0"));
-		queue.add(new Token(TokenType.character, "F"));
-		
-		//queue = pc.getTokenizerContext().getTokens();
+		// pc.getTokenizerContext().addTokenWithoutEmit(new
+		// Token(TokenType.character, "#"));
+		// pc.getTokenizerContext().addTokenWithoutEmit(new
+		// Token(TokenType.character, "x"));
+		// pc.getTokenizerContext().addTokenWithoutEmit(new
+		// Token(TokenType.character, "1"));
+		// pc.getTokenizerContext().addTokenWithoutEmit(new
+		// Token(TokenType.character, "0"));
+		// pc.getTokenizerContext().addTokenWithoutEmit(new
+		// Token(TokenType.character, "F"));
+
+		// queue.add(new Token(TokenType.character, "#"));
+		// queue.add(new Token(TokenType.character, "x"));
+		// queue.add(new Token(TokenType.character, "1"));
+		// queue.add(new Token(TokenType.character, "0"));
+		// queue.add(new Token(TokenType.character, "F"));
+
+		queue.add(new Token(TokenType.character, "E"));
+		queue.add(new Token(TokenType.character, "a"));
+		queue.add(new Token(TokenType.character, "a"));
+		queue.add(new Token(TokenType.character, "u"));
+		queue.add(new Token(TokenType.character, "t"));
+		queue.add(new Token(TokenType.character, "e"));
+		queue.add(new Token(TokenType.character, ";"));
+
+		// queue = pc.getTokenizerContext().getTokens();
 		result = Tokenizing_character_references
 				.getTokenCharactersFromReference(queue, pc);
 		System.out.println(result.poll().getValue().toString());
-		
+
 		printTokens(pc);
 	}
-	
+
 	private static void printTokens(ParserContext parserContext) {
 		System.out.println("*** TOKENS ***\n");
 		for (Token token : parserContext.getTokenizerContext().getTokens()) {
@@ -388,7 +471,7 @@ public class Tokenizing_character_references {
 		}
 
 		System.out.println("\n\n*** ERRORS ***\n");
-		
+
 		for (ParseError error : parserContext.getParseErrors()) {
 			System.out.println(error.getMessage());
 		}
