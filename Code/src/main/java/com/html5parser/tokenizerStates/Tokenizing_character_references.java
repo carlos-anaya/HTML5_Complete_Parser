@@ -1,6 +1,5 @@
 package com.html5parser.tokenizerStates;
 
-import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -58,15 +57,27 @@ public class Tokenizing_character_references {
 		switch (character.codePointAt(0)) {
 		// U+0009 CHARACTER TABULATION (tab)
 		case 0x0009:
+			result.add(new Token(TokenType.character, 0x0026)); // return &
+			result.add(new Token(TokenType.character, 0x0009));
+			return result;
 			// U+000A LINE FEED (LF)
 		case 0x000A:
+			result.add(new Token(TokenType.character, 0x0026)); // return &
+			result.add(new Token(TokenType.character, 0x000A));
+			return result;
 			// U+000C FORM FEED (FF)
 		case 0x000C:
+			result.add(new Token(TokenType.character, 0x0026)); // return &
+			result.add(new Token(TokenType.character, 0x000C));
+			return result;
 			// U+0020 SPACE
 		case 0x0020:
+			result.add(new Token(TokenType.character, 0x0026)); // return &
+			result.add(new Token(TokenType.character, 0x0020));
+			return result;
 			// U+0026 AMPERSAND
 		case 0x0026:
-			// U+0026 AMPERSAND
+			result.add(new Token(TokenType.character, 0x0026)); // return &
 			result.add(new Token(TokenType.character, 0x0026)); // return &
 			return result;
 
@@ -75,7 +86,13 @@ public class Tokenizing_character_references {
 			// The behavior further depends on the character after the
 			// U+0023 NUMBER SIGN:
 		case 0x0023:
-			queue.peek();// consume #
+			queue.poll();// consume #
+			if (queue.isEmpty()) {
+				result.add(new Token(TokenType.character, 0x0026)); // return &
+				result.add(new Token(TokenType.character, 0x0023));
+				context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
+				return result;
+			}
 			token = queue.peek();
 			character = token.getValue();
 			boolean processAsHex = false;
@@ -141,19 +158,61 @@ public class Tokenizing_character_references {
 		}
 
 		// If one or more characters match the range, then take them all and
-		// interpret the string of characters as a number (either hexadecimal or
+		// interpret the string of characters as a number (either
+		// hexadecimal or
 		// decimal as appropriate)
 
-		int referenceNumber = processAsHex ? Integer.parseUnsignedInt(
-				reference, 16) : Integer.parseUnsignedInt(reference);
+		Integer referenceNumber = tryParseInt(reference, processAsHex);
+		Long referenceNumberLong = tryParseLong(reference, processAsHex);
+		if (referenceNumber != null) {
+			int unicodeValue = getUnicodeCodePointInt(referenceNumber, context);
 
-		int unicodeValue = getUnicodeCodePoint(referenceNumber, context);
+			return new Token(TokenType.character, String.valueOf(Character
+					.toChars(unicodeValue)));
+		} else if (referenceNumberLong != null) {
+			long unicodeValue = getUnicodeCodePointLong(referenceNumberLong,
+					context);
 
-		return new Token(TokenType.character, String.valueOf(Character
-				.toChars(unicodeValue)));
+			return new Token(TokenType.character,
+					String.valueOf((char) unicodeValue));
+		}
+		// If bigger than a long (64 bits) then is greater than 0x10FFFF, then
+		// this is a parse error. Return a U+FFFD
+		// REPLACEMENT CHARACTER character token.
+		else {
+			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
+			return new Token(TokenType.character, String.valueOf(Character
+					.toChars(0xFFFD)));
+		}
 	}
 
-	private static int getUnicodeCodePoint(int referenceNumber,
+	private static long getUnicodeCodePointLong(Long referenceNumber,
+			ParserContext context) {
+		if (referenceNumber > 0x10FFFF) {
+			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
+			return (long) 0xFFFD;
+		}
+		if (referenceNumber == 0x1FFFE || referenceNumber == 0x1FFFF
+				|| referenceNumber == 0x2FFFE || referenceNumber == 0x2FFFF
+				|| referenceNumber == 0x3FFFE || referenceNumber == 0x3FFFF
+				|| referenceNumber == 0x4FFFE || referenceNumber == 0x4FFFF
+				|| referenceNumber == 0x5FFFE || referenceNumber == 0x5FFFF
+				|| referenceNumber == 0x6FFFE || referenceNumber == 0x6FFFF
+				|| referenceNumber == 0x7FFFE || referenceNumber == 0x7FFFF
+				|| referenceNumber == 0x8FFFE || referenceNumber == 0x8FFFF
+				|| referenceNumber == 0x9FFFE || referenceNumber == 0x9FFFF
+				|| referenceNumber == 0xAFFFE || referenceNumber == 0xAFFFF
+				|| referenceNumber == 0xBFFFE || referenceNumber == 0xBFFFF
+				|| referenceNumber == 0xCFFFE || referenceNumber == 0xCFFFF
+				|| referenceNumber == 0xDFFFE || referenceNumber == 0xDFFFF
+				|| referenceNumber == 0xEFFFE || referenceNumber == 0xEFFFF
+				|| referenceNumber == 0xFFFFE || referenceNumber == 0xFFFFF
+				|| referenceNumber == 0x10FFFE || referenceNumber == 0x10FFFF)
+			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
+		return referenceNumber;
+	}
+
+	private static int getUnicodeCodePointInt(int referenceNumber,
 			ParserContext context) {
 		int unicodeValue = 0;
 		switch (referenceNumber) {
@@ -278,42 +337,65 @@ public class Tokenizing_character_references {
 		case 0x000B:
 		case 0xFFFE:
 		case 0xFFFF:
-		case 0x1FFFE:
-		case 0x1FFFF:
-		case 0x2FFFE:
-		case 0x2FFFF:
-		case 0x3FFFE:
-		case 0x3FFFF:
-		case 0x4FFFE:
-		case 0x4FFFF:
-		case 0x5FFFE:
-		case 0x5FFFF:
-		case 0x6FFFE:
-		case 0x6FFFF:
-		case 0x7FFFE:
-		case 0x7FFFF:
-		case 0x8FFFE:
-		case 0x8FFFF:
-		case 0x9FFFE:
-		case 0x9FFFF:
-		case 0xAFFFE:
-		case 0xAFFFF:
-		case 0xBFFFE:
-		case 0xBFFFF:
-		case 0xCFFFE:
-		case 0xCFFFF:
-		case 0xDFFFE:
-		case 0xDFFFF:
-		case 0xEFFFE:
-		case 0xEFFFF:
-		case 0xFFFFE:
-		case 0xFFFFF:
-		case 0x10FFFE:
-		case 0x10FFFF:
+			// case 0x1FFFE:
+			// case 0x1FFFF:
+			// case 0x2FFFE:
+			// case 0x2FFFF:
+			// case 0x3FFFE:
+			// case 0x3FFFF:
+			// case 0x4FFFE:
+			// case 0x4FFFF:
+			// case 0x5FFFE:
+			// case 0x5FFFF:
+			// case 0x6FFFE:
+			// case 0x6FFFF:
+			// case 0x7FFFE:
+			// case 0x7FFFF:
+			// case 0x8FFFE:
+			// case 0x8FFFF:
+			// case 0x9FFFE:
+			// case 0x9FFFF:
+			// case 0xAFFFE:
+			// case 0xAFFFF:
+			// case 0xBFFFE:
+			// case 0xBFFFF:
+			// case 0xCFFFE:
+			// case 0xCFFFF:
+			// case 0xDFFFE:
+			// case 0xDFFFF:
+			// case 0xEFFFE:
+			// case 0xEFFFF:
+			// case 0xFFFFE:
+			// case 0xFFFFF:
+			// case 0x10FFFE:
+			// case 0x10FFFF:
 			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 		}
 
 		return referenceNumber;
+	}
+
+	private static Integer tryParseInt(String value, Boolean isHex) {
+		Integer retVal;
+		try {
+			retVal = isHex ? Integer.parseUnsignedInt(value, 16) : Integer
+					.parseUnsignedInt(value);
+			retVal = retVal < 0 ? Integer.parseUnsignedInt(value) : retVal;
+		} catch (NumberFormatException nfe) {
+			retVal = null;
+		}
+		return retVal;
+	}
+
+	private static Long tryParseLong(String value, Boolean isHex) {
+		Long retVal;
+		try {
+			retVal = isHex ? Long.parseLong(value, 16) : Long.parseLong(value);
+			retVal = retVal < 0 ? Long.parseLong(value) : retVal;
+		} catch (NumberFormatException nfe) {
+			retVal = null;
+		}
+		return retVal;
 	}
 
 	/**
@@ -335,28 +417,29 @@ public class Tokenizing_character_references {
 	private static boolean isDecDigit(int codePoint) {
 		return (codePoint >= 0x0030 && codePoint <= 0x0039);
 	}
-	
+
 	private static boolean isAlphanumeric(int codePoint) {
-		return isDecDigit(codePoint) || isUpercasseAscii(codePoint) || isLowercaseAscii(codePoint);
+		return isDecDigit(codePoint) || isUpercasseAscii(codePoint)
+				|| isLowercaseAscii(codePoint);
 	}
-	
+
 	private static boolean isUpercasseAscii(int codePoint) {
 		return (codePoint >= 0x0041 && codePoint <= 0x005A);
 	}
-	
+
 	private static boolean isLowercaseAscii(int codePoint) {
 		return (codePoint >= 0x0061 && codePoint <= 0x007A);
 	}
-	
+
 	private static Queue<Token> getNamedCharacterReference(Queue<Token> queue,
 			ParserContext context) {
 		StringBuilder buffer = new StringBuilder();
-		int[] values=null;
-		int charsConsumed=0;
+		int[] values = null;
+		int charsConsumed = 0;
 		for (Token token : queue) {
 			buffer.append(token.getValue());
 			int[] res = NamedCharacterReference.MAP.get(buffer.toString());
-			if(res!=null){
+			if (res != null) {
 				values = res;
 				charsConsumed = buffer.length();
 			}
@@ -370,25 +453,29 @@ public class Tokenizing_character_references {
 		// alphanumeric ASCII characters followed by a U+003B SEMICOLON
 		// character (;), then this is a parse error.
 		if (values == null) {
-			for (int i=0;i<buffer.length();i++) {
+			result.add(new Token(TokenType.character, 0x0026));
+			for (Token token : queue)
+				result.add(token);
+			for (int i = 0; i < buffer.length(); i++) {
 				int codePoint = buffer.codePointAt(i);
-				if(!isAlphanumeric(codePoint)){
-					if(codePoint!=59) return queue;
+				if (!isAlphanumeric(codePoint)) {
+					if (codePoint != 59)
+						return result;
 				}
 			}
 			if (buffer.toString().endsWith(";")) {
 				context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 			}
-			return queue;
-		} else{
+			return result;
+		} else {
 			for (int value : values) {
 				result.add(new Token(TokenType.character, value));
 			}
-			while(charsConsumed>0){
+			while (charsConsumed > 0) {
 				queue.poll();
 				charsConsumed--;
 			}
-			result.addAll(queue);//add tokens not processed
+			result.addAll(queue);// add tokens not processed
 		}
 		if (!buffer.toString().endsWith(";")) {
 			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);

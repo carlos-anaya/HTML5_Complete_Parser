@@ -64,8 +64,10 @@ public class TokenizerTesthtml5libsuite {
 		String[] resources = { "https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test1.test",
 				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test2.test", 
 				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test3.test", 
-				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test4.test"
-		// "https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test2.test",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test4.test",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/entities.test",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/unicodeChars.test",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/unicodeCharsProblematic.test"
 		};
 
 		for (String resource : resources) {

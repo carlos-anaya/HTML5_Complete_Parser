@@ -10,7 +10,6 @@ import com.html5parser.classes.TokenizerContext;
 import com.html5parser.classes.TokenizerState;
 import com.html5parser.factories.TokenizerStateFactory;
 import com.html5parser.interfaces.ITokenizerState;
-import com.html5parser.parseError.ParseErrorType;
 
 public class Character_reference_in_data_state implements ITokenizerState {
 	private Queue<Token> reference = new LinkedList<Token>();
@@ -64,6 +63,7 @@ public class Character_reference_in_data_state implements ITokenizerState {
 			factory = TokenizerStateFactory.getInstance();
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Data_state));
+			tokenizerContext.setFlagReconsumeCurrentInputCharacter(true);
 			break;
 
 		// Anything else
