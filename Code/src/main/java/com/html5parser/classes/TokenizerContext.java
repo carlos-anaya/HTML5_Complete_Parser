@@ -56,7 +56,6 @@ public class TokenizerContext {
 	
 	public void setCurrentToken(Token value) {
 		currentToken = value;
-		this.tokens.add(value);
 	}
 
 	public Token getCurrentToken() {
@@ -104,6 +103,8 @@ public class TokenizerContext {
 
 	public void setFlagEmitToken(boolean value) {
 		this.flagEmitToken = value;
+		if(value)
+			this.tokens.add(currentToken);
 	}
 
 	public void emitCurrentToken(Token value) {
