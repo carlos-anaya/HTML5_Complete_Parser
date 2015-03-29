@@ -49,20 +49,6 @@ public class Before_attribute_value_state implements ITokenizerState {
 							.getState(TokenizerState.Attribute_value_single_quoted_state));
 			break;
 
-		// U+0041 LATIN CAPITAL LETTER A through to U+005A LATIN CAPITAL LETTER
-		// Z
-		// Start a new attribute in the current tag token. Set that attribute's
-		// name to the lowercase version of the current input character (add
-		// 0x0020 to the character's code point), and its value to the empty
-		// string. Switch to the attribute name state.
-		case LATIN_CAPITAL_LETTER:
-			currentChar += 0x0020;
-			((TagToken) tokenizerContext.getCurrentToken())
-					.createAttribute(currentChar);
-			tokenizerContext.setNextState(factory
-					.getState(TokenizerState.Attribute_name_state));
-			break;
-
 		// U+0000 NULL
 		// Parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the
 		// current attribute's value. Switch to the attribute value (unquoted)
@@ -81,7 +67,8 @@ public class Before_attribute_value_state implements ITokenizerState {
 			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Data_state));
-			tokenizerContext.setFlagEmitToken(false);
+			tokenizerContext.setFlagEmitToken(true);
+			break;
 			// EOF
 			// Parse error. Switch to the data state. Reconsume the EOF
 			// character.

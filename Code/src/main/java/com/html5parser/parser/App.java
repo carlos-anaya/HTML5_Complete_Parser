@@ -12,21 +12,27 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 
+import com.html5parser.classes.ParserContext;
+
 /**
  * Hello world!
  *
  */
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
-        
-        Document doc = new Parser().parse("<html><foo/>");
-        System.out.println(serializeDocument(doc));
-    }
-    
-    private static String serializeDocument(Document doc) {
+public class App {
+	public static void main(String[] args) {
+		System.out.println("Hello World!");
+		Parser parser = new Parser();
+		String html = "</\u0000>";
+
+		ParserContext parserContext = parser
+				.tokenize(new ParserContext(), html);
+		parser.printTokens(parserContext);
+
+		// Document doc = parser.parse("<html><foo/>");
+		// System.out.println(serializeDocument(doc));
+	}
+
+	private static String serializeDocument(Document doc) {
 		boolean indent = true;
 		try {
 			StringWriter writer = new StringWriter();

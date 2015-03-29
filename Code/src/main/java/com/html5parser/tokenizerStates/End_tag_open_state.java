@@ -70,7 +70,8 @@ public class End_tag_open_state implements ITokenizerState {
 					.getState(TokenizerState.Bogus_comment_state));
 
 			// Create a comment token for the Bogus_comment_state
-			Token commentToken = new Token(TokenType.comment, currentChar);
+			Token commentToken = new Token(TokenType.comment,
+					currentChar == 0x0000 ? 0xFFFD : currentChar);
 			tokenizerContext.setCurrentToken(commentToken);
 			break;
 		}
