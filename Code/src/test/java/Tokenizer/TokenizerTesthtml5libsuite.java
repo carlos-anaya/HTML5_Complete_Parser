@@ -61,13 +61,14 @@ public class TokenizerTesthtml5libsuite {
 	public static Iterable<Object[]> data1() {
 		List<Object[]> testList = new ArrayList<Object[]>();
 
-		String[] resources = { "https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test1.test",
-				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test2.test", 
-				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test3.test", 
-				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test4.test",
-				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/entities.test",
-				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/unicodeChars.test",
-				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/unicodeCharsProblematic.test"
+		String[] resources = { 
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test1.test"
+				,"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test2.test"
+				,"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test3.test" 
+				,"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test4.test"
+				,"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/entities.test"
+				,"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/unicodeChars.test"
+				,"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/unicodeCharsProblematic.test"
 		};
 
 		for (String resource : resources) {
@@ -123,10 +124,11 @@ public class TokenizerTesthtml5libsuite {
 				.getTokenizerContext().getTokens()));
 
 		JSONArray expectedOutput = (JSONArray) test.get("output");
-		String expected = expectedOutput.toString().replaceAll(
-				"\"ParseError\"(,)|(,)?\"ParseError\"", "");
+//		String expected = expectedOutput.toString().replaceAll(
+//				"\"ParseError\"(,)|(,)?\"ParseError\"", "");
+		String expected = formatHtml5libOutput(expectedOutput);
 		assertEquals("Wrong tokens", expected, output);
-
+		
 		int expectedParseErrors = 0;
 		for (int i = 0; i < expectedOutput.size(); i++) {
 			Object obj = expectedOutput.get(i);
@@ -140,6 +142,54 @@ public class TokenizerTesthtml5libsuite {
 				expectedParseErrors, parseErrors);
 	}
 
+	private String formatHtml5libOutput(JSONArray output){
+		String res = null;
+		Boolean charBefore = false;
+		String temp = "";
+		JSONArray formatedOutput = new JSONArray();
+		for (Object val : output) {
+		    if (!val.toString().equals("ParseError"))
+		    {
+		    	JSONArray item = (JSONArray) val;
+		    	if(item.get(0).toString().equals("Character")){
+		    		temp = temp.concat(item.get(1).toString());
+					charBefore = true;
+		    	}
+		    	else
+		    	{
+		    		if (charBefore) {
+		    			JSONArray charItem = new JSONArray();
+		    			charItem.add("Character");
+		    			charItem.add(temp);
+		    			formatedOutput.add(charItem);
+						temp = "";
+						charBefore = false;
+					}
+		    		formatedOutput.add(item);
+		    	}
+		    }
+		    	
+		}
+		if(!temp.isEmpty()){
+			JSONArray charItem = new JSONArray();
+			charItem.add("Character");
+			charItem.add(temp);
+			formatedOutput.add(charItem);
+		}
+		
+//		if (token.getType() != TokenType.character) {
+//			if (charTokenBefore) {
+//				tokens2.add(new Token(TokenType.character, temp));
+//				temp = "";
+//				charTokenBefore = false;
+//			}
+//			tokens2.add(token);
+//		} else {
+//			temp = temp.concat(token.getValue());
+//			charTokenBefore = true;
+//		}
+		return formatedOutput.toString();
+	}
 //	private void tokenize(ParserContext parserContext, String string)
 //			throws IOException {
 //		BufferedReader in = null;

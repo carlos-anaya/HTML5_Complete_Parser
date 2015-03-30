@@ -168,6 +168,8 @@ public class TokenizerContext {
 			return ASCIICharacter.GRAVE_ACCENT;
 		case 0x005D:
 			return ASCIICharacter.RIGHT_SQUARE_BRACKET;
+		case 0x003B:
+			return ASCIICharacter.SEMICOLON;
 		case -1:
 			return ASCIICharacter.EOF;
 		default:
