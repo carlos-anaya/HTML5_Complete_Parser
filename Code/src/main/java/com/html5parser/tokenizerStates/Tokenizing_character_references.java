@@ -1,6 +1,5 @@
 package com.html5parser.tokenizerStates;
 
-import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -33,8 +32,8 @@ public class Tokenizing_character_references {
 	 * @param referenceTokens
 	 * @param context
 	 * @param additionalAllowedCharacter
-	 * @return Token. Is null if Not a character reference. No characters are
-	 *         consumed, and nothing is returned
+	 * @return Token. if Not a character reference. No characters are
+	 *         consumed, and token & is returned
 	 */
 	public static Queue<Token> getTokenCharactersFromReference(
 			Queue<Token> referenceTokens, ParserContext context,
@@ -43,7 +42,7 @@ public class Tokenizing_character_references {
 		Queue<Token> result = new LinkedList<Token>();
 
 		if (queue.isEmpty() || queue.peek().getValue() == null) {
-			result.add(new Token(TokenType.character, 0x0026)); // return &
+			result.add(new Token(TokenType.character, 0x0026)); // return (&)
 			return result;
 		}
 
@@ -51,7 +50,7 @@ public class Tokenizing_character_references {
 		String character = token.getValue();
 
 		if (character.codePointAt(0) == additionalAllowedCharacter) {
-			result.add(new Token(TokenType.character, 0x0026)); // return &
+			result.add(new Token(TokenType.character, 0x0026)); // return (&)
 			return result;
 		}
 
@@ -67,7 +66,7 @@ public class Tokenizing_character_references {
 			// U+0026 AMPERSAND
 		case 0x0026:
 			// U+0026 AMPERSAND
-			result.add(new Token(TokenType.character, 0x0026)); // return &
+			result.add(new Token(TokenType.character, 0x0026)); // return (&)
 			return result;
 
 			// U+0023 NUMBER SIGN (#
@@ -87,7 +86,7 @@ public class Tokenizing_character_references {
 					processAsHex, context);
 
 			if (resultToken == null) {
-				result.add(new Token(TokenType.character, 0x0026)); // return &
+				result.add(new Token(TokenType.character, 0x0026)); // return (&)
 				result.add(new Token(TokenType.character, 0x0023)); // return #
 				if (processAsHex)
 					result.add(token);// return X
@@ -258,7 +257,7 @@ public class Tokenizing_character_references {
 			return 0xFFFD;
 		}
 
-		// TODO: Otherwise, return a character
+		// Otherwise, return a character
 		// token for the Unicode character whose code point is that number.
 		// Additionally, if the number is in the range 0x0001 to 0x0008, 0x000D
 		// to 0x001F, 0x007F to 0x009F, 0xFDD0 to 0xFDEF, or is one of 0x000B,
@@ -370,16 +369,18 @@ public class Tokenizing_character_references {
 		// alphanumeric ASCII characters followed by a U+003B SEMICOLON
 		// character (;), then this is a parse error.
 		if (values == null) {
+			result.add(new Token(TokenType.character, 0x0026)); // return (&)
+			result.addAll(queue);
 			for (int i=0;i<buffer.length();i++) {
 				int codePoint = buffer.codePointAt(i);
 				if(!isAlphanumeric(codePoint)){
-					if(codePoint!=59) return queue;
+					if(codePoint!=59) return result;//59 is character (;)
 				}
 			}
 			if (buffer.toString().endsWith(";")) {
 				context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 			}
-			return queue;
+			return result;
 		} else{
 			for (int value : values) {
 				result.add(new Token(TokenType.character, value));
