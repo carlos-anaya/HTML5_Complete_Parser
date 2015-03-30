@@ -63,7 +63,7 @@ public class TokenizerTestForCData {
 		List<Object[]> testList = new ArrayList<Object[]>();
 
 		String[] resources = { "https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/contentModelFlags.test",
-		// "https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test2.test",
+		 "https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/escapeFlag.test"
 		};
 
 		for (String resource : resources) {
