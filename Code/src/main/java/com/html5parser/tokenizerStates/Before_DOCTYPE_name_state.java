@@ -53,6 +53,7 @@ public class Before_DOCTYPE_name_state implements ITokenizerState {
 		case NULL:
 			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 			docToken = new DocTypeToken(0xFFFD);
+			tokenizerContext.setCurrentToken(docToken);
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.DOCTYPE_name_state));
 			break;
