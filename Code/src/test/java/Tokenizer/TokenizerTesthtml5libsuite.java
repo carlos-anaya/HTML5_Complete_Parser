@@ -23,11 +23,13 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
+import com.html5parser.classes.TokenizerState;
 import com.html5parser.classes.Token.TokenType;
 import com.html5parser.classes.TokenizerContext;
 import com.html5parser.classes.token.DocTypeToken;
 import com.html5parser.classes.token.TagToken;
 import com.html5parser.classes.token.TagToken.Attribute;
+import com.html5parser.factories.TokenizerStateFactory;
 import com.html5parser.parser.Parser;
 import com.html5parser.parser.Tokenizer;
 
@@ -67,7 +69,9 @@ public class TokenizerTesthtml5libsuite {
 				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test4.test",
 				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/entities.test",
 				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/unicodeChars.test",
-				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/unicodeCharsProblematic.test"
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/unicodeCharsProblematic.test",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/contentModelFlags.test",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/escapeFlag.test"
 		};
 
 		for (String resource : resources) {
@@ -116,28 +120,67 @@ public class TokenizerTesthtml5libsuite {
 
 	@Test
 	public final void tests() {
-		ParserContext parserContext = new ParserContext();
-		Parser parser = new Parser();
-		parserContext = parser.tokenize(parserContext, (String) test.get("input"));
-		String output = serializeTokens(simplifyCharacterTokens(parserContext
-				.getTokenizerContext().getTokens()));
-
-		JSONArray expectedOutput = (JSONArray) test.get("output");
-		String expected = expectedOutput.toString().replaceAll(
-				"\"ParseError\"(,)|(,)?\"ParseError\"", "");
-		assertEquals("Wrong tokens", expected, output);
-
-		int expectedParseErrors = 0;
-		for (int i = 0; i < expectedOutput.size(); i++) {
-			Object obj = expectedOutput.get(i);
-			if (obj.toString().equals("ParseError"))
-				expectedParseErrors++;
+		if(test.containsKey("initialStates")){
+			JSONArray initialStates = (JSONArray) test.get("initialStates");
+			int size = initialStates.size();
+			TokenizerStateFactory factory = TokenizerStateFactory.getInstance();
+			
+			for(int i =0; i < size; i++){
+				ParserContext parserContext = new ParserContext();
+				if (initialStates.get(i).toString().equals("PLAINTEXT state")) 
+					parserContext.getTokenizerContext().setNextState(factory.getState(TokenizerState.PLAINTEXT_state));
+				else if(initialStates.get(i).toString().equals("RAWTEXT state"))
+					parserContext.getTokenizerContext().setNextState(factory.getState(TokenizerState.RAWTEXT_state));
+				else
+					parserContext.getTokenizerContext().setNextState(factory.getState(TokenizerState.RCDATA_state));
+				String lastStartTag = (String) test.get("lastStartTag");
+				parserContext.getTokenizerContext().getEmittedStartTags().push(lastStartTag);
+				Parser parser = new Parser();
+				parserContext = parser.tokenize(parserContext, (String) test.get("input"));
+				String output = serializeTokens(simplifyCharacterTokens(parserContext
+						.getTokenizerContext().getTokens()));
+		
+				JSONArray expectedOutput = (JSONArray) test.get("output");
+				String expected = expectedOutput.toString().replaceAll(
+						"\"ParseError\"(,)|(,)?\"ParseError\"", "");
+				assertEquals("Wrong tokens", expected, output);
+		
+				int expectedParseErrors = 0;
+				for (int i1 = 0; i1 < expectedOutput.size(); i1++) {
+					Object obj = expectedOutput.get(i1);
+					if (obj.toString().equals("ParseError"))
+						expectedParseErrors++;
+				}
+		
+				int parseErrors = parserContext.getParseErrors().size();
+				;
+				assertEquals("Different number of parse errors",
+						expectedParseErrors, parseErrors);
+			}
+		}else{
+			ParserContext parserContext = new ParserContext();
+			Parser parser = new Parser();
+			parserContext = parser.tokenize(parserContext, (String) test.get("input"));
+			String output = serializeTokens(simplifyCharacterTokens(parserContext
+					.getTokenizerContext().getTokens()));
+	
+			JSONArray expectedOutput = (JSONArray) test.get("output");
+			String expected = expectedOutput.toString().replaceAll(
+					"\"ParseError\"(,)|(,)?\"ParseError\"", "");
+			assertEquals("Wrong tokens", expected, output);
+	
+			int expectedParseErrors = 0;
+			for (int i = 0; i < expectedOutput.size(); i++) {
+				Object obj = expectedOutput.get(i);
+				if (obj.toString().equals("ParseError"))
+					expectedParseErrors++;
+			}
+	
+			int parseErrors = parserContext.getParseErrors().size();
+			;
+			assertEquals("Different number of parse errors",
+					expectedParseErrors, parseErrors);
 		}
-
-		int parseErrors = parserContext.getParseErrors().size();
-		;
-		assertEquals("Different number of parse errors",
-				expectedParseErrors, parseErrors);
 	}
 
 //	private void tokenize(ParserContext parserContext, String string)
