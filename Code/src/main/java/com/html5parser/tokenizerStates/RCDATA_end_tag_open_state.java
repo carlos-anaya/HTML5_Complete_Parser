@@ -6,6 +6,7 @@ import com.html5parser.classes.Token;
 import com.html5parser.classes.Token.TokenType;
 import com.html5parser.classes.TokenizerContext;
 import com.html5parser.classes.TokenizerState;
+import com.html5parser.classes.token.TagToken;
 import com.html5parser.factories.TokenizerStateFactory;
 import com.html5parser.interfaces.ITokenizerState;
 
@@ -42,7 +43,7 @@ public class RCDATA_end_tag_open_state implements ITokenizerState {
 			 * in before it is emitted.)
 			 */
 			String addedChar = String.valueOf(Character.toChars(currentChar));
-			Token token = new Token(TokenType.end_tag, addedChar);
+			Token token = new TagToken(TokenType.end_tag, addedChar);
 			tokenizerContext.setTemporaryBuffer(tokenizerContext.getTemporaryBuffer().concat(
 					String.valueOf(Character.toChars(currentChar))));
 			tokenizerContext.setCurrentToken(token);
@@ -58,9 +59,9 @@ public class RCDATA_end_tag_open_state implements ITokenizerState {
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.RCDATA_state));
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character,
-					String.valueOf(0x003C)));
+					String.valueOf(Character.toChars(0x003C))));
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character,
-					String.valueOf(0x002F)));
+					String.valueOf(Character.toChars(0x002F))));
 			tokenizerContext.setFlagReconsumeCurrentInputCharacter(true);
 			break;
 		}

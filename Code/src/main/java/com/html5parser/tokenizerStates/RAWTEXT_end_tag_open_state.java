@@ -6,6 +6,7 @@ import com.html5parser.classes.Token;
 import com.html5parser.classes.TokenizerContext;
 import com.html5parser.classes.TokenizerState;
 import com.html5parser.classes.Token.TokenType;
+import com.html5parser.classes.token.TagToken;
 import com.html5parser.factories.TokenizerStateFactory;
 import com.html5parser.interfaces.ITokenizerState;
 
@@ -31,7 +32,7 @@ public class RAWTEXT_end_tag_open_state implements ITokenizerState{
 			currentChar += 0x0020;
 		case LATIN_SMALL_LETTER:
 			String addedChar = String.valueOf(Character.toChars(currentChar));
-			Token token = new Token(TokenType.end_tag, addedChar);
+			Token token = new TagToken(TokenType.end_tag, addedChar);
 			tokenizerContext.setTemporaryBuffer(tokenizerContext.getTemporaryBuffer().concat(
 					String.valueOf(Character.toChars(currentChar))));
 			tokenizerContext.setCurrentToken(token);
@@ -47,7 +48,7 @@ public class RAWTEXT_end_tag_open_state implements ITokenizerState{
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.RAWTEXT_state));
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0x003C)));
+					.valueOf(Character.toChars(0x003C))));
 			tokenizerContext.setFlagReconsumeCurrentInputCharacter(true);
 			
 		}

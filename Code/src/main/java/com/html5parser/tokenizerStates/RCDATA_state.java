@@ -37,7 +37,7 @@ public class RCDATA_state implements ITokenizerState {
 			// Parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
 			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character,
-					String.valueOf(0xFFFD)));
+					String.valueOf(Character.toChars(0xFFFD))));
 			break;
 		case EOF:
 			// Emit an end-of-file token.
@@ -47,7 +47,7 @@ public class RCDATA_state implements ITokenizerState {
 		default:
 			// Emit the current input character as a character token.
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character,
-					String.valueOf(currentChar)));
+					String.valueOf(Character.toChars(currentChar))));
 			break;
 		}
 
