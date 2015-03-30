@@ -22,7 +22,7 @@ public class App {
 	public static void main(String[] args) {
 		System.out.println("Hello World!");
 		Parser parser = new Parser();
-		String html = "</\u0000>";
+		String html = "&#x80000041";
 
 		ParserContext parserContext = parser
 				.tokenize(new ParserContext(), html);

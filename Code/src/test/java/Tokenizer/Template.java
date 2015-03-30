@@ -28,7 +28,7 @@ public class Template {
 		Parser parser = new Parser();
 		ParserContext parserContext = new ParserContext();
 
-		String string = "\u0000";
+		String string = "<\u0000";
 
 		parserContext = parser.tokenize(parserContext, string);
 		parser.printTokens(parserContext);
