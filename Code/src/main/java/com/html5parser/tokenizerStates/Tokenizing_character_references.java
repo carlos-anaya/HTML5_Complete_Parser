@@ -454,8 +454,12 @@ public class Tokenizing_character_references {
 		// character (;), then this is a parse error.
 		if (values == null) {
 			result.add(new Token(TokenType.character, 0x0026));
-			for (Token token : queue)
-				result.add(token);
+			// for (Token token : queue)
+			// result.add(token);
+			result.addAll(queue);
+			//if empty entity then no parse errors
+			if (buffer.toString().equals(";"))
+				return result;
 			for (int i = 0; i < buffer.length(); i++) {
 				int codePoint = buffer.codePointAt(i);
 				if (!isAlphanumeric(codePoint)) {

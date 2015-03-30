@@ -65,7 +65,27 @@ public class Character_reference_in_data_state implements ITokenizerState {
 					.getState(TokenizerState.Data_state));
 			tokenizerContext.setFlagReconsumeCurrentInputCharacter(true);
 			break;
+			
+		case SEMICOLON:
+			token = new Token(TokenType.character, currentChar);
+			reference.add(token);
+			
+			result = Tokenizing_character_references
+					.getTokenCharactersFromReference(reference, context);
 
+			if (result == null)
+				tokenizerContext.emitCurrentToken(new Token(
+						TokenType.character, 0x0026));
+			else
+				for (Token tokenResult : result) {
+					tokenizerContext.emitCurrentToken(tokenResult);
+				}
+
+			factory = TokenizerStateFactory.getInstance();
+			tokenizerContext.setNextState(factory
+					.getState(TokenizerState.Data_state));
+			break;
+			
 		// Anything else
 		// Add a token in the stack of token but without emit to try Later to
 		// consume a reference
