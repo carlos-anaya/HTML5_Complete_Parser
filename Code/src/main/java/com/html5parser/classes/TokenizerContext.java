@@ -121,7 +121,7 @@ public class TokenizerContext {
 	}
 	
 	public String getLatestEmittedStartTag(){
-		return this.emittedStartTags.pop();
+		return this.emittedStartTags.peek();
 	}
 
 	public ASCIICharacter getCurrentASCIICharacter() {

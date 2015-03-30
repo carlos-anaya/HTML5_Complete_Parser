@@ -378,9 +378,9 @@ public class Tokenizing_character_references {
 	private static Integer tryParseInt(String value, Boolean isHex) {
 		Integer retVal;
 		try {
-			retVal = isHex ? Integer.parseUnsignedInt(value, 16) : Integer
-					.parseUnsignedInt(value);
-			retVal = retVal < 0 ? Integer.parseUnsignedInt(value) : retVal;
+			retVal = isHex ? Integer.parseInt(value, 16) : Integer
+					.parseInt(value);
+			retVal = retVal < 0 ? Integer.parseInt(value) : retVal;
 		} catch (NumberFormatException nfe) {
 			retVal = null;
 		}

@@ -37,7 +37,7 @@ public class RCDATA_less_than_sign_state implements ITokenizerState {
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.RCDATA_state));
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character,
-					String.valueOf(0x003C)));
+					String.valueOf(Character.toChars(0x003C))));
 			tokenizerContext.setFlagReconsumeCurrentInputCharacter(true);
 			break;
 		}
