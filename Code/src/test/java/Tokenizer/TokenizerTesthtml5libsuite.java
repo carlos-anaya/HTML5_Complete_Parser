@@ -127,6 +127,7 @@ public class TokenizerTesthtml5libsuite {
 		do {
 
 			if (test.containsKey("initialStates")) {
+				parserContext = new ParserContext();
 				JSONArray initialStates = (JSONArray) test.get("initialStates");
 				// int size = initialStates.size();
 				TokenizerStateFactory factory = TokenizerStateFactory
@@ -182,6 +183,7 @@ public class TokenizerTesthtml5libsuite {
 
 		for (Token token : tokens) {
 			tokenArray = new JSONArray();
+			attributesArray = new JSONObject();
 
 			switch (token.getType()) {
 
