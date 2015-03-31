@@ -130,10 +130,13 @@ public class Parser implements IParser {
 		Tokenizer tokenizer = new Tokenizer();
 		StreamPreprocessor streamPreprocessor = new StreamPreprocessor();
 
+		preprocessing(parserContext, string);
+
 		try {
 			in = new BufferedReader(new InputStreamReader(
 					new ByteArrayInputStream(string.getBytes()), "UTF8"));
 
+			int nextChar = 0;// for handling unicode surrogates
 			int currentChar = in.read();
 			Boolean stop = false;
 			do {
@@ -152,6 +155,29 @@ public class Parser implements IParser {
 					preProCurrentChar = streamPreprocessor
 							.processLFAndCRCharacters(currentChar);
 				}
+
+				if (nextChar == 0) {
+					if (preProCurrentChar >= 0xD800
+							&& preProCurrentChar <= 0xDFBB) {// is high
+																// surrogate?
+						nextChar = in.read();
+						if (nextChar >= 0xDC00 && nextChar <= 0xDFFF) {// is low
+																		// surrogate?
+							preProCurrentChar = Character.toCodePoint(
+									(char) preProCurrentChar.intValue(),
+									(char) nextChar);
+							nextChar = 0;
+						} else {
+							// if not a surrogate, process both
+							tokenizerContext
+									.setFlagReconsumeCurrentInputCharacter(true);
+						}
+					}
+				} else {// process the second char if was not a surrogate pair
+					preProCurrentChar = nextChar;
+					nextChar = 0;
+				}
+
 				// If invalid character add a parse error
 				if (streamPreprocessor.isInvalidCharacter(preProCurrentChar)
 						&& tokenizerContext.getCurrentInputCharacter() != preProCurrentChar) {
@@ -187,6 +213,35 @@ public class Parser implements IParser {
 		}
 
 		return parserContext;
+	}
+
+	private void preprocessing(ParserContext parserContext, String string) {
+		char[] charArray = string.toCharArray();
+
+		if (charArray.length == 1) {
+			if (Character.isSurrogate(charArray[0]))
+				parserContext
+						.addParseErrors(ParseErrorType.InvalidInputCharacter);
+
+		} else {
+			for (int i = 0; i < charArray.length - 1; i++) {
+				if (Character.isHighSurrogate(charArray[i])) {
+					if (!Character.isSurrogatePair(charArray[i], charArray[i+1]))
+						parserContext
+								.addParseErrors(ParseErrorType.InvalidInputCharacter);
+				}
+			}
+
+			for (int i = 1; i < charArray.length; i++) {
+				if (Character.isLowSurrogate(charArray[i])) {
+					if (!Character.isSurrogatePair(charArray[i-1], charArray[i]))
+						parserContext
+								.addParseErrors(ParseErrorType.InvalidInputCharacter);
+				}
+			}
+
+		}
+
 	}
 
 	public void printTokens(ParserContext parserContext) {
@@ -232,4 +287,5 @@ public class Parser implements IParser {
 			System.out.println(error.getMessage());
 		}
 	}
+
 }
