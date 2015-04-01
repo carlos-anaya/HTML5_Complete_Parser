@@ -48,10 +48,11 @@ public class Script_data_escaped_end_tag_open_state implements ITokenizerState{
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Script_data_escaped_state));
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0x003C)));
+					.valueOf(Character.toChars(0x003C))));
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0x002F)));
+					.valueOf(Character.toChars(0x002F))));
 			tokenizerContext.setFlagReconsumeCurrentInputCharacter(true);
+			break;
 			
 		}
 		

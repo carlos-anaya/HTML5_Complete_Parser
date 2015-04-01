@@ -27,6 +27,7 @@ public class Script_data_escaped_less_than_sign_state implements ITokenizerState
 			tokenizerContext.setTemporaryBuffer("");
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Script_data_escaped_end_tag_open_state));
+			break;
 		case LATIN_CAPITAL_LETTER:
 			/*
 			 * change to lower case
@@ -48,6 +49,7 @@ public class Script_data_escaped_less_than_sign_state implements ITokenizerState
 					.valueOf(0x003C)));
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
 							.valueOf(currentChar)));
+			break;
 			
 		default:
 			/*
@@ -58,8 +60,9 @@ public class Script_data_escaped_less_than_sign_state implements ITokenizerState
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Script_data_escaped_state));
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0x003C)));
+					.valueOf(Character.toChars(0x003C))));
 			tokenizerContext.setFlagReconsumeCurrentInputCharacter(true);
+			break;
 		}
 		
 		context.setTokenizerContext(tokenizerContext);

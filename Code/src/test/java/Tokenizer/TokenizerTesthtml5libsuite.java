@@ -68,8 +68,10 @@ public class TokenizerTesthtml5libsuite {
 				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/entities.test",
 				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/unicodeChars.test",
 				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/unicodeCharsProblematic.test",
+				"https://raw.githubusercontent.com/Prin4/Testcases/master/tokenizerScriptStatesTest.test",
 				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/contentModelFlags.test",
-				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/escapeFlag.test" };
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/escapeFlag.test" 
+				};
 
 		for (String resource : resources) {
 			testList = addTestFile(testList, resource);
@@ -117,7 +119,6 @@ public class TokenizerTesthtml5libsuite {
 
 	@Test
 	public final void tests() {
-		ParserContext parserContext = new ParserContext();
 		Parser parser = new Parser();
 
 		String output = "";
@@ -126,6 +127,7 @@ public class TokenizerTesthtml5libsuite {
 				.get("initialStates")).size() : 0;
 		do {
 
+			ParserContext parserContext = new ParserContext();
 			if (test.containsKey("initialStates")) {
 				parserContext = new ParserContext();
 				JSONArray initialStates = (JSONArray) test.get("initialStates");
@@ -140,6 +142,10 @@ public class TokenizerTesthtml5libsuite {
 						.equals("RAWTEXT state"))
 					parserContext.getTokenizerContext().setNextState(
 							factory.getState(TokenizerState.RAWTEXT_state));
+				else if (initialStates.get(j - 1).toString()
+						.equals("Script data state"))
+					parserContext.getTokenizerContext().setNextState(
+							factory.getState(TokenizerState.Script_data_state));
 				else
 					parserContext.getTokenizerContext().setNextState(
 							factory.getState(TokenizerState.RCDATA_state));
@@ -167,7 +173,7 @@ public class TokenizerTesthtml5libsuite {
 			String expected = formatHtml5libOutput(expectedOutput);
 			if( test.get("doubleEscaped")!=null && (boolean) test.get("doubleEscaped")){
 				String sub = expected.substring(expected.indexOf("\\u")+2, expected.lastIndexOf("\\u")+6);
-				int codePoint=Integer.parseUnsignedInt(sub,16);
+				int codePoint=Integer.parseInt(sub,16);
 				String co=String.valueOf(Character.toChars(codePoint));
 				 co=String.valueOf(Character.toChars(co.getBytes()[0]));
 				expected = expected.replaceFirst("\\\\u....", "\\\\"+co);
