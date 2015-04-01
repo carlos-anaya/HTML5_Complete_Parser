@@ -61,16 +61,16 @@ public class TokenizerTesthtml5libsuite {
 		List<Object[]> testList = new ArrayList<Object[]>();
 
 		String[] resources = {
-//				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test1.test",
-//				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test2.test",
-//				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test3.test",
-//				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test4.test",
-//				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/entities.test",
-//				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/unicodeChars.test",
-//				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/unicodeCharsProblematic.test",
-				"https://raw.githubusercontent.com/Prin4/Testcases/master/tokenizerScriptStatesTest.test"
-//				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/contentModelFlags.test",
-//				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/escapeFlag.test" 
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test1.test",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test2.test",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test3.test",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/test4.test",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/entities.test",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/unicodeChars.test",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/unicodeCharsProblematic.test",
+				"https://raw.githubusercontent.com/Prin4/Testcases/master/tokenizerScriptStatesTest.test",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/contentModelFlags.test",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tokenizer/escapeFlag.test" 
 				};
 
 		for (String resource : resources) {
