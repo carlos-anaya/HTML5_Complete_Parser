@@ -41,8 +41,7 @@ public class RCDATA_state implements ITokenizerState {
 			break;
 		case EOF:
 			// Emit an end-of-file token.
-			tokenizerContext.emitCurrentToken(new Token(TokenType.character,
-					null));
+			tokenizerContext.emitCurrentToken(new Token(TokenType.end_of_file, null));
 			break;
 		default:
 			// Emit the current input character as a character token.
