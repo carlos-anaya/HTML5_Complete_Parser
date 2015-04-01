@@ -27,7 +27,7 @@ public class Script_data_escape_start_state implements ITokenizerState{
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Script_data_escape_start_dash_state));
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0x002D)));
+					.valueOf(Character.toChars(0x002D))));
 			break;
 		default:
 			/*

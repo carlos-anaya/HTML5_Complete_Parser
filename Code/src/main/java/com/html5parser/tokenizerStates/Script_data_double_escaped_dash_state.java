@@ -28,7 +28,7 @@ public class Script_data_double_escaped_dash_state implements ITokenizerState{
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Script_data_double_escaped_dash_dash_state));
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0x002D)));
+					.valueOf(Character.toChars(0x002D))));
 			break;
 		case LESS_THAN_SIGN:
 			/*
@@ -38,7 +38,7 @@ public class Script_data_double_escaped_dash_state implements ITokenizerState{
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Script_data_double_escaped_less_than_sign_state));
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0x003C)));
+					.valueOf(Character.toChars(0x003C))));
 			break;
 		case NULL:
 			/*
@@ -50,7 +50,7 @@ public class Script_data_double_escaped_dash_state implements ITokenizerState{
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Script_data_double_escaped_state));
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0xFFFD)));
+					.valueOf(Character.toChars(0xFFFD))));
 			break;
 		case EOF:
 			/*

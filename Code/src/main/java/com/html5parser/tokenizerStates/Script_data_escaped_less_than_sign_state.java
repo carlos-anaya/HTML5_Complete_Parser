@@ -60,7 +60,7 @@ public class Script_data_escaped_less_than_sign_state implements ITokenizerState
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Script_data_escaped_state));
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0x003C)));
+					.valueOf(Character.toChars(0x003C))));
 			tokenizerContext.setFlagReconsumeCurrentInputCharacter(true);
 			break;
 		}

@@ -25,7 +25,7 @@ public class Script_data_escaped_dash_dash_state implements ITokenizerState{
 			 * Emit a U+002D HYPHEN-MINUS character token.
 			 */
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0x002D)));
+					.valueOf(Character.toChars(0x002D))));
 			break;
 		case LESS_THAN_SIGN:
 			/*
@@ -39,7 +39,7 @@ public class Script_data_escaped_dash_dash_state implements ITokenizerState{
 			 */
 			tokenizerContext.setNextState(factory.getState(TokenizerState.Script_data_state)); 
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0x003E)));
+					.valueOf(Character.toChars(0x003E))));
 			break;
 		case NULL:
 			/*
@@ -50,7 +50,7 @@ public class Script_data_escaped_dash_dash_state implements ITokenizerState{
 			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 			tokenizerContext.setNextState(factory.getState(TokenizerState.Script_data_escaped_state)); 
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0xFFFD)));
+					.valueOf(Character.toChars(0xFFFD))));
 			break;
 		case EOF:
 			/*

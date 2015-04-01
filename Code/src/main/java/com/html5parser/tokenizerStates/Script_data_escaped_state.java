@@ -28,7 +28,7 @@ public class Script_data_escaped_state implements ITokenizerState{
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Script_data_escaped_dash_state));
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0x002D)));
+					.valueOf(Character.toChars(0x002D))));
 			break;
 		case LESS_THAN_SIGN:
 			/* 
