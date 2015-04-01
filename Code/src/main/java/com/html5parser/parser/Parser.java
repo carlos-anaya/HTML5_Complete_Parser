@@ -156,27 +156,41 @@ public class Parser implements IParser {
 							.processLFAndCRCharacters(currentChar);
 				}
 
-				if (nextChar == 0) {
-					if (preProCurrentChar >= 0xD800
-							&& preProCurrentChar <= 0xDFBB) {// is high
-																// surrogate?
-						nextChar = in.read();
-						if (nextChar >= 0xDC00 && nextChar <= 0xDFFF) {// is low
-																		// surrogate?
-							preProCurrentChar = Character.toCodePoint(
-									(char) preProCurrentChar.intValue(),
-									(char) nextChar);
-							nextChar = 0;
-						} else {
-							// if not a surrogate, process both
-							tokenizerContext
-									.setFlagReconsumeCurrentInputCharacter(true);
-						}
+				if (preProCurrentChar >= 0xD800 && preProCurrentChar <= 0xDFBB) {// is
+					// high
+					// surrogate?
+					in.mark(1);
+					nextChar = in.read();
+					if (nextChar >= 0xDC00 && nextChar <= 0xDFFF) {// is low
+						// surrogate?
+						preProCurrentChar = Character.toCodePoint(
+								(char) preProCurrentChar.intValue(),
+								(char) nextChar);
 					}
-				} else {// process the second char if was not a surrogate pair
-					preProCurrentChar = nextChar;
-					nextChar = 0;
 				}
+
+				// if (nextChar == 0) {
+				// if (preProCurrentChar >= 0xD800
+				// && preProCurrentChar <= 0xDFBB) {// is high
+				// // surrogate?
+				// nextChar = in.read();
+				// if (nextChar >= 0xDC00 && nextChar <= 0xDFFF) {// is low
+				// // surrogate?
+				// preProCurrentChar = Character.toCodePoint(
+				// (char) preProCurrentChar.intValue(),
+				// (char) nextChar);
+				// nextChar = 0;
+				// } else {
+				// // if not a surrogate, process both
+				// tokenizerContext
+				// .setFlagReconsumeCurrentInputCharacter(true);
+				// }
+				// }
+				// } else {// process the second char if was not a surrogate
+				// pair
+				// preProCurrentChar = nextChar;
+				// nextChar = 0;
+				// }
 
 				// If invalid character add a parse error
 				if (streamPreprocessor.isInvalidCharacter(preProCurrentChar)
@@ -198,9 +212,12 @@ public class Parser implements IParser {
 				 */
 				if (!tokenizerContext.isFlagReconsumeCurrentInputCharacter()) {
 					currentChar = in.read();
+					nextChar = 0;
 				} else {
 					tokenizerContext
 							.setFlagReconsumeCurrentInputCharacter(false);
+					if (nextChar != 0)
+						in.reset();
 				}
 
 			} while (!stop);
@@ -217,7 +234,8 @@ public class Parser implements IParser {
 
 	private void preprocessing(ParserContext parserContext, String string) {
 		char[] charArray = string.toCharArray();
-
+		if (charArray.length == 0)
+			return;
 		if (charArray.length == 1) {
 			if (Character.isSurrogate(charArray[0]))
 				parserContext
@@ -226,7 +244,8 @@ public class Parser implements IParser {
 		} else {
 			for (int i = 0; i < charArray.length - 1; i++) {
 				if (Character.isHighSurrogate(charArray[i])) {
-					if (!Character.isSurrogatePair(charArray[i], charArray[i+1]))
+					if (!Character.isSurrogatePair(charArray[i],
+							charArray[i + 1]))
 						parserContext
 								.addParseErrors(ParseErrorType.InvalidInputCharacter);
 				}
@@ -234,10 +253,19 @@ public class Parser implements IParser {
 
 			for (int i = 1; i < charArray.length; i++) {
 				if (Character.isLowSurrogate(charArray[i])) {
-					if (!Character.isSurrogatePair(charArray[i-1], charArray[i]))
+					if (!Character.isSurrogatePair(charArray[i - 1],
+							charArray[i]))
 						parserContext
 								.addParseErrors(ParseErrorType.InvalidInputCharacter);
 				}
+			}
+			if (Character.isLowSurrogate(charArray[0])) {
+				parserContext
+						.addParseErrors(ParseErrorType.InvalidInputCharacter);
+			}
+			if (Character.isHighSurrogate(charArray[charArray.length - 1])) {
+				parserContext
+						.addParseErrors(ParseErrorType.InvalidInputCharacter);
 			}
 
 		}
