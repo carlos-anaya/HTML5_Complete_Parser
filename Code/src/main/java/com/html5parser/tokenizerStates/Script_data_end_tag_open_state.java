@@ -51,6 +51,7 @@ public class Script_data_end_tag_open_state implements ITokenizerState{
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
 					.valueOf(0x002F)));
 			tokenizerContext.setFlagReconsumeCurrentInputCharacter(true);
+			break;
 			
 		}
 		

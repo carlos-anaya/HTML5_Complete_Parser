@@ -25,7 +25,8 @@ public class Script_data_double_escaped_dash_dash_state implements ITokenizerSta
 			 * Emit a U+002D HYPHEN-MINUS character token.
 			 */
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0x002D)));
+					.valueOf(Character.toChars(0x002D))));
+			break;
 		case LESS_THAN_SIGN:
 			/*
 			 * Switch to the script data double escaped less-than sign state.
@@ -33,7 +34,8 @@ public class Script_data_double_escaped_dash_dash_state implements ITokenizerSta
 			 */
 			tokenizerContext.setNextState(factory.getState(TokenizerState.Script_data_double_escaped_less_than_sign_state)); 
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0x003C)));
+					.valueOf(Character.toChars(0x003C))));
+			break;
 		case GREATER_THAN_SIGN:
 			/*
 			 * Switch to the script data state. 
@@ -41,7 +43,8 @@ public class Script_data_double_escaped_dash_dash_state implements ITokenizerSta
 			 */
 			tokenizerContext.setNextState(factory.getState(TokenizerState.Script_data_state)); 
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0x003E)));
+					.valueOf(Character.toChars(0x003E))));
+			break;
 		case NULL:
 			/*
 			 * Parse error. 
@@ -51,7 +54,8 @@ public class Script_data_double_escaped_dash_dash_state implements ITokenizerSta
 			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 			tokenizerContext.setNextState(factory.getState(TokenizerState.Script_data_double_escaped_state)); 
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-					.valueOf(0xFFFD)));
+					.valueOf(Character.toChars(0xFFFD))));
+			break;
 		case EOF:
 			/*
 			 * Parse error. 
@@ -62,6 +66,7 @@ public class Script_data_double_escaped_dash_dash_state implements ITokenizerSta
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Data_state));
 			tokenizerContext.setFlagReconsumeCurrentInputCharacter(true);
+			break;
 		default:
 			/*
 			 * Switch to the script data double escaped state. 
@@ -70,6 +75,7 @@ public class Script_data_double_escaped_dash_dash_state implements ITokenizerSta
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Script_data_double_escaped_state));
 			tokenizerContext.setFlagEmitToken(true);
+			break;
 		}
 		
 		context.setTokenizerContext(tokenizerContext);

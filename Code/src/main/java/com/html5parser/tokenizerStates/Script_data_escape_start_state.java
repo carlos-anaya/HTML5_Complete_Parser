@@ -28,6 +28,7 @@ public class Script_data_escape_start_state implements ITokenizerState{
 					.getState(TokenizerState.Script_data_escape_start_dash_state));
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
 					.valueOf(0x002D)));
+			break;
 		default:
 			/*
 			 * Switch to the script data state. Reconsume the current input character.
@@ -35,6 +36,7 @@ public class Script_data_escape_start_state implements ITokenizerState{
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Script_data_state));
 			tokenizerContext.setFlagReconsumeCurrentInputCharacter(true);
+			break;
 		}
 		
 		context.setTokenizerContext(tokenizerContext);

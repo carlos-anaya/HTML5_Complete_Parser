@@ -73,27 +73,4 @@ public class Script_data_double_escape_end_state implements ITokenizerState {
 		return context;
 	}
 
-	/*
-	 * Switch to the script data escaped state. Emit a U+003C LESS-THAN SIGN
-	 * character token, a U+002F SOLIDUS character token, and a character token
-	 * for each of the characters in the temporary buffer (in the order they
-	 * were added to the buffer). Reconsume the current input character.
-	 */
-	// private void defaultProcess(TokenizerContext tokenizerContext) {
-	// TokenizerStateFactory factory = TokenizerStateFactory.getInstance();
-	// tokenizerContext.setNextState(factory
-	// .getState(TokenizerState.Script_data_escaped_state));
-	// tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-	// .valueOf(0x003C)));
-	// tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
-	// .valueOf(0x002F)));
-	// String temporaryBuffer = tokenizerContext.getTemporaryBuffer();
-	// for (int i = 0; i < temporaryBuffer.length(); i++) {
-	// char a = temporaryBuffer.charAt(i);
-	// tokenizerContext.emitCurrentToken(new Token(TokenType.character,
-	// String.valueOf(a)));
-	// }
-	// tokenizerContext.setFlagReconsumeCurrentInputCharacter(true);
-	// }
-//html5lib
 }

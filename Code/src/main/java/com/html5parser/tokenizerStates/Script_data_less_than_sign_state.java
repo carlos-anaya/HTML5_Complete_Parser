@@ -27,14 +27,16 @@ public class Script_data_less_than_sign_state implements ITokenizerState{
 			tokenizerContext.setTemporaryBuffer("");
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Script_data_end_tag_open_state));
+			break;
 		case EXCLAMATION_MARK:
 			/* 
 			 * Switch to the script data escape start state. 
 			 * Emit a U+003C LESS-THAN SIGN character token and a U+0021 EXCLAMATION MARK character token.
 			 */
 			tokenizerContext.setNextState(factory.getState(TokenizerState.Script_data_double_escape_start_state));
-			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String.valueOf(0x003C)));
-			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String.valueOf(0x0021)));
+			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String.valueOf(Character.toChars(0x003C))));
+			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String.valueOf(Character.toChars(0x0021))));
+			break;
 		default:
 			/*
 			 * Switch to the script data state. 
@@ -46,6 +48,7 @@ public class Script_data_less_than_sign_state implements ITokenizerState{
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
 					.valueOf(0x003C)));
 			tokenizerContext.setFlagReconsumeCurrentInputCharacter(true);
+			break;
 			
 		}
 		

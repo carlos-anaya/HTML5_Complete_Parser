@@ -29,6 +29,7 @@ public class Script_data_double_escaped_less_than_sign_state implements ITokeniz
 					.getState(TokenizerState.Script_data_double_escape_end_state));
 			tokenizerContext.emitCurrentToken(new Token(TokenType.character, String
 					.valueOf(0x002F)));
+			break;
 		default:
 			/*
 			 * Switch to the script data double escaped state. 
@@ -37,6 +38,7 @@ public class Script_data_double_escaped_less_than_sign_state implements ITokeniz
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Script_data_double_escaped_state));
 			tokenizerContext.setFlagReconsumeCurrentInputCharacter(true);
+			break;
 		}
 		
 		context.setTokenizerContext(tokenizerContext);
