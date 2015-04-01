@@ -16,7 +16,7 @@ public class Script_data_double_escaped_dash_dash_state implements ITokenizerSta
 	public ParserContext process(ParserContext context) {
 		TokenizerStateFactory factory = TokenizerStateFactory.getInstance();
 		TokenizerContext tokenizerContext = context.getTokenizerContext();
-		
+		int currentChar = tokenizerContext.getCurrentInputCharacter();
 		ASCIICharacter asciiCharacter = tokenizerContext.getCurrentASCIICharacter();
 		
 		switch (asciiCharacter) {
@@ -74,7 +74,8 @@ public class Script_data_double_escaped_dash_dash_state implements ITokenizerSta
 			 */
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Script_data_double_escaped_state));
-			tokenizerContext.setFlagEmitToken(true);
+			tokenizerContext.emitCurrentToken(new Token(TokenType.character,
+					currentChar));
 			break;
 		}
 		

@@ -16,7 +16,7 @@ public class Script_data_escaped_dash_state implements ITokenizerState{
 	public ParserContext process(ParserContext context) {
 		TokenizerStateFactory factory = TokenizerStateFactory.getInstance();
 		TokenizerContext tokenizerContext = context.getTokenizerContext();
-		
+		int currentChar = tokenizerContext.getCurrentInputCharacter();
 		ASCIICharacter asciiCharacter = tokenizerContext.getCurrentASCIICharacter();
 		
 		switch (asciiCharacter) {
@@ -63,7 +63,8 @@ public class Script_data_escaped_dash_state implements ITokenizerState{
 			 */
 			tokenizerContext.setNextState(factory
 					.getState(TokenizerState.Script_data_escaped_state));
-			tokenizerContext.setFlagEmitToken(true);
+			tokenizerContext.emitCurrentToken(new Token(TokenType.character,
+					currentChar));
 			break;
 		}
 		

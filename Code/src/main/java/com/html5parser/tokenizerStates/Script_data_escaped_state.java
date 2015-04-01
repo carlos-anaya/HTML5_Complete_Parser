@@ -57,7 +57,8 @@ public class Script_data_escaped_state implements ITokenizerState{
 			/*
 			 * Emit the current input character as a character token.
 			 */
-			tokenizerContext.setFlagEmitToken(true);
+			Token token = new Token(TokenType.character, tokenizerContext.getCurrentInputCharacter());
+			tokenizerContext.emitCurrentToken(token);
 			break;
 		}
 		
