@@ -173,7 +173,7 @@ public class TokenizerTesthtml5libsuite {
 			String expected = formatHtml5libOutput(expectedOutput);
 			if( test.get("doubleEscaped")!=null && (boolean) test.get("doubleEscaped")){
 				String sub = expected.substring(expected.indexOf("\\u")+2, expected.lastIndexOf("\\u")+6);
-				int codePoint=Integer.parseUnsignedInt(sub,16);
+				int codePoint=Integer.parseInt(sub,16);
 				String co=String.valueOf(Character.toChars(codePoint));
 				 co=String.valueOf(Character.toChars(co.getBytes()[0]));
 				expected = expected.replaceFirst("\\\\u....", "\\\\"+co);
