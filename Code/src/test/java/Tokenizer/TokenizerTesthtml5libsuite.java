@@ -129,6 +129,7 @@ public class TokenizerTesthtml5libsuite {
 
 			ParserContext parserContext = new ParserContext();
 			if (test.containsKey("initialStates")) {
+				parserContext = new ParserContext();
 				JSONArray initialStates = (JSONArray) test.get("initialStates");
 				// int size = initialStates.size();
 				TokenizerStateFactory factory = TokenizerStateFactory
@@ -153,15 +154,30 @@ public class TokenizerTesthtml5libsuite {
 						.push(lastStartTag);
 
 			}
+			
+			String input = (String) test.get("input");
+			if( test.get("doubleEscaped")!=null && (boolean) test.get("doubleEscaped")){
+				String codePoint=input.substring(input.indexOf("\\u")+2, input.lastIndexOf("\\u")+6);
+				String co = String.valueOf((char) Integer.parseInt(codePoint,16));
+				input = input.replaceFirst("\\\\u....", "\\\\"+String.valueOf((char) Integer.parseInt(codePoint,16)));
+			}
+			
 			parserContext = parser.tokenize(parserContext,
-					(String) test.get("input"));
+					input);
 			output = serializeTokens(simplifyCharacterTokens(parserContext
 					.getTokenizerContext().getTokens()));
-
+			
 			JSONArray expectedOutput = (JSONArray) test.get("output");
 			// String expected = expectedOutput.toString().replaceAll(
 			// "\"ParseError\"(,)|(,)?\"ParseError\"", "");
 			String expected = formatHtml5libOutput(expectedOutput);
+			if( test.get("doubleEscaped")!=null && (boolean) test.get("doubleEscaped")){
+				String sub = expected.substring(expected.indexOf("\\u")+2, expected.lastIndexOf("\\u")+6);
+				int codePoint=Integer.parseUnsignedInt(sub,16);
+				String co=String.valueOf(Character.toChars(codePoint));
+				 co=String.valueOf(Character.toChars(co.getBytes()[0]));
+				expected = expected.replaceFirst("\\\\u....", "\\\\"+co);
+			}
 			assertEquals("Wrong tokens", expected, output);
 
 			int expectedParseErrors = 0;
@@ -188,6 +204,7 @@ public class TokenizerTesthtml5libsuite {
 
 		for (Token token : tokens) {
 			tokenArray = new JSONArray();
+			attributesArray = new JSONObject();
 
 			switch (token.getType()) {
 

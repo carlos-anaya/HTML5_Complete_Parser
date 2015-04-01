@@ -22,6 +22,7 @@ import com.html5parser.tokenizerStates.Between_DOCTYPE_public_and_system_identif
 import com.html5parser.tokenizerStates.Bogus_DOCTYPE_state;
 import com.html5parser.tokenizerStates.Bogus_comment_state;
 import com.html5parser.tokenizerStates.CData_section_state;
+import com.html5parser.tokenizerStates.Character_reference_in_RCDATA_state;
 import com.html5parser.tokenizerStates.Character_reference_in_data_state;
 import com.html5parser.tokenizerStates.Comment_end_bang_state;
 import com.html5parser.tokenizerStates.Comment_end_dash_state;
@@ -219,12 +220,13 @@ public class TokenizerStateFactory {
 			return new Script_data_less_than_sign_state();
 
 		case Character_reference_in_RCDATA_state:
-
-		case Character_reference_in_attribute_value_state:
-
+			return new Character_reference_in_RCDATA_state();
+			
 		case Character_reference_in_data_state:
 			return new Character_reference_in_data_state();
 
+		case Character_reference_in_attribute_value_state:
+			
 		case Tokenizing_character_references:
 
 		default:

@@ -51,7 +51,7 @@ public class After_DOCTYPE_public_identifier_state implements ITokenizerState {
 		case QUOTATION_MARK:
 			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 			((DocTypeToken) tokenizerContext.getCurrentToken())
-					.setPublicIdentifier("");
+					.setSystemIdentifier("");
 			tokenizerContext
 					.setNextState(factory
 							.getState(TokenizerState.DOCTYPE_system_identifier_double_quoted_state));
@@ -64,7 +64,7 @@ public class After_DOCTYPE_public_identifier_state implements ITokenizerState {
 		case APOSTROPHE:
 			context.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
 			((DocTypeToken) tokenizerContext.getCurrentToken())
-					.setPublicIdentifier("");
+					.setSystemIdentifier("");
 			tokenizerContext
 					.setNextState(factory
 							.getState(TokenizerState.DOCTYPE_system_identifier_single_quoted_state));
