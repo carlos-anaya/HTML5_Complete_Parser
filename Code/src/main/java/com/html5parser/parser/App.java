@@ -2,6 +2,9 @@ package com.html5parser.parser;
 
 import java.io.StringWriter;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -10,7 +13,9 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import com.html5parser.classes.ParserContext;
 
@@ -22,7 +27,7 @@ public class App {
 	public static void main(String[] args) {
 		System.out.println("Hello World!");
 		Parser parser = new Parser();
-		String html = "&#x80000041";
+		String html = "";
 
 		ParserContext parserContext = parser
 				.tokenize(new ParserContext(), html);
@@ -30,6 +35,7 @@ public class App {
 
 		// Document doc = parser.parse("<html><foo/>");
 		// System.out.println(serializeDocument(doc));
+				
 	}
 
 	private static String serializeDocument(Document doc) {
