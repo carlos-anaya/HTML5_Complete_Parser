@@ -23,5 +23,6 @@ public enum InsertionMode {
 	in_frameset,
 	after_frameset,
 	after_after_body,
-	after_after_frameset
+	after_after_frameset,
+	foreign_content
 }
