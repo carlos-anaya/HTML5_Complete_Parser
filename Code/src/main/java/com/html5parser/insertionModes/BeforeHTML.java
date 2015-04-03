@@ -5,8 +5,7 @@ import java.util.Stack;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.html5parser.algorithms.ElementInsertionAlgorithm;
-import com.html5parser.classes.InsertionMode;
+import com.html5parser.algorithms.InsertAnHTMLElement;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
 import com.html5parser.classes.Token.TokenType;
@@ -63,10 +62,10 @@ public class BeforeHTML implements IInsertionMode {
 			Stack<Element> stackOpenElements = parserContext.getOpenElements();
 			stackOpenElements.push(html);
 
+			
 			// TODO delete this, it just simulates next state
 			Token headT = new Token(TokenType.start_tag, "head");
-			Element head = ElementInsertionAlgorithm.insertHTMLElement(
-					parserContext, headT);
+			Element head = InsertAnHTMLElement.run(parserContext, token);
 			parserContext.setHeadElementPointer(head);
 
 			// TODO uncomment

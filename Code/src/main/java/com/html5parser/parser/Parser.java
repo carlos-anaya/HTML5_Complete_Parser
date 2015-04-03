@@ -13,6 +13,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 
+import com.html5parser.algorithms.ForeignContent;
+import com.html5parser.algorithms.TreeCostructionDispatcher;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
 import com.html5parser.classes.TokenizerContext;
@@ -102,8 +104,14 @@ public class Parser implements IParser {
 						parserContext.getTokenizerContext().pollCurrentToken();
 						do {
 							parserContext.setFlagReconsumeToken(false);
-							parserContext = treeConstructor
+							
+							if (TreeCostructionDispatcher.run(parserContext)) {
+								parserContext = treeConstructor
 									.consumeToken(parserContext);
+							}else{
+								parserContext = ForeignContent.run(parserContext);
+							}
+							
 						} while (parserContext.isFlagReconsumeToken());
 					}
 					parserContext.getTokenizerContext().setFlagEmitToken(false);
