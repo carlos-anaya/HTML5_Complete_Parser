@@ -42,6 +42,7 @@ public class Initial implements IInsertionMode {
 		case start_tag:
 		case end_tag:
 		default:
+			
 			parserContext.setInsertionMode(factory
 					.getInsertionMode(InsertionMode.before_html));
 			parserContext.setFlagReconsumeToken(true);
