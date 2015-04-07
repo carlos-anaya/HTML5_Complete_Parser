@@ -48,6 +48,7 @@ public class ParserContext {
 	private boolean flagFramesetOk = false;
 	private boolean flagStopParsing = false;
 	private boolean flagReconsumeToken = false;
+	private boolean flagFosterParenting = false;
 
 	/*
 	 * Others
@@ -177,7 +178,7 @@ public class ParserContext {
 	}
 
 	public Element getCurrentNode() {
-		return currentNode;
+		return openElements.peek();
 	}
 
 	public void setCurrentNode(Element currentNode) {
@@ -250,4 +251,14 @@ public class ParserContext {
 		((TagToken) this.tokenizerContext.getCurrentToken())
 				.setAttributes(setToReturn);
 	}
+
+	public boolean isFlagFosterParenting() {
+		return flagFosterParenting;
+	}
+
+	public void setFlagFosterParenting(boolean flagFosterParenting) {
+		this.flagFosterParenting = flagFosterParenting;
+	}
+	
+	
 }

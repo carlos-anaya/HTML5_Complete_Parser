@@ -105,7 +105,7 @@ public class Parser implements IParser {
 						do {
 							parserContext.setFlagReconsumeToken(false);
 							
-							if (TreeCostructionDispatcher.run(parserContext)) {
+							if (TreeCostructionDispatcher.processTokenInInsertionMode(parserContext)) {
 								parserContext = treeConstructor
 									.consumeToken(parserContext);
 							}else{
