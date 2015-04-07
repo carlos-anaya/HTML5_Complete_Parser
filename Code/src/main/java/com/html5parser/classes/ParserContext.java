@@ -63,6 +63,9 @@ public class ParserContext {
 	 */
 	Document doc;
 
+	// Reprocess the current token
+	private boolean flagReprocessToken = false;
+
 	public TokenizerContext getTokenizerContext() {
 		return tokenizerContext;
 	}
@@ -121,7 +124,7 @@ public class ParserContext {
 	public void addParseErrors(ParseErrorType parseErrorType) {
 		parseErrors.push(new ParseError(parseErrorType, this));
 	}
-	
+
 	public void addParseErrors(ParseErrorType parseErrorType, String message) {
 		parseErrors.push(new ParseError(parseErrorType, message));
 	}
@@ -249,5 +252,13 @@ public class ParserContext {
 		}
 		((TagToken) this.tokenizerContext.getCurrentToken())
 				.setAttributes(setToReturn);
+	}
+	
+	public boolean isFlagReprocessToken() {
+		return flagReprocessToken;
+	}
+
+	public void setFlagReprocessToken(boolean flagReprocessToken) {
+		this.flagReprocessToken = flagReprocessToken;
 	}
 }

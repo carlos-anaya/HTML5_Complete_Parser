@@ -1,7 +1,5 @@
 package com.html5parser.algorithms;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Stack;
 
 import org.w3c.dom.Element;
