@@ -75,7 +75,7 @@ public class TokenizerStateFactory {
 	private static TokenizerStateFactory factory;
 
 	private TokenizerStateFactory() {
-	};
+	}
 
 	public static TokenizerStateFactory getInstance() {
 		if (factory == null) {
@@ -221,12 +221,12 @@ public class TokenizerStateFactory {
 
 		case Character_reference_in_RCDATA_state:
 			return new Character_reference_in_RCDATA_state();
-			
+
 		case Character_reference_in_data_state:
 			return new Character_reference_in_data_state();
 
 		case Character_reference_in_attribute_value_state:
-			
+
 		case Tokenizing_character_references:
 
 		default:

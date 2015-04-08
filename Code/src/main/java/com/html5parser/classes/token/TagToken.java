@@ -74,6 +74,9 @@ public class TagToken extends Token {
 	public class Attribute {
 		String name;
 		String value;
+		String localName;
+		String prefix;
+		String namespace;
 
 		public Attribute(String name, String value) {
 			super();
@@ -103,6 +106,30 @@ public class TagToken extends Token {
 
 		public void appendCharacterToValue(String character) {
 			this.value = value.concat(character);
+		}
+
+		public String getLocalName() {
+			return localName;
+		}
+
+		public void setLocalName(String localName) {
+			this.localName = localName;
+		}
+
+		public String getPrefix() {
+			return prefix;
+		}
+
+		public void setPrefix(String prefix) {
+			this.prefix = prefix;
+		}
+
+		public String getNamespace() {
+			return namespace;
+		}
+
+		public void setNamespace(String namespace) {
+			this.namespace = namespace;
 		}
 
 	}

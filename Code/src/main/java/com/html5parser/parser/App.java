@@ -30,6 +30,7 @@ public class App {
 
 		// Document doc = parser.parse("<html><foo/>");
 		// System.out.println(serializeDocument(doc));
+
 	}
 
 	private static String serializeDocument(Document doc) {

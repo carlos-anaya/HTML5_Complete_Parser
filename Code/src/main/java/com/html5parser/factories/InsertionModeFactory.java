@@ -6,11 +6,11 @@ import com.html5parser.insertionModes.Initial;
 import com.html5parser.interfaces.IInsertionMode;
 
 public class InsertionModeFactory {
-	
+
 	private static InsertionModeFactory factory;
 
 	private InsertionModeFactory() {
-	};
+	}
 
 	public static InsertionModeFactory getInstance() {
 		if (factory == null) {
