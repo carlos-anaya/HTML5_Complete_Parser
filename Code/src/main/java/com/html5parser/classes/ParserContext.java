@@ -49,8 +49,6 @@ public class ParserContext {
 	private boolean flagStopParsing = false;
 	private boolean flagReconsumeToken = false;
 	private boolean flagFosterParenting = false;
-	// Reprocess the current token
-	private boolean flagReprocessToken = false;
 
 	/*
 	 * Others
@@ -253,20 +251,12 @@ public class ParserContext {
 		((TagToken) this.tokenizerContext.getCurrentToken())
 				.setAttributes(setToReturn);
 	}
-	
+
 	public boolean isFlagFosterParenting() {
 		return flagFosterParenting;
 	}
 
 	public void setFlagFosterParenting(boolean flagFosterParenting) {
 		this.flagFosterParenting = flagFosterParenting;
-	}
-	
-	public boolean isFlagReprocessToken() {
-		return flagReprocessToken;
-	}
-
-	public void setFlagReprocessToken(boolean flagReprocessToken) {
-		this.flagReprocessToken = flagReprocessToken;
 	}
 }

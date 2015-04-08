@@ -47,6 +47,10 @@ public class Token {
 		return value;
 	}
 
+	public int getIntValue(){
+		return value.codePointAt(0);
+	}
+	
 	public void setValue(String value) {
 		this.value = value;
 	}

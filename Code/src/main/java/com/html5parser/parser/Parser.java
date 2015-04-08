@@ -17,6 +17,7 @@ import com.html5parser.algorithms.ForeignContent;
 import com.html5parser.algorithms.TreeCostructionDispatcher;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
+import com.html5parser.classes.Token.TokenType;
 import com.html5parser.classes.TokenizerContext;
 import com.html5parser.classes.token.DocTypeToken;
 import com.html5parser.classes.token.TagToken;
@@ -101,18 +102,33 @@ public class Parser implements IParser {
 						 * Get the next token of the queue for the tree
 						 * constructor
 						 */
-						parserContext.getTokenizerContext().pollCurrentToken();
+						Token token = parserContext.getTokenizerContext()
+								.pollCurrentToken();
 						do {
 							parserContext.setFlagReconsumeToken(false);
-							
-							if (TreeCostructionDispatcher.processTokenInInsertionMode(parserContext)) {
+
+							if (TreeCostructionDispatcher
+									.processTokenInInsertionMode(parserContext)) {
 								parserContext = treeConstructor
-									.consumeToken(parserContext);
-							}else{
-								parserContext = ForeignContent.run(parserContext);
+										.consumeToken(parserContext);
+							} else {
+								parserContext = ForeignContent
+										.run(parserContext);
 							}
-							
+
 						} while (parserContext.isFlagReconsumeToken());
+
+						/*
+						 * If start tag with self-closing flag set and not
+						 * acknowledged, then is a parse error.
+						 */
+						if (token.getType().equals(TokenType.start_tag)) {
+							if (((TagToken) token).isFlagSelfClosingTag()
+									&& !((TagToken) token)
+											.isFlagAcknowledgeSelfClosingTag())
+								parserContext
+										.addParseErrors(ParseErrorType.StartTagWithSelfClosingFlag);
+						}
 					}
 					parserContext.getTokenizerContext().setFlagEmitToken(false);
 				}
