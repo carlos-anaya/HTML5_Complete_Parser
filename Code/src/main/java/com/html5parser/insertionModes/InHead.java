@@ -3,6 +3,8 @@ package com.html5parser.insertionModes;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.html5parser.algorithms.AdjustedInsertionLocation;
+import com.html5parser.algorithms.CreateAnElementForAToken;
 import com.html5parser.algorithms.InsertAnHTMLElement;
 import com.html5parser.classes.InsertionMode;
 import com.html5parser.classes.ParserContext;
@@ -154,10 +156,34 @@ public class InHead implements IInsertionMode {
 		 */
 		else if (tokenType == TokenType.start_tag
 				&& token.getValue().equals("script")){
-			parserContext.set
+			//TODO
+//			AdjustedInsertionLocation location = new 
+//			Element element = CreateAnElementForAToken.run(intendedParentElement, namespace, currentToken, context)
+			
 		}
-
-		
+		/* An end tag whose tag name is "head"
+		 * Pop the current node (which will be the head element) off the stack of open elements.
+		 * Switch the insertion mode to "after head".
+         */
+		else if (tokenType == TokenType.end_tag
+				&& token.getValue().equals("head")){
+			parserContext.getOpenElements().pop();
+			parserContext.setInsertionMode(factory
+					.getInsertionMode(InsertionMode.after_head));
+		}
+		/* A start tag whose tag name is "template"
+		 * Insert an HTML element for the token.
+		 * Insert a marker at the end of the list of active formatting elements.
+		 * Set the frameset-ok flag to "not ok".
+		 * Switch the insertion mode to "in template".
+		 * Push "in template" onto the stack of template insertion modes 
+		 * so that it is the new current template insertion mode.
+	     */
+		else if (tokenType == TokenType.start_tag
+				&& token.getValue().equals("template")){
+			InsertAnHTMLElement.run(parserContext, token);
+			
+		}
 		
 		/* An end tag whose tag name is one of: "head", "body", "html", "br"
 		 * Act as described in the "anything else" entry below.
@@ -187,6 +213,6 @@ public class InHead implements IInsertionMode {
 			parserContext.setFlagReconsumeToken(true);
 			return parserContext;
 		}
-		
+		return parserContext;
 	}
 }
