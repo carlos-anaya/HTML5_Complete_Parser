@@ -8,6 +8,8 @@ import com.html5parser.classes.Token;
 public class TagToken extends Token {
 
 	boolean flagSelfClosingTag = false;
+	boolean flagAcknowledgeSelfClosingTag = false;
+	
 	List<Attribute> attributes = new ArrayList<TagToken.Attribute>();
 	Attribute lasttAttribute;
 
@@ -27,6 +29,15 @@ public class TagToken extends Token {
 		this.flagSelfClosingTag = value;
 	}
 
+	public boolean isFlagAcknowledgeSelfClosingTag() {
+		return flagAcknowledgeSelfClosingTag;
+	}
+
+	public void setFlagAcknowledgeSelfClosingTag(
+			boolean value) {
+		this.flagAcknowledgeSelfClosingTag = value;
+	}
+	
 	public List<Attribute> getAttributes() {
 		return attributes;
 	}

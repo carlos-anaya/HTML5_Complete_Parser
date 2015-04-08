@@ -7,5 +7,6 @@ public enum ParseErrorType {
 	DuplicatedAttributeName,
 	EndTagWithAttributes,
 	EndTagWithSelfClosingFlag,
+	StartTagWithSelfClosingFlag,
 	InvalidNamespace
 }

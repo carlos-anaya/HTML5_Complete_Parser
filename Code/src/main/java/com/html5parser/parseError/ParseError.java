@@ -40,6 +40,9 @@ public class ParseError {
 		case EndTagWithSelfClosingFlag:
 			this.message = "End tag token emitted with its self-closing flag set.";
 			break;
+		case StartTagWithSelfClosingFlag:
+			this.message = "Start tag token emitted with its self-closing flag set and not acknowledged.";
+			break;
 		default:
 			break;
 
