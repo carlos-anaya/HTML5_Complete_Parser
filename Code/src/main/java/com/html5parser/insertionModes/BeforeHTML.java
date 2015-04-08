@@ -1,14 +1,14 @@
 package com.html5parser.insertionModes;
 
-import java.util.Stack;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.html5parser.algorithms.InsertAnHTMLElement;
+import com.html5parser.algorithms.CreateAnElementForAToken;
+import com.html5parser.classes.InsertionMode;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
 import com.html5parser.classes.Token.TokenType;
+import com.html5parser.constants.Namespace;
 import com.html5parser.factories.InsertionModeFactory;
 import com.html5parser.interfaces.IInsertionMode;
 import com.html5parser.parseError.ParseErrorType;
@@ -20,53 +20,123 @@ public class BeforeHTML implements IInsertionMode {
 
 		InsertionModeFactory factory = InsertionModeFactory.getInstance();
 		Token token = parserContext.getTokenizerContext().getCurrentToken();
+		Document doc = parserContext.getDocument();
+		TokenType tokenType = token.getType();
 
-		switch (token.getType()) {
-
-		// A DOCTYPE token
-		// Parse error. Ignore the token.
-		case DOCTYPE:
+		/*
+		 * A DOCTYPE token Parse error. Ignore the token.
+		 */
+		if (tokenType == TokenType.DOCTYPE) {
 			parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
-			break;
-
-		// A comment token
-		// Append a Comment node to the Document object with the data
-		// attribute
-		// set to the data given in the comment token.
-		case comment:
+			return parserContext;
+		}
+		/*
+		 * comment tokenInsert a comment as the last child of the Document
+		 * object.
+		 */
+		else if (tokenType == TokenType.comment) {
+			// TODO
 			throw new UnsupportedOperationException();
-
-			// A character token that is one of U+0009 CHARACTER TABULATION,
-			// "LF"
-			// (U+000A), "FF" (U+000C), "CR" (U+000D), or U+0020 SPACE
-			// Ignore the token.
-		case character:
-			int currentChar = (int) token.getValue().charAt(0);
-			if ((currentChar == 0x0009 || currentChar == 0x000A
-					|| currentChar == 0x000C || currentChar == 0x000D || currentChar == 0x0020))
-				return parserContext;
-
-
-			// An end tag whose tag name is one of: "head", "body", "html", "br"
-			// Act as described in the "anything else" entry below.
-			// Any other end tag
-			// Parse error. Ignore the token.
-		case end_tag:
-			if(token.getValue().equals("head"));
-			// Anything else
-		case end_of_file:
-		default:
-			Document doc = parserContext.getDocument();
-			Element html = doc.createElement("html");
-			doc.appendChild(html);
-			Stack<Element> stackOpenElements = parserContext.getOpenElements();
-			stackOpenElements.push(html);
-
-			
-			// TODO delete this, it just simulates next state
-			Token headT = new Token(TokenType.start_tag, "head");
-			Element head = InsertAnHTMLElement.run(parserContext, token);
-			parserContext.setHeadElementPointer(head);
+		}
+		// A character token that is one of U+0009 CHARACTER TABULATION,
+		// "LF"(U+000A), "FF" (U+000C), "CR" (U+000D), or U+0020 SPACE
+		// Ignore the token.
+		else if (tokenType == TokenType.character
+				&& (token.getValue().equals(
+						String.valueOf(Character.toChars(0x0009)))
+						|| token.getValue().equals(
+								String.valueOf(Character.toChars(0x000A)))
+						|| token.getValue().equals(
+								String.valueOf(Character.toChars(0x000C)))
+						|| token.getValue().equals(
+								String.valueOf(Character.toChars(0x000D))) || token
+						.getValue().equals(
+								String.valueOf(Character.toChars(0x0020))))) {
+			return parserContext;
+		}
+		/*
+		 * A start tag whose tag name is "html" Create an element for the token
+		 * in the HTML namespace, with the Document as the intended parent.
+		 * Append it to the Document object. Put this element in the stack of
+		 * open elements.
+		 * 
+		 * If the Document is being loaded as part of navigation of a browsing
+		 * context, then: if the newly created element has a manifest attribute
+		 * whose value is not the empty string, then resolve the value of that
+		 * attribute to an absolute URL, relative to the newly created element,
+		 * and if that is successful, run the application cache selection
+		 * algorithm with the result of applying the URL serializer algorithm to
+		 * the resulting parsed URL with the exclude fragment flag set;
+		 * otherwise, if there is no such attribute, or its value is the empty
+		 * string, or resolving its value fails, run the application cache
+		 * selection algorithm with no manifest. The algorithm must be passed
+		 * the Document object.
+		 * 
+		 * Switch the insertion mode to "before head".
+		 */
+		else if (tokenType == TokenType.start_tag
+				&& token.getValue().equals("html")) {
+			Element element = CreateAnElementForAToken.run(doc, Namespace.HTML,
+					token);
+			doc.appendChild(element);
+			parserContext.getOpenElements().push(element);
+			// TODO
+			parserContext.setInsertionMode(factory
+					.getInsertionMode(InsertionMode.before_head));
+			return parserContext;
+		}
+		/* An end tag whose tag name is one of: "head", "body", "html", "br"
+		 * Act as described in the "anything else" entry below.
+		 * Any other end tag
+		 * Parse error. Ignore the token.
+		 */
+		else if (tokenType == TokenType.end_tag && !(token.getValue().equals("head")
+				||token.getValue().equals("body")
+				||token.getValue().equals("html")
+				||token.getValue().equals("br")
+				)){
+			parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+			return parserContext;
+		} 
+		/* Anything else
+		 * Create an html element whose ownerDocument is the Document object. 
+		 * Append it to the Document object. Put this element in the stack of open elements.
+		 * 
+		 * If the Document is being loaded as part of navigation of a browsing context, 
+		 * then: run the application cache selection algorithm with no manifest, 
+		 * passing it the Document object.
+		 * 
+		 * Switch the insertion mode to "before head", then reprocess the token.
+		 */
+		 else {
+			 Element html = doc.createElement("html");
+			 doc.appendChild(html);
+			 parserContext.getOpenElements().push(html);
+			 //TODO
+			 parserContext.setInsertionMode(factory
+						.getInsertionMode(InsertionMode.before_head));
+			 parserContext.setFlagReconsumeToken(true);
+			 return parserContext;
+		}
+//		switch (token.getType()) {
+//
+//		
+//		case end_tag:
+//			if (token.getValue().equals("head"))
+//				;
+//			// Anything else
+//		case end_of_file:
+//		default:
+//			Document doc = parserContext.getDocument();
+//			Element html = doc.createElement("html");
+//			doc.appendChild(html);
+//			Stack<Element> stackOpenElements = parserContext.getOpenElements();
+//			stackOpenElements.push(html);
+//
+//			// TODO delete this, it just simulates next state
+//			Token headT = new Token(TokenType.start_tag, "head");
+//			Element head = InsertAnHTMLElement.run(parserContext, token);
+//			parserContext.setHeadElementPointer(head);
 
 			// TODO uncomment
 			/*
@@ -74,12 +144,10 @@ public class BeforeHTML implements IInsertionMode {
 			 * .getInsertionMode(InsertionMode.before_head));
 			 * parserContext.setFlagReconsumeToken(true);
 			 */
-			break;
-		}
-
-		parserContext.setFlagStopParsing(true);// TODO remove this to allow
-												// continue building the tree
-		return parserContext;
+//			break;
+//		}
+//
+//		parserContext.setFlagStopParsing(true);// TODO remove this to allow
+//												// continue building the tree
 	}
-
 }
