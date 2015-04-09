@@ -259,4 +259,16 @@ public class ParserContext {
 	public void setFlagFosterParenting(boolean flagFosterParenting) {
 		this.flagFosterParenting = flagFosterParenting;
 	}
+	
+	public boolean openElementsContain(String elementName){
+		int n = openElements.size();
+		boolean flag = false;
+		for (int i = 0; i < n; i++) {
+			Element element = openElements.pop();
+			if (element.getNodeName().equals(elementName)) {
+				flag = true;
+			}
+		}
+		return flag;
+	}
 }
