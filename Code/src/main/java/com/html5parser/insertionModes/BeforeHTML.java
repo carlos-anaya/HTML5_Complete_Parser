@@ -4,6 +4,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.html5parser.algorithms.CreateAnElementForAToken;
+import com.html5parser.algorithms.InsertComment;
 import com.html5parser.classes.InsertionMode;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
@@ -16,7 +17,6 @@ import com.html5parser.parseError.ParseErrorType;
 public class BeforeHTML implements IInsertionMode {
 
 	public ParserContext process(ParserContext parserContext) {
-		// TODO Before html . Is not finished
 
 		InsertionModeFactory factory = InsertionModeFactory.getInstance();
 		Token token = parserContext.getTokenizerContext().getCurrentToken();
@@ -35,8 +35,8 @@ public class BeforeHTML implements IInsertionMode {
 		 * object.
 		 */
 		else if (tokenType == TokenType.comment) {
-			// TODO
-			throw new UnsupportedOperationException();
+			InsertComment.run(parserContext, token);
+			
 		}
 		// A character token that is one of U+0009 CHARACTER TABULATION,
 		// "LF"(U+000A), "FF" (U+000C), "CR" (U+000D), or U+0020 SPACE
@@ -77,7 +77,7 @@ public class BeforeHTML implements IInsertionMode {
 		else if (tokenType == TokenType.start_tag
 				&& token.getValue().equals("html")) {
 			Element element = CreateAnElementForAToken.run(doc, Namespace.HTML,
-					token);
+					token,parserContext);
 			doc.appendChild(element);
 			parserContext.getOpenElements().push(element);
 			// TODO
@@ -118,6 +118,8 @@ public class BeforeHTML implements IInsertionMode {
 			 parserContext.setFlagReconsumeToken(true);
 			 return parserContext;
 		}
+		
+		return parserContext;
 //		switch (token.getType()) {
 //
 //		

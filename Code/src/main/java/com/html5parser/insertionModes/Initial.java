@@ -1,5 +1,7 @@
 package com.html5parser.insertionModes;
 
+import com.html5parser.algorithms.AppropiatePlaceForInsertingANode;
+import com.html5parser.algorithms.InsertComment;
 import com.html5parser.classes.InsertionMode;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
@@ -26,7 +28,7 @@ public class Initial implements IInsertionMode {
 			break;
 		case comment:
 			//Insert a comment as the last child of the Document object.
-			//TODO
+			InsertComment.run(parserContext, token);
 			throw new UnsupportedOperationException();
 
 		// A comment token

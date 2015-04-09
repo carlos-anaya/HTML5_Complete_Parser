@@ -3,6 +3,7 @@ package com.html5parser.insertionModes;
 import org.w3c.dom.Element;
 
 import com.html5parser.algorithms.InsertAnHTMLElement;
+import com.html5parser.algorithms.InsertComment;
 import com.html5parser.classes.InsertionMode;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
@@ -43,8 +44,7 @@ public class BeforeHead implements IInsertionMode {
 		 * Insert a comment.
 		 */
 		else if (tokenType == TokenType.comment) {
-			//TODO
-			throw new UnsupportedOperationException();
+			InsertComment.run(parserContext, token);
 		}
 		/*
 		 * A DOCTYPE token Parse error. Ignore the token.
@@ -58,8 +58,8 @@ public class BeforeHead implements IInsertionMode {
 		 */
 		else if (tokenType == TokenType.start_tag
 				&& token.getValue().equals("html")){
-			//TODO
-			return parserContext;
+			IInsertionMode inBody = factory.getInsertionMode(InsertionMode.in_body);
+			parserContext = inBody.process(parserContext);
 		}
 		/*
 		 * start tag whose tag name is "head"
@@ -86,7 +86,7 @@ public class BeforeHead implements IInsertionMode {
 				||token.getValue().equals("br")
 				)){
 			parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
-			return parserContext;
+			
 		}
 		/* Anything else
 		 * Insert an HTML element for a "head" start tag token with no attributes.
@@ -103,6 +103,6 @@ public class BeforeHead implements IInsertionMode {
 			parserContext.setFlagReconsumeToken(true);
 			return parserContext;
 		}
-		
+		return parserContext;
 	}
 }
