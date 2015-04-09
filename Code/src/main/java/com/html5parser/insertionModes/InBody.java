@@ -1,6 +1,6 @@
 package com.html5parser.insertionModes;
 
-import java.util.Stack;
+import java.util.ArrayList;
 
 import org.w3c.dom.Element;
 
@@ -116,11 +116,10 @@ public class InBody implements IInsertionMode {
 		 */
 		else if (tokenType == TokenType.end_of_file) {
 			if (!parserContext.getOpenElements().isEmpty()) {
-				Stack<Element> stack = new Stack<Element>();
+				ArrayList<Element> stack = new ArrayList<Element>();
+				stack.addAll(parserContext.getOpenElements());
 				boolean flag = true;
-				do {
-					Element element = parserContext.getOpenElements().pop();
-					stack.push(element);
+				for (Element element : stack) {
 					String name = element.getNodeName();
 					if (!(name.equals("dd") || name.equals("dt")
 							|| name.equals("li") || name.equals("p")
@@ -129,10 +128,8 @@ public class InBody implements IInsertionMode {
 							|| name.equals("thead") || name.equals("tr")
 							|| name.equals("body") || name.equals("html"))) {
 						flag = false;
+						break;
 					}
-				} while (flag);
-				for (int i = 0; i < stack.size(); i++) {
-					parserContext.getOpenElements().push(stack.pop());
 				}
 				if (!flag) {
 					parserContext
@@ -148,7 +145,7 @@ public class InBody implements IInsertionMode {
 			}
 
 		}
-		
+
 		/*
 		 * A start tag whose tag name is one of: "base", "basefont", "bgsound",
 		 * "link" Insert an HTML element for the token. Immediately pop the
@@ -294,12 +291,12 @@ public class InBody implements IInsertionMode {
 		 * off the stack of open elements. Switch the insertion mode to
 		 * "after head". Reprocess the token.
 		 */
-		else {
-			parserContext.getOpenElements().pop();
-			parserContext.setInsertionMode(factory
-					.getInsertionMode(InsertionMode.after_head));
-			parserContext.setFlagReconsumeToken(true);
-		}
+//		else {
+//			parserContext.getOpenElements().pop();
+//			parserContext.setInsertionMode(factory
+//					.getInsertionMode(InsertionMode.after_head));
+//			parserContext.setFlagReconsumeToken(true);
+//		}
 		return parserContext;
 	}
 }

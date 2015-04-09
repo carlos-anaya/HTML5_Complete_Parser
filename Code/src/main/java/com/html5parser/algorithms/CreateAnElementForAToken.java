@@ -35,8 +35,15 @@ public class CreateAnElementForAToken {
 
 		Document doc = intendedParentElement.getOwnerDocument();
 
-		Element element = doc.createElementNS(
-				namespace,currentToken.getValue());
+		// If doc is null it means it is the document
+		if (doc == null)
+			doc = ((Document) intendedParentElement);
+
+		
+//		Element element = doc.createElementNS(namespace,
+//				currentToken.getValue());
+		Element element = doc.createElement(currentToken.getValue());
+		
 		if (currentToken.getType().equals(TokenType.start_tag)) {
 			for (Attribute attribute : ((TagToken) currentToken)
 					.getAttributes()) {
@@ -85,7 +92,8 @@ public class CreateAnElementForAToken {
 			// element
 		}
 
-		// TODO If the element is a form-associated element, and the form element
+		// TODO If the element is a form-associated element, and the form
+		// element
 		// pointer is not null, and there is no template element on the stack of
 		// open elements, and the newly created element is either not
 		// reassociateable or doesn't have a form attribute, and the intended
