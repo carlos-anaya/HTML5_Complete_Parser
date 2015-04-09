@@ -51,8 +51,8 @@ public class InSelect implements IInsertionMode {
 			// Process the token using the rules for the "in body" insertion
 			// mode.
 			case "html":
-				// TODO process using in body
-				throw new UnsupportedOperationException();
+				new InBody().process(parserContext);
+				break;
 
 				// A start tag whose tag name is "option"
 				// If the current node is an option element, pop that node from
@@ -122,8 +122,8 @@ public class InSelect implements IInsertionMode {
 			// mode.
 			case "script":
 			case "template":
-				// TODO process using in head
-				throw new UnsupportedOperationException();
+				new InHead().process(parserContext);
+				break;
 
 			default:
 				anythingElse(parserContext);
@@ -195,8 +195,8 @@ public class InSelect implements IInsertionMode {
 			// Process the token using the rules for the "in head" insertion
 			// mode.
 			case "template":
-				// TODO process using in head
-				throw new UnsupportedOperationException();
+				new InHead().process(parserContext);
+				break;
 
 			default:
 				anythingElse(parserContext);
@@ -207,8 +207,8 @@ public class InSelect implements IInsertionMode {
 		// An end-of-file token
 		// Process the token using the rules for the "in body" insertion mode.
 		case end_of_file:
-			// TODO process using in body
-			throw new UnsupportedOperationException();
+			new InBody().process(parserContext);
+			break;
 
 		default:
 			anythingElse(parserContext);

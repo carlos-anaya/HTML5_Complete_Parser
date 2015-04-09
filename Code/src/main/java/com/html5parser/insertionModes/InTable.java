@@ -159,19 +159,19 @@ public class InTable implements IInsertionMode {
 			case "style":
 			case "script":
 			case "template":
-				// TODO using the rules for the "in head" insertion mode.
-				throw new UnsupportedOperationException();
+				new InHead().process(parserContext);
+				break;
 
-				// A start tag whose tag name is "input"
-				// If the token does not have an attribute with the name "type",
-				// or if it does, but that attribute's value is not an ASCII
-				// case-insensitive match for the string "hidden", then: act as
-				// described in the "anything else" entry below.
-				// Otherwise:
-				// Parse error.
-				// Insert an HTML element for the token.
-				// Pop that input element off the stack of open elements.
-				// Acknowledge the token's self-closing flag, if it is set.
+			// A start tag whose tag name is "input"
+			// If the token does not have an attribute with the name "type",
+			// or if it does, but that attribute's value is not an ASCII
+			// case-insensitive match for the string "hidden", then: act as
+			// described in the "anything else" entry below.
+			// Otherwise:
+			// Parse error.
+			// Insert an HTML element for the token.
+			// Pop that input element off the stack of open elements.
+			// Acknowledge the token's self-closing flag, if it is set.
 			case "input":
 				Boolean isInputHidden = false;
 				for (TagToken.Attribute a : ((TagToken) token).getAttributes())
@@ -257,8 +257,8 @@ public class InTable implements IInsertionMode {
 			// Process the token using the rules for the "in head" insertion
 			// mode.
 			case "template":
-				// TODO using the rules for the "in head" insertion mode.
-				throw new UnsupportedOperationException();
+				new InHead().process(parserContext);
+				break;
 			default:
 				anythingElse(parserContext);
 				break;
@@ -267,8 +267,8 @@ public class InTable implements IInsertionMode {
 		// An end-of-file token
 		// Process the token using the rules for the "in body" insertion mode.
 		case end_of_file:
-			// TODO process the token using the rules for the "in body"
-			throw new UnsupportedOperationException();
+			new InBody().process(parserContext);
+			break;
 		default:
 			anythingElse(parserContext);
 			break;
@@ -288,7 +288,7 @@ public class InTable implements IInsertionMode {
 		// parenting.
 		parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 		parserContext.setFlagFosterParenting(true);
-		// TODO process the token using the rules for the "in body"
+		parserContext = new InBody().process(parserContext);
 		parserContext.setFlagFosterParenting(false);
 
 		throw new UnsupportedOperationException();

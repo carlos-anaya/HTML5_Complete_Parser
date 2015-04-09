@@ -140,8 +140,7 @@ public class InCell implements IInsertionMode {
 	public void anythingElse(ParserContext parserContext) {
 		// Anything else
 		// Process the token using the rules for the "in body" insertion mode.
-		// TODO Process using "in body"
-		throw new UnsupportedOperationException();
+		new InBody().process(parserContext);
 	}
 
 	private void closeTheCell(ParserContext parserContext) {

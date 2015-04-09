@@ -104,8 +104,8 @@ public class InCaption implements IInsertionMode {
 	}
 
 	private void anythingElse(ParserContext parserContext) {
-		// TODO process the token using the rules for the "in body"
-		throw new UnsupportedOperationException();
+		// process the token using the rules for the "in body"
+		new InBody().process(parserContext);
 	}
 
 	private void case1(ParserContext parserContext) {

@@ -1,7 +1,5 @@
 package com.html5parser.insertionModes;
 
-import org.w3c.dom.Document;
-
 import com.html5parser.algorithms.InsertAnHTMLElement;
 import com.html5parser.algorithms.InsertCharacter;
 import com.html5parser.algorithms.InsertComment;
@@ -9,6 +7,7 @@ import com.html5parser.classes.InsertionMode;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
 import com.html5parser.classes.Token.TokenType;
+import com.html5parser.classes.token.TagToken;
 import com.html5parser.factories.InsertionModeFactory;
 import com.html5parser.interfaces.IInsertionMode;
 import com.html5parser.parseError.ParseErrorType;
@@ -19,7 +18,6 @@ public class AfterHead implements IInsertionMode {
 
 		InsertionModeFactory factory = InsertionModeFactory.getInstance();
 		Token token = parserContext.getTokenizerContext().getCurrentToken();
-		Document doc = parserContext.getDocument();
 		TokenType tokenType = token.getType();
 
 		/*
@@ -27,17 +25,7 @@ public class AfterHead implements IInsertionMode {
 		 * (U+000A), "FF" (U+000C), "CR" (U+000D), or U+0020 SPACE Insert the
 		 * character.
 		 */
-		if (tokenType == TokenType.character
-				&& (token.getValue().equals(
-						String.valueOf(Character.toChars(0x0009)))
-						|| token.getValue().equals(
-								String.valueOf(Character.toChars(0x000A)))
-						|| token.getValue().equals(
-								String.valueOf(Character.toChars(0x000C)))
-						|| token.getValue().equals(
-								String.valueOf(Character.toChars(0x000D))) || token
-						.getValue().equals(
-								String.valueOf(Character.toChars(0x0020))))) {
+		if (token.isSpaceCharacter()) {
 			InsertCharacter.run(parserContext, token);
 		}
 		/*
@@ -59,7 +47,8 @@ public class AfterHead implements IInsertionMode {
 		 */
 		else if (tokenType == TokenType.start_tag
 				&& token.getValue().equals("html")) {
-			IInsertionMode inBody = factory.getInsertionMode(InsertionMode.in_body);
+			IInsertionMode inBody = factory
+					.getInsertionMode(InsertionMode.in_body);
 			parserContext = inBody.process(parserContext);
 		}
 		/*
@@ -141,7 +130,8 @@ public class AfterHead implements IInsertionMode {
 		 * the current token.
 		 */
 		else {
-			InsertAnHTMLElement.run(parserContext, token);
+			InsertAnHTMLElement.run(parserContext, new TagToken(
+					TokenType.start_tag, "body"));
 			parserContext.setInsertionMode(factory
 					.getInsertionMode(InsertionMode.in_body));
 			parserContext.setFlagReconsumeToken(true);

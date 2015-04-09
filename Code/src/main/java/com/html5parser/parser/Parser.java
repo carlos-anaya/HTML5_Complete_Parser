@@ -14,6 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 
 import com.html5parser.algorithms.ForeignContent;
+import com.html5parser.algorithms.StopParsing;
 import com.html5parser.algorithms.TreeCostructionDispatcher;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
@@ -134,6 +135,8 @@ public class Parser implements IParser {
 				}
 
 			}
+			//TODO Run stop parsing algorithm
+			//StopParsing.run(parserContext);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

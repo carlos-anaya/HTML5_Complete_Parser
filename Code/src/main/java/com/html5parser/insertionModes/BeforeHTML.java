@@ -41,17 +41,7 @@ public class BeforeHTML implements IInsertionMode {
 		// A character token that is one of U+0009 CHARACTER TABULATION,
 		// "LF"(U+000A), "FF" (U+000C), "CR" (U+000D), or U+0020 SPACE
 		// Ignore the token.
-		else if (tokenType == TokenType.character
-				&& (token.getValue().equals(
-						String.valueOf(Character.toChars(0x0009)))
-						|| token.getValue().equals(
-								String.valueOf(Character.toChars(0x000A)))
-						|| token.getValue().equals(
-								String.valueOf(Character.toChars(0x000C)))
-						|| token.getValue().equals(
-								String.valueOf(Character.toChars(0x000D))) || token
-						.getValue().equals(
-								String.valueOf(Character.toChars(0x0020))))) {
+		else if (token.isSpaceCharacter()) {
 			return parserContext;
 		}
 		/*

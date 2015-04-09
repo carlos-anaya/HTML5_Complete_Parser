@@ -29,7 +29,7 @@ public class Token {
 		this.setType(_type);
 		this.setValue(_value);
 	}
-	
+
 	public Token(Token.TokenType _type, int _value) {
 		this.setType(_type);
 		this.setValue(_value);
@@ -46,11 +46,11 @@ public class Token {
 	public String getValue() {
 		return value;
 	}
-
-	public int getIntValue(){
+	
+	public int getIntValue() {
 		return value.codePointAt(0);
 	}
-	
+
 	public void setValue(String value) {
 		this.value = value;
 	}
@@ -58,12 +58,25 @@ public class Token {
 	public void setValue(int value) {
 		this.value = String.valueOf(Character.toChars(value));
 	}
-	
+
 	public void appendValue(int value) {
-		this.value = this.value.concat(String.valueOf(Character.toChars(value)));
+		this.value = this.value
+				.concat(String.valueOf(Character.toChars(value)));
 	}
-	
+
 	public void appendValue(String value) {
 		this.value = this.value.concat(value);
+	}
+
+	public Boolean isSpaceCharacter() {
+		if (this.type == TokenType.character
+				&& (value.codePointAt(0) == 0x0009
+						|| value.codePointAt(0) == 0x000A
+						|| value.codePointAt(0) == 0x000C
+						|| value.codePointAt(0) == 0x000D 
+						|| value.codePointAt(0) == 0x0020))
+			return true;
+
+		return false;
 	}
 }

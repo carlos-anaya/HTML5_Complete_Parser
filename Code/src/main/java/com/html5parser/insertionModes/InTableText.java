@@ -47,7 +47,7 @@ public class InTableText implements IInsertionMode {
 		default:
 			Boolean onlySpaceCharacters = true;
 			for (Token t : pendingTableCharacterTokens)
-				if (!isSpaceCharacter(t.getIntValue())) {
+				if (!t.isSpaceCharacter()) {
 					onlySpaceCharacters = false;
 					break;
 				}
@@ -64,13 +64,5 @@ public class InTableText implements IInsertionMode {
 			break;
 		}
 		return parserContext;
-	}
-
-	private boolean isSpaceCharacter(int value) {
-		if (value == 0x0020 || value == 0x0009 || value == 0x000A
-				|| value == 0x000C || value == 0x000D)
-			return true;
-		return false;
-
-	}
+	}	
 }

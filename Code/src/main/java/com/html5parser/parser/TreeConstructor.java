@@ -1,6 +1,5 @@
 package com.html5parser.parser;
 
-import com.html5parser.algorithms.TreeCostructionDispatcher;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.interfaces.ITreeConstructor;
 
