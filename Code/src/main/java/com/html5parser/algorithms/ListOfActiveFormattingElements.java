@@ -7,16 +7,18 @@ import java.util.List;
 import org.w3c.dom.Element;
 
 import com.html5parser.classes.ParserContext;
+import com.html5parser.classes.token.TagToken;
 import com.html5parser.constants.HTML5Elements;
 
 public class ListOfActiveFormattingElements {
-		// private String[] markerElements = { "applet", "marquee", "object", "th",
+	// private String[] markerElements = { "applet", "marquee", "object", "th",
 	// "td", "template" };
 
 	public static void push(ParserContext parserContext, Element element) {
 
 		// Not a formatting element
-		if (!Arrays.asList(HTML5Elements.FORMATTING).contains(element.getNodeName()))
+		if (!Arrays.asList(HTML5Elements.FORMATTING).contains(
+				element.getNodeName()))
 			return;
 
 		ArrayList<Element> list = parserContext.getActiveFormattingElements();
@@ -97,9 +99,8 @@ public class ListOfActiveFormattingElements {
 		// formatting elements.
 
 		// 6 If entry is neither a marker nor an element that is also in the
-		// stack
-		// of open elements, go to the step labeled rewind.
-		for (lastInList = lastEntry - 1; lastInList > 0; lastInList--) {
+		// stack of open elements, go to the step labeled rewind.
+		for (lastInList = lastEntry; lastInList >= 0; lastInList--) {
 			entry = list.get(lastInList);
 			if (entry == null)
 				break;
@@ -108,8 +109,7 @@ public class ListOfActiveFormattingElements {
 		}
 
 		// 7 Advance: Let entry be the element one later than entry in the list
-		// of
-		// active formatting elements.
+		// of active formatting elements.
 
 		// 8 Create: Insert an HTML element for the token for which the element
 		// entry was created, to obtain new element.
@@ -120,9 +120,12 @@ public class ListOfActiveFormattingElements {
 		// 10 If the entry for new element in the list of active formatting
 		// elements is not the last entry in the list, return to the step
 		// labeled advance.
-		for (lastInList++; lastInList <= lastEntry; lastInList++) {
+		for (lastInList = list.indexOf(entry); lastInList <= lastEntry; lastInList++) {
 			entry = list.get(lastInList);
-			// TODO insert element
+			TagToken t = (TagToken) entry.getUserData("0");
+			Element newElement = InsertAnHTMLElement.run(parserContext, t);
+			list.remove(entry);
+			list.add(lastInList, newElement);
 		}
 	}
 }

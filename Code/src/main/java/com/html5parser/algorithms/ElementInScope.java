@@ -55,27 +55,32 @@ public class ElementInScope {
 			// Otherwise, if node is one of the element types in list, terminate
 			// in a failure state.
 			else {
-				switch (type) {
-				case ListItem:
-					if (isInListItemScope(node))
-						return false;
-					break;
-				case Button:
-					if (isInButtonScope(node))
-						return false;
-					break;
-				case Table:
-					if (isInTableScope(node))
-						return false;
-					break;
-				case Select:
-					if (isInSelectScope(node))
-						return false;
-					break;
-				default:
+				if (type == null) {
 					if (isInScope(node))
 						return false;
-					break;
+				} else {
+					switch (type) {
+					case ListItem:
+						if (isInListItemScope(node))
+							return false;
+						break;
+					case Button:
+						if (isInButtonScope(node))
+							return false;
+						break;
+					case Table:
+						if (isInTableScope(node))
+							return false;
+						break;
+					case Select:
+						if (isInSelectScope(node))
+							return false;
+						break;
+					default:
+						if (isInScope(node))
+							return false;
+						break;
+					}
 				}
 			}
 			// Otherwise, set node to the previous entry in the stack of open

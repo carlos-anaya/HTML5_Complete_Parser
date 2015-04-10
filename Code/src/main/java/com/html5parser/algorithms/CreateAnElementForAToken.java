@@ -39,11 +39,12 @@ public class CreateAnElementForAToken {
 		if (doc == null)
 			doc = ((Document) intendedParentElement);
 
-		
-//		Element element = doc.createElementNS(namespace,
-//				currentToken.getValue());
+		// Element element = doc.createElementNS(namespace,
+		// currentToken.getValue());
 		Element element = doc.createElement(currentToken.getValue());
-		
+		// The new element saves a reference of the token that created it
+		element.setUserData("0", currentToken, null);
+
 		if (currentToken.getType().equals(TokenType.start_tag)) {
 			for (Attribute attribute : ((TagToken) currentToken)
 					.getAttributes()) {
