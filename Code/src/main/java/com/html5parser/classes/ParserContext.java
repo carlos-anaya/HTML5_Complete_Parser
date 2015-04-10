@@ -49,6 +49,7 @@ public class ParserContext {
 	private boolean flagStopParsing = false;
 	private boolean flagReconsumeToken = false;
 	private boolean flagFosterParenting = false;
+	private boolean flagHTMLFragmentParser = false;
 
 	/*
 	 * Others
@@ -271,4 +272,14 @@ public class ParserContext {
 		}
 		return flag;
 	}
+
+	public boolean isFlagHTMLFragmentParser() {
+		return flagHTMLFragmentParser;
+	}
+
+	public void setFlagHTMLFragmentParser(boolean flagHTMLFragmentParser) {
+		this.flagHTMLFragmentParser = flagHTMLFragmentParser;
+	}
+	
+	
 }
