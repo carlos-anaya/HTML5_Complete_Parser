@@ -72,8 +72,8 @@ public class InHead implements IInsertionMode {
 		}
 		/*
 		 * A start tag whose tag name is "meta" Insert an HTML element for the
-		 * token. Immediately pop the current node off the stack of open
-		 * elements. Acknowledge the token's self-closing flag, if it is set. If
+		 * token. Immediately pop the current node off the stack of open elements. 
+		 * Acknowledge the token's self-closing flag, if it is set. If
 		 * the element has a charset attribute, and getting an encoding from its
 		 * value results in a supported ASCII-compatible character encoding or a
 		 * UTF-16 encoding, and the confidence is currently tentative, then

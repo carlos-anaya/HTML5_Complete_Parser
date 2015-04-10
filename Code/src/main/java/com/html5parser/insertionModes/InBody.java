@@ -130,7 +130,7 @@ public class InBody implements IInsertionMode {
 							|| name.equals("body") || name.equals("html"))) {
 						flag = false;
 					}
-				} while (flag);
+				} while (flag && !parserContext.getOpenElements().isEmpty());
 				for (int i = 0; i < stack.size(); i++) {
 					parserContext.getOpenElements().push(stack.pop());
 				}

@@ -22,14 +22,15 @@ public class App {
 	public static void main(String[] args) {
 		System.out.println("Hello World!");
 		Parser parser = new Parser();
-		String html = "";
-
+		String html = "<title>abcd";
+		
 		ParserContext parserContext = parser
 				.tokenize(new ParserContext(), html);
 		parser.printTokens(parserContext);
 
 		// Document doc = parser.parse("<html><foo/>");
-		// System.out.println(serializeDocument(doc));
+//		System.out.println(parser.parse(html));
+		 System.out.println(serializeDocument(parser.parse(html)));
 
 	}
 
