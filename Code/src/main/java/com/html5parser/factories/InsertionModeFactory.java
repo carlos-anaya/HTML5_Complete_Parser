@@ -17,6 +17,7 @@ import com.html5parser.insertionModes.InTable;
 import com.html5parser.insertionModes.InTableBody;
 import com.html5parser.insertionModes.InTableText;
 import com.html5parser.insertionModes.Initial;
+import com.html5parser.insertionModes.Text;
 import com.html5parser.interfaces.IInsertionMode;
 
 public class InsertionModeFactory {
@@ -67,13 +68,16 @@ public class InsertionModeFactory {
 			return new InTableText();
 		case initial:
 			return new Initial();
+		case text:
+			return new Text();
+			
 		case after_after_body:
 		case after_after_frameset:
 		case after_body:
 		case after_frameset:
 		case in_frameset:
 		case in_template:
-		case text:
+		
 		default:
 			throw new UnsupportedOperationException();
 		}
