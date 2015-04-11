@@ -30,7 +30,7 @@ public class ParserContext {
 	 */
 	private IInsertionMode insertionMode = new Initial();
 	private IInsertionMode originalInsertionMode;
-	private IInsertionMode currentTemplateInsertionMode;
+	// private IInsertionMode currentTemplateInsertionMode;is the last ins. mode pushed onto the stack
 
 	/*
 	 * Stacks
@@ -55,7 +55,7 @@ public class ParserContext {
 	 * Others
 	 */
 	private ArrayList<Element> activeFormattingElements = new ArrayList<Element>();
-	private Element currentNode;
+	//private Element currentNode; //is the last element pushed onto the stack of open elements
 	private Element adjustedCurrentNode;
 	private Element headElementPointer;
 	private Element formElementPointer;
@@ -96,12 +96,7 @@ public class ParserContext {
 	}
 
 	public IInsertionMode getCurrentTemplateInsertionMode() {
-		return currentTemplateInsertionMode;
-	}
-
-	public void setCurrentTemplateInsertionMode(
-			IInsertionMode currentTemplateInsertionMode) {
-		this.currentTemplateInsertionMode = currentTemplateInsertionMode;
+		return templateInsertionModes.peek();
 	}
 
 	public Stack<Element> getOpenElements() {
@@ -180,10 +175,6 @@ public class ParserContext {
 
 	public Element getCurrentNode() {
 		return openElements.peek();
-	}
-
-	public void setCurrentNode(Element currentNode) {
-		this.currentNode = currentNode;
 	}
 
 	public Element getAdjustedCurrentNode() {
