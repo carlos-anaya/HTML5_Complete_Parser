@@ -9,7 +9,12 @@ import com.html5parser.classes.ParserContext;
 import com.html5parser.factories.InsertionModeFactory;
 
 public class ResetTheInsertionModeAppropriately {
+	
 	public static void Run(ParserContext parserContext) {
+		Run(parserContext, null) ;
+	}
+	
+	public static void Run(ParserContext parserContext, Element context) {
 		InsertionModeFactory factory = InsertionModeFactory.getInstance();
 		Stack<Element> openElements = new Stack<Element>();
 		openElements.addAll(parserContext.getOpenElements());
@@ -29,7 +34,10 @@ public class ResetTheInsertionModeAppropriately {
 
 			if (openElements.isEmpty()) {
 				last = true;
-				// TODO if fragment case, node = context element
+				// if fragment case, node = context element
+				if(context!=null){
+					node=context;
+				}
 			}
 			switch (node.getNodeName()) {
 
