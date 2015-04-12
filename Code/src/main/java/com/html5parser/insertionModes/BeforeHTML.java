@@ -50,7 +50,7 @@ public class BeforeHTML implements IInsertionMode {
 		 * Append it to the Document object. Put this element in the stack of
 		 * open elements.
 		 * 
-		 * If the Document is being loaded as part of navigation of a browsing
+		 * TODO If the Document is being loaded as part of navigation of a browsing
 		 * context, then: if the newly created element has a manifest attribute
 		 * whose value is not the empty string, then resolve the value of that
 		 * attribute to an absolute URL, relative to the newly created element,
@@ -92,7 +92,7 @@ public class BeforeHTML implements IInsertionMode {
 		 * Create an html element whose ownerDocument is the Document object. 
 		 * Append it to the Document object. Put this element in the stack of open elements.
 		 * 
-		 * If the Document is being loaded as part of navigation of a browsing context, 
+		 * TODO If the Document is being loaded as part of navigation of a browsing context, 
 		 * then: run the application cache selection algorithm with no manifest, 
 		 * passing it the Document object.
 		 * 

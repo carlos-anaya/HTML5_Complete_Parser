@@ -99,7 +99,7 @@ public class AfterHead implements IInsertionMode {
 			IInsertionMode insertionMode = factory
 					.getInsertionMode(InsertionMode.in_head);
 			parserContext = insertionMode.process(parserContext);
-			// TODO
+			parserContext.getOpenElements().remove(parserContext.getHeadElementPointer());
 		}
 		/*
 		 * An end tag whose tag name is "template" Process the token using the

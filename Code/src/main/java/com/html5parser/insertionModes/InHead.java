@@ -1,5 +1,7 @@
 package com.html5parser.insertionModes;
 
+import com.html5parser.algorithms.AdjustedInsertionLocation;
+import com.html5parser.algorithms.CreateAnElementForAToken;
 import com.html5parser.algorithms.GenericRCDATAElementParsing;
 import com.html5parser.algorithms.GenericRawTextElementParsing;
 import com.html5parser.algorithms.InsertAnHTMLElement;
@@ -71,12 +73,13 @@ public class InHead implements IInsertionMode {
 			return parserContext;
 		}
 		/*
-		 * A start tag whose tag name is "meta" Insert an HTML element for the
-		 * token. Immediately pop the current node off the stack of open elements. 
-		 * Acknowledge the token's self-closing flag, if it is set. If
-		 * the element has a charset attribute, and getting an encoding from its
-		 * value results in a supported ASCII-compatible character encoding or a
-		 * UTF-16 encoding, and the confidence is currently tentative, then
+		 * A start tag whose tag name is "meta" Insert an HTML element for the token. 
+		 * Immediately pop the current node off the stack of open elements. 
+		 * Acknowledge the token's self-closing flag, if it is set. 
+		 * TODO If the element has a charset attribute, 
+		 * and getting an encoding from its value results in a supported 
+		 * ASCII-compatible character encoding or a UTF-16 encoding, 
+		 * and the confidence is currently tentative, then
 		 * change the encoding to the resulting encoding. Otherwise, if the
 		 * element has an http-equiv attribute whose value is an ASCII
 		 * case-insensitive match for the string "Content-Type", and the element
@@ -127,9 +130,9 @@ public class InHead implements IInsertionMode {
 					.getInsertionMode(InsertionMode.in_head_noscript));
 		}
 		/*
-		 * A start tag whose tag name is "script" Run these steps: TODO Let the
-		 * adjusted insertion location be the appropriate place for inserting a
-		 * node. Create an element for the token in the HTML namespace, with the
+		 * A start tag whose tag name is "script" Run these steps: 
+		 * TODO Let the adjusted insertion location be the appropriate place for inserting a node. 
+		 * Create an element for the token in the HTML namespace, with the
 		 * intended parent being the element in which the adjusted insertion
 		 * location finds itself. Mark the element as being "parser-inserted"
 		 * and unset the element's "force-async" flag. This ensures that, if the
@@ -141,17 +144,15 @@ public class InHead implements IInsertionMode {
 		 * element as "already started". (fragment case) Insert the newly
 		 * created element at the adjusted insertion location. Push the element
 		 * onto the stack of open elements so that it is the new current node.
-		 * Switch the tokenizer to the script data state. Let the original
-		 * insertion mode be the current insertion mode. Switch the insertion
-		 * mode to "text".
+		 * Switch the tokenizer to the script data state. 
+		 * Let the original insertion mode be the current insertion mode. 
+		 * Switch the insertion mode to "text".
 		 */
 		else if (tokenType == TokenType.start_tag
 				&& token.getValue().equals("script")) {
-			// TODO
-			// AdjustedInsertionLocation location = new
-			// Element element =
-			// CreateAnElementForAToken.run(intendedParentElement, namespace,
-			// currentToken, context)
+			// I am not sure if we need to do this for the moment. 
+//			AdjustedInsertionLocation location = new 
+//			 CreateAnElementForAToken.run(intendedParentElement, namespace, currentToken, context);
 
 		}
 		/*

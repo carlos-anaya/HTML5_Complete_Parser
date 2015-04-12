@@ -403,10 +403,11 @@ public class InBody implements IInsertionMode {
 				}
 			}
 		}
-		/*
-		 * A start tag whose tag name is "li" Run these steps: Set the
-		 * frameset-ok flag to "not ok". Initialize node to be the current node
-		 * (the bottommost node of the stack). Loop: If node is an li element,
+		/*TODO
+		 * A start tag whose tag name is "li" Run these steps: 
+		 * Set the frameset-ok flag to "not ok". 
+		 * Initialize node to be the current node (the bottommost node of the stack). 
+		 * Loop: If node is an li element,
 		 * then run these substeps: Generate implied end tags, except for li
 		 * elements. If the current node is not an li element, then this is a
 		 * parse error. Pop elements from the stack of open elements until an li
@@ -421,7 +422,24 @@ public class InBody implements IInsertionMode {
 		else if (tokenType == TokenType.start_tag
 				&& token.getValue().equals("li")) {
 			parserContext.setFlagFramesetOk(false);
-			Node node = parserContext.getOpenElements().peek();
+			Node node = parserContext.getCurrentNode();
+			if (isOneOf(node.getNodeName(), new String(
+					"applet, area, article, aside, base, basefont, bgsound, "
+					+ "blockquote, body, br, button, caption, center, col, colgroup, dd, "
+					+ "details, dir, dl, dt, embed, fieldset, figcaption, figure, "
+					+ "footer, form, frame, frameset, h1, h2, h3, h4, h5, h6, head, header, "
+					+ "hgroup, hr, html, iframe, img, input, isindex, li, link, listing, "
+					+ "main, marquee, meta, nav, noembed, noframes, noscript, object, ol, "
+					+ "param, plaintext, pre, script, section, select, source, style, "
+					+ "summary, table, tbody, td, template, textarea, tfoot, th, thead, "
+					+ "title, tr, track, ul, wbr, xmp, mi, mo, mn, ms, mtext, annotation-xml, "
+					+ "foreignObject, desc, title"
+					).split(", "))) {
+				
+			}else{
+				
+			}
+			GenerateImpliedEndTags.run(parserContext, "li");
 			// TODO
 		}
 		/*
@@ -937,7 +955,7 @@ public class InBody implements IInsertionMode {
 		}
 		/*
 		 * A start tag whose tag name is "table"
-		 * If the Document is not set to quirks mode, 
+		 * TODO If the Document is not set to quirks mode, 
 		 * and the stack of open elements has a p element in button scope,
 		 * then close a p element.
 		 * Insert an HTML element for the token.
@@ -1168,7 +1186,7 @@ Prompt: If the token has an attribute with the name "prompt", then the first str
 		 * Reconstruct the active formatting elements, if any.
 		 * Insert an HTML element for the token.
 		 * Set the frameset-ok flag to "not ok".
-		 * If the insertion mode is one of "in table", "in caption", 
+		 * TODO If the insertion mode is one of "in table", "in caption", 
 		 * "in table body", "in row", or "in cell", 
 		 * then switch the insertion mode to "in select in table". 
 		 * Otherwise, switch the insertion mode to "in select".
