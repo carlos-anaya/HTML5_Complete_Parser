@@ -28,6 +28,32 @@ import com.html5parser.parseError.ParseError;
 import com.html5parser.parseError.ParseErrorType;
 
 public class Parser implements IParser {
+	
+	Document doc;
+	ParserContext parserContext;
+	Tokenizer tokenizer;
+	StreamPreprocessor streamPreprocessor;
+	TreeConstructor treeConstructor;
+	
+	public Parser() {
+		
+		 parserContext = new ParserContext();
+		 tokenizer = new Tokenizer();
+		 streamPreprocessor = new StreamPreprocessor();
+		 treeConstructor = new TreeConstructor();
+		
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder;
+		try {
+			builder = dbf.newDocumentBuilder();
+			doc = builder.newDocument();
+			parserContext.setDocument(doc);
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+		
 
 	public Document parse(String htmlString) {
 		return parse(new ByteArrayInputStream(htmlString.getBytes()));
@@ -35,19 +61,10 @@ public class Parser implements IParser {
 
 	public Document parse(InputStream stream) {
 
-		ParserContext parserContext = new ParserContext();
-		Tokenizer tokenizer = new Tokenizer();
-		StreamPreprocessor streamPreprocessor = new StreamPreprocessor();
-		TreeConstructor treeConstructor = new TreeConstructor();
-
 		BufferedReader in;
 		try {
 
-			Document doc;
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = dbf.newDocumentBuilder();
-			doc = builder.newDocument();
-			parserContext.setDocument(doc);
+			
 
 			in = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 
@@ -143,11 +160,7 @@ public class Parser implements IParser {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-
 		return parserContext.getDocument();
 	}
 
@@ -341,6 +354,27 @@ public class Parser implements IParser {
 		for (ParseError error : parserContext.getParseErrors()) {
 			System.out.println(error.getMessage());
 		}
+	}
+
+
+	public Document getDoc() {
+		return doc;
+	}
+
+
+	public void setDoc(Document doc) {
+		parserContext.setDocument(doc);
+		this.doc = doc;
+	}
+
+
+	public ParserContext getParserContext() {
+		return parserContext;
+	}
+
+
+	public void setParserContext(ParserContext parserContext) {
+		this.parserContext = parserContext;
 	}
 
 }
