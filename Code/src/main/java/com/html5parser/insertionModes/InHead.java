@@ -1,6 +1,9 @@
 package com.html5parser.insertionModes;
 
+import org.w3c.dom.Element;
+
 import com.html5parser.algorithms.AdjustedInsertionLocation;
+import com.html5parser.algorithms.AppropiatePlaceForInsertingANode;
 import com.html5parser.algorithms.CreateAnElementForAToken;
 import com.html5parser.algorithms.GenericRCDATAElementParsing;
 import com.html5parser.algorithms.GenericRawTextElementParsing;
@@ -12,8 +15,11 @@ import com.html5parser.classes.InsertionMode;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
 import com.html5parser.classes.Token.TokenType;
+import com.html5parser.classes.TokenizerState;
 import com.html5parser.classes.token.TagToken;
+import com.html5parser.constants.Namespace;
 import com.html5parser.factories.InsertionModeFactory;
+import com.html5parser.factories.TokenizerStateFactory;
 import com.html5parser.interfaces.IInsertionMode;
 import com.html5parser.parseError.ParseErrorType;
 
@@ -73,21 +79,20 @@ public class InHead implements IInsertionMode {
 			return parserContext;
 		}
 		/*
-		 * A start tag whose tag name is "meta" Insert an HTML element for the token. 
-		 * Immediately pop the current node off the stack of open elements. 
-		 * Acknowledge the token's self-closing flag, if it is set. 
-		 * TODO If the element has a charset attribute, 
-		 * and getting an encoding from its value results in a supported 
-		 * ASCII-compatible character encoding or a UTF-16 encoding, 
-		 * and the confidence is currently tentative, then
-		 * change the encoding to the resulting encoding. Otherwise, if the
-		 * element has an http-equiv attribute whose value is an ASCII
-		 * case-insensitive match for the string "Content-Type", and the element
-		 * has a content attribute, and applying the algorithm for extracting a
-		 * character encoding from a meta element to that attribute's value
-		 * returns a supported ASCII-compatible character encoding or a UTF-16
-		 * encoding, and the confidence is currently tentative, then change the
-		 * encoding to the extracted encoding.
+		 * A start tag whose tag name is "meta" Insert an HTML element for the
+		 * token. Immediately pop the current node off the stack of open
+		 * elements. Acknowledge the token's self-closing flag, if it is set.
+		 * TODO If the element has a charset attribute, and getting an encoding
+		 * from its value results in a supported ASCII-compatible character
+		 * encoding or a UTF-16 encoding, and the confidence is currently
+		 * tentative, then change the encoding to the resulting encoding.
+		 * Otherwise, if the element has an http-equiv attribute whose value is
+		 * an ASCII case-insensitive match for the string "Content-Type", and
+		 * the element has a content attribute, and applying the algorithm for
+		 * extracting a character encoding from a meta element to that
+		 * attribute's value returns a supported ASCII-compatible character
+		 * encoding or a UTF-16 encoding, and the confidence is currently
+		 * tentative, then change the encoding to the extracted encoding.
 		 */
 		else if (tokenType == TokenType.start_tag
 				&& token.getValue().equals("meta")) {
@@ -130,9 +135,9 @@ public class InHead implements IInsertionMode {
 					.getInsertionMode(InsertionMode.in_head_noscript));
 		}
 		/*
-		 * A start tag whose tag name is "script" Run these steps: 
-		 * TODO Let the adjusted insertion location be the appropriate place for inserting a node. 
-		 * Create an element for the token in the HTML namespace, with the
+		 * A start tag whose tag name is "script" Run these steps: TODO Let the
+		 * adjusted insertion location be the appropriate place for inserting a
+		 * node. Create an element for the token in the HTML namespace, with the
 		 * intended parent being the element in which the adjusted insertion
 		 * location finds itself. Mark the element as being "parser-inserted"
 		 * and unset the element's "force-async" flag. This ensures that, if the
@@ -144,15 +149,40 @@ public class InHead implements IInsertionMode {
 		 * element as "already started". (fragment case) Insert the newly
 		 * created element at the adjusted insertion location. Push the element
 		 * onto the stack of open elements so that it is the new current node.
-		 * Switch the tokenizer to the script data state. 
-		 * Let the original insertion mode be the current insertion mode. 
-		 * Switch the insertion mode to "text".
+		 * Switch the tokenizer to the script data state. Let the original
+		 * insertion mode be the current insertion mode. Switch the insertion
+		 * mode to "text".
 		 */
 		else if (tokenType == TokenType.start_tag
 				&& token.getValue().equals("script")) {
-			// I am not sure if we need to do this for the moment. 
-//			AdjustedInsertionLocation location = new 
-//			 CreateAnElementForAToken.run(intendedParentElement, namespace, currentToken, context);
+			AdjustedInsertionLocation location = AppropiatePlaceForInsertingANode
+					.run(parserContext);
+			Element element = CreateAnElementForAToken.run(
+					location.getParent(), Namespace.HTML, token, parserContext);
+
+			// TODO: Mark the element as being "parser-inserted" and unset the
+			// element's "non-blocking" flag. Out of scope.
+
+			// TODO: If the parser was originally created for the HTML fragment
+			// parsing algorithm, then mark the script element as
+			// "already started". (fragment case) Need script element
+			// implementation.
+			if (parserContext.isFlagHTMLFragmentParser()) {
+
+			}
+
+			location.insertElement(element);
+			parserContext.getOpenElements().push(element);
+
+			parserContext.getTokenizerContext().setNextState(
+					TokenizerStateFactory.getInstance().getState(
+							TokenizerState.Script_data_state));
+
+			parserContext.setOriginalInsertionMode(InsertionModeFactory
+					.getInstance().getInsertionMode(InsertionMode.in_head));
+			
+			parserContext.setInsertionMode(InsertionModeFactory
+					.getInstance().getInsertionMode(InsertionMode.text));
 
 		}
 		/*
