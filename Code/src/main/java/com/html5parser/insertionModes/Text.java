@@ -28,6 +28,7 @@ public class Text implements IInsertionMode {
 		// reprocess the token.
 		case end_of_file:
 			parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+			//TODO
 			parserContext.getOpenElements().pop();
 			parserContext.setInsertionMode(parserContext
 					.getOriginalInsertionMode());
