@@ -38,6 +38,14 @@ public class ElementInScope {
 		return isInScope(parserContext, elementName, ScopeType.Select);
 	}
 
+	private static Boolean isOneOf(String nodeName, String values) {
+		for (String s : values.split(","))
+			if (s.equals(nodeName))
+				return true;
+
+		return false;
+	}
+	
 	// The stack of open elements is said to have an element target node in a
 	// specific scope consisting of a list of element types list when the
 	// following algorithm terminates in a match state:
@@ -50,7 +58,8 @@ public class ElementInScope {
 			// the stack).
 			Element node = openElements.pop();
 			// If node is the target node, terminate in a match state.
-			if (node.getNodeName().equals(elementName))
+			//if (node.getNodeName().equals(elementName))
+			if(isOneOf(node.getNodeName(), elementName))
 				return true;
 			// Otherwise, if node is one of the element types in list, terminate
 			// in a failure state.

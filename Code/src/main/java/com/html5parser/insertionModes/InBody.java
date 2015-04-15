@@ -3,12 +3,10 @@ package com.html5parser.insertionModes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.html5parser.algorithms.AdjustForeignAttributes;
@@ -294,7 +292,7 @@ public class InBody implements IInsertionMode {
 		 */
 		else if (tokenType == TokenType.end_tag
 				&& token.getValue().equals("html")) {
-			if (!ElementInScope.isInScope(parserContext,"body")) {
+			if (!ElementInScope.isInScope(parserContext, "body")) {
 				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 				return parserContext;
 			} else {
@@ -403,11 +401,10 @@ public class InBody implements IInsertionMode {
 				}
 			}
 		}
-		/*TODO
-		 * A start tag whose tag name is "li" Run these steps: 
-		 * Set the frameset-ok flag to "not ok". 
-		 * Initialize node to be the current node (the bottommost node of the stack). 
-		 * Loop: If node is an li element,
+		/*
+		 * TODO A start tag whose tag name is "li" Run these steps: Set the
+		 * frameset-ok flag to "not ok". Initialize node to be the current node
+		 * (the bottommost node of the stack). Loop: If node is an li element,
 		 * then run these substeps: Generate implied end tags, except for li
 		 * elements. If the current node is not an li element, then this is a
 		 * parse error. Pop elements from the stack of open elements until an li
@@ -423,21 +420,22 @@ public class InBody implements IInsertionMode {
 				&& token.getValue().equals("li")) {
 			parserContext.setFlagFramesetOk(false);
 			Node node = parserContext.getCurrentNode();
-			if (isOneOf(node.getNodeName(), new String(
-					"applet, area, article, aside, base, basefont, bgsound, "
-					+ "blockquote, body, br, button, caption, center, col, colgroup, dd, "
-					+ "details, dir, dl, dt, embed, fieldset, figcaption, figure, "
-					+ "footer, form, frame, frameset, h1, h2, h3, h4, h5, h6, head, header, "
-					+ "hgroup, hr, html, iframe, img, input, isindex, li, link, listing, "
-					+ "main, marquee, meta, nav, noembed, noframes, noscript, object, ol, "
-					+ "param, plaintext, pre, script, section, select, source, style, "
-					+ "summary, table, tbody, td, template, textarea, tfoot, th, thead, "
-					+ "title, tr, track, ul, wbr, xmp, mi, mo, mn, ms, mtext, annotation-xml, "
-					+ "foreignObject, desc, title"
-					).split(", "))) {
-				
-			}else{
-				
+			if (isOneOf(
+					node.getNodeName(),
+					new String(
+							"applet, area, article, aside, base, basefont, bgsound, "
+									+ "blockquote, body, br, button, caption, center, col, colgroup, dd, "
+									+ "details, dir, dl, dt, embed, fieldset, figcaption, figure, "
+									+ "footer, form, frame, frameset, h1, h2, h3, h4, h5, h6, head, header, "
+									+ "hgroup, hr, html, iframe, img, input, isindex, li, link, listing, "
+									+ "main, marquee, meta, nav, noembed, noframes, noscript, object, ol, "
+									+ "param, plaintext, pre, script, section, select, source, style, "
+									+ "summary, table, tbody, td, template, textarea, tfoot, th, thead, "
+									+ "title, tr, track, ul, wbr, xmp, mi, mo, mn, ms, mtext, annotation-xml, "
+									+ "foreignObject, desc, title").split(", "))) {
+
+			} else {
+
 			}
 			GenerateImpliedEndTags.run(parserContext, "li");
 			// TODO
@@ -502,23 +500,19 @@ public class InBody implements IInsertionMode {
 					tokenStateFactory.getState(TokenizerState.PLAINTEXT_state));
 		}
 		/*
-		 * A start tag whose tag name is "button"
-		 * If the stack of open elements has a button element in scope, 
-		 * then run these substeps:
-		 *     Parse error.
-		 * 	   Generate implied end tags.
-		 *     Pop elements from the stack of open elements until a button element 
-		 *     has been popped from the stack.
-		 * Reconstruct the active formatting elements, if any.
-		 * Insert an HTML element for the token.
-		 * Set the frameset-ok flag to "not ok".
+		 * A start tag whose tag name is "button" If the stack of open elements
+		 * has a button element in scope, then run these substeps: Parse error.
+		 * Generate implied end tags. Pop elements from the stack of open
+		 * elements until a button element has been popped from the stack.
+		 * Reconstruct the active formatting elements, if any. Insert an HTML
+		 * element for the token. Set the frameset-ok flag to "not ok".
 		 */
 		else if (tokenType == TokenType.start_tag
 				&& token.getValue().equals("button")) {
 			if (ElementInScope.isInScope(parserContext, "button")) {
 				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 				GenerateImpliedEndTags.run(parserContext);
-				while (!parserContext.getOpenElements().isEmpty()){
+				while (!parserContext.getOpenElements().isEmpty()) {
 					Element element = parserContext.getOpenElements().pop();
 					if (element.getNodeName().equals("button")) {
 						break;
@@ -532,117 +526,142 @@ public class InBody implements IInsertionMode {
 			parserContext.setFlagFramesetOk(false);
 		}
 		/*
-		 * An end tag whose tag name is one of: "address", "article", "aside", 
-		 * "blockquote", "button", "center", "details", "dialog", "dir", "div", "dl", 
-		 * "fieldset", "figcaption", "figure", "footer", "header", "hgroup", "listing", 
-		 * "main", "nav", "ol", "pre", "section", "summary", "ul"
-		 * If the stack of open elements does not have an element in scope 
-		 * that is an HTML element and with the same tag name as that of the token, 
-		 * then this is a parse error; ignore the token.
-		 * Otherwise, run these steps:
-		 *    	Generate implied end tags.
-		 * 	    If the current node is not an HTML element with the same tag name 
-		 * 	    as that of the token, then this is a parse error.
-		 *      Pop elements from the stack of open elements until an HTML element
-		 *      with the same tag name as the token has been popped from the stack.
+		 * An end tag whose tag name is one of: "address", "article", "aside",
+		 * "blockquote", "button", "center", "details", "dialog", "dir", "div",
+		 * "dl", "fieldset", "figcaption", "figure", "footer", "header",
+		 * "hgroup", "listing", "main", "nav", "ol", "pre", "section",
+		 * "summary", "ul" If the stack of open elements does not have an
+		 * element in scope that is an HTML element and with the same tag name
+		 * as that of the token, then this is a parse error; ignore the token.
+		 * Otherwise, run these steps: Generate implied end tags. If the current
+		 * node is not an HTML element with the same tag name as that of the
+		 * token, then this is a parse error. Pop elements from the stack of
+		 * open elements until an HTML element with the same tag name as the
+		 * token has been popped from the stack.
 		 */
 		else if (tokenType == TokenType.end_tag
 				&& isOneOf(token.getValue(), new String[] { "address",
-						"article", "aside", "blockquote","button", "center", "details",
-						"dialog", "dir", "div", "dl", "fieldset", "figcaption",
-						"figure", "footer", "header", "hgroup","listing", "main", "nav",
-						"ol", "p","pre", "section", "summary", "ul" })) {
-				List<Element> list = new ArrayList<Element>();
-				list.addAll(parserContext.getOpenElements());
-				for(Element element : list){
-					if (!element.getNamespaceURI().equals("http://www.w3.org/1999/xhtml")) {
-						list.remove(element);
-					}
-				}
-				boolean flag = false;
-				for (Element element : list) {
+						"article", "aside", "blockquote", "button", "center",
+						"details", "dialog", "dir", "div", "dl", "fieldset",
+						"figcaption", "figure", "footer", "header", "hgroup",
+						"listing", "main", "nav", "ol", "pre", "section",
+						"summary", "ul" })) {
+			if (!ElementInScope.isInScope(parserContext, token.getValue())) {
+				parserContext
+						.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
+			} else {
+				GenerateImpliedEndTags.run(parserContext);
+				if (!parserContext.getCurrentNode().getNodeName()
+						.equals(token.getValue()))
+					parserContext
+							.addParseErrors(ParseErrorType.UnexpectedToken);
+				while (true) {
+					Element element = parserContext.getOpenElements().pop();
 					if (element.getNodeName().equals(token.getValue())) {
-						flag = true;
+						break;
 					}
 				}
-				String[] elementsInHTMLns = { "applet", "caption", "html", "table",
-						"td", "th", "marquee", "object", "template" };
-				
-				if (!(isOneOf(token.getValue(), elementsInHTMLns)&&flag )) {
-					parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
-					return parserContext;
-				}else {
-					GenerateImpliedEndTags.run(parserContext);
-					if (!parserContext.getCurrentNode().getNamespaceURI().
-							equals("http://www.w3.org/1999/xhtml")
-							|| !parserContext.getCurrentNode().getNodeName().equals(token.getValue())) {
-						parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
-					}
-					while (!parserContext.getOpenElements().isEmpty()) {
-						Element element = parserContext.getOpenElements().pop();
-						if (element.getNamespaceURI().
-								equals("http://www.w3.org/1999/xhtml")
-								&& element.getNodeName().equals(token.getValue())) {
-							break;
-						}
-						
-					}
-				}
+			}
+			// List<Element> list = new ArrayList<Element>();
+			// list.addAll(parserContext.getOpenElements());
+			// for (Element element : list) {
+			// if (!element.getNamespaceURI().equals(
+			// "http://www.w3.org/1999/xhtml")) {
+			// list.remove(element);
+			// }
+			// }
+			// boolean flag = false;
+			// for (Element element : list) {
+			// if (element.getNodeName().equals(token.getValue())) {
+			// flag = true;
+			// }
+			// }
+			// String[] elementsInHTMLns = { "applet", "caption", "html",
+			// "table",
+			// "td", "th", "marquee", "object", "template" };
+			//
+			// if (!(isOneOf(token.getValue(), elementsInHTMLns) && flag)) {
+			// parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+			// return parserContext;
+			// } else {
+			// GenerateImpliedEndTags.run(parserContext);
+			// if (!parserContext.getCurrentNode().getNamespaceURI()
+			// .equals("http://www.w3.org/1999/xhtml")
+			// || !parserContext.getCurrentNode().getNodeName()
+			// .equals(token.getValue())) {
+			// parserContext
+			// .addParseErrors(ParseErrorType.UnexpectedToken);
+			// }
+			// while (!parserContext.getOpenElements().isEmpty()) {
+			// Element element = parserContext.getOpenElements().pop();
+			// if (element.getNamespaceURI().equals(
+			// "http://www.w3.org/1999/xhtml")
+			// && element.getNodeName().equals(token.getValue())) {
+			// break;
+			// }
+			//
+			// }
+			// }
 		}
 		/*
-		 * An end tag whose tag name is "form"
-		 * If there is no template element on the stack of open elements, then run these substeps:
-		 *     Let node be the element that the form element pointer is set to, 
-		 *     or null if it is not set to an element.
-		 *     Set the form element pointer to null. Otherwise, let node be null.
-		 *     If node is null or if the stack of open elements does not have node in scope, 
-		 *     then this is a parse error; abort these steps and ignore the token.
-		 *     Generate implied end tags.
-		 *     If the current node is not node, then this is a parse error.
-		 *     Remove node from the stack of open elements.
-		 * If there is a template element on the stack of open elements, 
-		 * then run these substeps instead:
-		 *     If the stack of open elements does not have a form element in scope, 
-		 *     then this is a parse error; abort these steps and ignore the token.
-		 *     Generate implied end tags.
-		 *     If the current node is not a form element, then this is a parse error.
-		 *     Pop elements from the stack of open elements 
-		 *     until a form element has been popped from the stack.
+		 * An end tag whose tag name is "form" If there is no template element
+		 * on the stack of open elements, then run these substeps: Let node be
+		 * the element that the form element pointer is set to, or null if it is
+		 * not set to an element. Set the form element pointer to null.
+		 * Otherwise, let node be null. If node is null or if the stack of open
+		 * elements does not have node in scope, then this is a parse error;
+		 * abort these steps and ignore the token. Generate implied end tags. If
+		 * the current node is not node, then this is a parse error. Remove node
+		 * from the stack of open elements. If there is a template element on
+		 * the stack of open elements, then run these substeps instead: If the
+		 * stack of open elements does not have a form element in scope, then
+		 * this is a parse error; abort these steps and ignore the token.
+		 * Generate implied end tags. If the current node is not a form element,
+		 * then this is a parse error. Pop elements from the stack of open
+		 * elements until a form element has been popped from the stack.
 		 */
 		else if (tokenType == TokenType.end_tag
-				&& token.getValue().equals("form")){
+				&& token.getValue().equals("form")) {
 			if (!parserContext.openElementsContain("template")) {
-				Node node = parserContext.getFormElementPointer()!= null? parserContext.getFormElementPointer():null;
+				Node node = parserContext.getFormElementPointer() != null ? parserContext
+						.getFormElementPointer() : null;
 				if (parserContext.getFormElementPointer() != null) {
 					parserContext.setFormElementPointer(null);
 				}
-				if (node == null || !ElementInScope.isInScope(parserContext, node.getNodeName())) {
-					parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+				if (node == null
+						|| !ElementInScope.isInScope(parserContext,
+								node.getNodeName())) {
+					parserContext
+							.addParseErrors(ParseErrorType.UnexpectedToken);
 					return parserContext;
 				}
 				GenerateImpliedEndTags.run(parserContext);
 				if (parserContext.getCurrentNode() != node) {
-					parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+					parserContext
+							.addParseErrors(ParseErrorType.UnexpectedToken);
 				}
-				openElementStack.removeElementAt(openElementStack.indexOf(node));
-			}
-			else{
+				openElementStack
+						.removeElementAt(openElementStack.indexOf(node));
+			} else {
 				if (ElementInScope.isInScope(parserContext, "form")) {
-					parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+					parserContext
+							.addParseErrors(ParseErrorType.UnexpectedToken);
 					return parserContext;
 				}
 				GenerateImpliedEndTags.run(parserContext);
-				if (!parserContext.getCurrentNode().getNodeName().equals("form")) {
-					parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+				if (!parserContext.getCurrentNode().getNodeName()
+						.equals("form")) {
+					parserContext
+							.addParseErrors(ParseErrorType.UnexpectedToken);
 				}
 				while (!parserContext.getOpenElements().isEmpty()) {
 					Element element = parserContext.getOpenElements().pop();
 					if (element.getNodeName().equals("form")) {
 						break;
 					}
-					
+
 				}
-				
+
 			}
 		}
 		/*
@@ -660,136 +679,179 @@ public class InBody implements IInsertionMode {
 			closeApElement(parserContext);
 		}
 		/*
-		 * An end tag whose tag name is "li"
-		 * If the stack of open elements does not have an li element in list item scope, 
-		 * then this is a parse error; ignore the token.
-		 * Otherwise, run these steps:
-		 *     Generate implied end tags, except for li elements.
-		 *     If the current node is not an li element, then this is a parse error.
-		 *     Pop elements from the stack of open elements until 
-		 *     an li element has been popped from the stack.
+		 * An end tag whose tag name is "li" If the stack of open elements does
+		 * not have an li element in list item scope, then this is a parse
+		 * error; ignore the token. Otherwise, run these steps: Generate implied
+		 * end tags, except for li elements. If the current node is not an li
+		 * element, then this is a parse error. Pop elements from the stack of
+		 * open elements until an li element has been popped from the stack.
 		 */
-		else if (tokenType == TokenType.end_tag && token.getValue().equals("li")) {
+		else if (tokenType == TokenType.end_tag
+				&& token.getValue().equals("li")) {
 			if (ElementInScope.isInListItemScope(parserContext, "li")) {
 				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 				return parserContext;
-			}else{
+			} else {
 				GenerateImpliedEndTags.run(parserContext, "li");
 				if (parserContext.getCurrentNode().getNodeName().equals("li")) {
-					parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+					parserContext
+							.addParseErrors(ParseErrorType.UnexpectedToken);
 				}
 				while (!parserContext.getOpenElements().isEmpty()) {
 					Element element = parserContext.getOpenElements().pop();
 					if (element.getNodeName().equals("li")) {
 						break;
 					}
-					
+
 				}
 			}
-				
+
 		}
 		/*
-		 * An end tag whose tag name is one of: "dd", "dt"
-		 * If the stack of open elements does not have an element in scope 
-		 * that is an HTML element and with the same tag name as that of the token, 
-		 * then this is a parse error; ignore the token.
-		 * Otherwise, run these steps:
-		 *     Generate implied end tags, 
-		 *     except for HTML elements with the same tag name as the token.		      
-		 *     If the current node is not an HTML element with the same tag name 
-		 *     as that of the token, then this is a parse error.
-		 *     Pop elements from the stack of open elements until an HTML element with the same tag name as the token has been popped from the stack.
+		 * An end tag whose tag name is one of: "dd", "dt" If the stack of open
+		 * elements does not have an element in scope that is an HTML element
+		 * and with the same tag name as that of the token, then this is a parse
+		 * error; ignore the token. Otherwise, run these steps: Generate implied
+		 * end tags, except for HTML elements with the same tag name as the
+		 * token. If the current node is not an HTML element with the same tag
+		 * name as that of the token, then this is a parse error. Pop elements
+		 * from the stack of open elements until an HTML element with the same
+		 * tag name as the token has been popped from the stack.
 		 */
-		else if (tokenType == TokenType.end_tag && isOneOf(token.getValue(), new String[]{"dd","dt"})) {
-			List<Element> list = new ArrayList<Element>();
-			list.addAll(parserContext.getOpenElements());
-			for(Element element : list){
-				if (!element.getNamespaceURI().equals("http://www.w3.org/1999/xhtml")) {
-					list.remove(element);
-				}
-			}
-			boolean flag = false;
-			for (Element element : list) {
-				if (element.getNodeName().equals(token.getValue())) {
-					flag = true;
-				}
-			}
-			String[] elementsInHTMLns = { "applet", "caption", "html", "table",
-					"td", "th", "marquee", "object", "template" };
-			
-			if (!(isOneOf(token.getValue(), elementsInHTMLns)&&flag )) {
-				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
-				return parserContext;
-			}else {
-				GenerateImpliedEndTags.run(parserContext,token.getValue());
-				if (!parserContext.getCurrentNode().getNamespaceURI().
-						equals("http://www.w3.org/1999/xhtml")
-						|| !parserContext.getCurrentNode().getNodeName().equals(token.getValue())) {
-					parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
-				}
-			}
-			while (!parserContext.getOpenElements().isEmpty()) {
-				Element element = parserContext.getOpenElements().pop();
-				if (element.getNamespaceURI().
-						equals("http://www.w3.org/1999/xhtml")
-						&& element.getNodeName().equals(token.getValue())) {
-					break;
-				}
-				
-			}
-		}
-		/*
-		 * An end tag whose tag name is one of: "h1", "h2", "h3", "h4", "h5", "h6"
-		 * If the stack of open elements does not have an element in scope 
-		 * that is an HTML element and whose tag name is one of 
-		 * "h1", "h2", "h3", "h4", "h5", or "h6", 
-		 * then this is a parse error; ignore the token.
-		 * Otherwise, run these steps:
-		 *     Generate implied end tags.
-		 *     If the current node is not an HTML element with the same tag name as 
-		 *     that of the token, then this is a parse error.
-		 *     Pop elements from the stack of open elements until 
-		 *     an HTML element whose tag name is one of "h1", "h2", "h3", "h4", "h5", or "h6" 
-		 *     has been popped from the stack.
-		 */
-		else if (tokenType == TokenType.end_tag && isOneOf(token.getValue(), 
-				new String[]{"dd","dt"})) {
-			List<Element> list = new ArrayList<Element>();
-			list.addAll(parserContext.getOpenElements());
-			boolean flag = true;
-			for (Element e : list) {
-				if (ElementInScope.isInScope(parserContext, e.getNodeName())
-						&& e.getNamespaceURI().equals("http://www.w3.org/1999/xhtml")
-						&& isOneOf(e.getNodeName(), new String[]{"h1","h2","h3","h4","h5","h6"})) {
-					flag = false;
-					break;
-				}
-			}
-			if (flag) {
-				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
-				return parserContext;
-			}else {
-				if (!parserContext.getCurrentNode().getNamespaceURI().
-						equals("http://www.w3.org/1999/xhtml")
-						|| !parserContext.getCurrentNode().getNodeName().equals(token.getValue())) {
-					parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
-				}
-				while (!parserContext.getOpenElements().isEmpty()) {
+		else if (tokenType == TokenType.end_tag
+				&& isOneOf(token.getValue(), new String[] { "dd", "dt" })) {
+
+			if (!ElementInScope.isInScope(parserContext, token.getValue())) {
+				parserContext
+						.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
+			} else {
+				GenerateImpliedEndTags.run(parserContext, token.getValue());
+				if (!parserContext.getCurrentNode().getNodeName()
+						.equals(token.getValue()))
+					parserContext
+							.addParseErrors(ParseErrorType.UnexpectedToken);
+				while (true) {
 					Element element = parserContext.getOpenElements().pop();
-					if (isOneOf(element.getNodeName(), new String[]{
-						"h1","h2","h3","h4","h5","h6"
-					})) {
+					if (element.getNodeName().equals(token.getValue())) {
 						break;
 					}
-					
 				}
 			}
+
+			// List<Element> list = new ArrayList<Element>();
+			// list.addAll(parserContext.getOpenElements());
+			// for (Element element : list) {
+			// if (!element.getNamespaceURI().equals(
+			// "http://www.w3.org/1999/xhtml")) {
+			// list.remove(element);
+			// }
+			// }
+			// boolean flag = false;
+			// for (Element element : list) {
+			// if (element.getNodeName().equals(token.getValue())) {
+			// flag = true;
+			// }
+			// }
+			// String[] elementsInHTMLns = { "applet", "caption", "html",
+			// "table",
+			// "td", "th", "marquee", "object", "template" };
+			//
+			// if (!(isOneOf(token.getValue(), elementsInHTMLns) && flag)) {
+			// parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+			// return parserContext;
+			// } else {
+			// GenerateImpliedEndTags.run(parserContext, token.getValue());
+			// if (!parserContext.getCurrentNode().getNamespaceURI()
+			// .equals("http://www.w3.org/1999/xhtml")
+			// || !parserContext.getCurrentNode().getNodeName()
+			// .equals(token.getValue())) {
+			// parserContext
+			// .addParseErrors(ParseErrorType.UnexpectedToken);
+			// }
+			// }
+			// while (!parserContext.getOpenElements().isEmpty()) {
+			// Element element = parserContext.getOpenElements().pop();
+			// if (element.getNamespaceURI().equals(
+			// "http://www.w3.org/1999/xhtml")
+			// && element.getNodeName().equals(token.getValue())) {
+			// break;
+			// }
+			//
+			// }
 		}
 		/*
-		 * An end tag whose tag name is "sarcasm"
-		 * Take a deep breath, then act as described in the "any other end tag" entry below.
+		 * An end tag whose tag name is one of: "h1", "h2", "h3", "h4", "h5",
+		 * "h6" If the stack of open elements does not have an element in scope
+		 * that is an HTML element and whose tag name is one of "h1", "h2",
+		 * "h3", "h4", "h5", or "h6", then this is a parse error; ignore the
+		 * token. Otherwise, run these steps: Generate implied end tags. If the
+		 * current node is not an HTML element with the same tag name as that of
+		 * the token, then this is a parse error. Pop elements from the stack of
+		 * open elements until an HTML element whose tag name is one of "h1",
+		 * "h2", "h3", "h4", "h5", or "h6" has been popped from the stack.
 		 */
-		else if (tokenType == TokenType.end_tag && token.getValue().equals("sarcasm")){
+		else if (tokenType == TokenType.end_tag
+				&& isOneOf(token.getValue(), new String[] { "h1", "h2", "h3",
+						"h4", "h5", "h6" })) {
+
+			if (!ElementInScope.isInScope(parserContext, "h1,h2,h3,h4,h5,h6")) {
+				parserContext
+						.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
+			} else {
+				GenerateImpliedEndTags.run(parserContext);
+				if (!parserContext.getCurrentNode().getNodeName()
+						.equals(token.getValue()))
+					parserContext
+							.addParseErrors(ParseErrorType.UnexpectedToken);
+				while (true) {
+					Element element = parserContext.getOpenElements().pop();
+					if (isOneOf(element.getNodeName(), new String[] { "h1",
+							"h2", "h3", "h4", "h5", "h6" })) {
+						break;
+					}
+				}
+			}
+
+			// List<Element> list = new ArrayList<Element>();
+			// list.addAll(parserContext.getOpenElements());
+			// boolean flag = true;
+			// for (Element e : list) {
+			// if (ElementInScope.isInScope(parserContext, e.getNodeName())
+			// && e.getNamespaceURI().equals(
+			// "http://www.w3.org/1999/xhtml")
+			// && isOneOf(e.getNodeName(), new String[] { "h1", "h2",
+			// "h3", "h4", "h5", "h6" })) {
+			// flag = false;
+			// break;
+			// }
+			// }
+			// if (flag) {
+			// parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+			// return parserContext;
+			// } else {
+			// if (!parserContext.getCurrentNode().getNamespaceURI()
+			// .equals("http://www.w3.org/1999/xhtml")
+			// || !parserContext.getCurrentNode().getNodeName()
+			// .equals(token.getValue())) {
+			// parserContext
+			// .addParseErrors(ParseErrorType.UnexpectedToken);
+			// }
+			// while (!parserContext.getOpenElements().isEmpty()) {
+			// Element element = parserContext.getOpenElements().pop();
+			// if (isOneOf(element.getNodeName(), new String[] { "h1",
+			// "h2", "h3", "h4", "h5", "h6" })) {
+			// break;
+			// }
+			//
+			// }
+			// }
+		}
+		/*
+		 * An end tag whose tag name is "sarcasm" Take a deep breath, then act
+		 * as described in the "any other end tag" entry below.
+		 */
+		else if (tokenType == TokenType.end_tag
+				&& token.getValue().equals("sarcasm")) {
 			anyOtherEndTag(parserContext);
 		}
 		/*
@@ -831,6 +893,8 @@ public class InBody implements IInsertionMode {
 					parserContext = AdoptionAgencyAlgorithm.Run(parserContext,
 							token.getValue());
 					list = parserContext.getActiveFormattingElements();
+					if (list.size() < 1)
+						break;
 					Element last = list.get(list.size() - 1);
 					if (last.getNodeName().equals("a"))
 						parserContext.getActiveFormattingElements()
@@ -894,13 +958,13 @@ public class InBody implements IInsertionMode {
 		}
 		/*
 		 * A start tag whose tag name is one of: "applet", "marquee", "object"
-		 * Reconstruct the active formatting elements, if any.
-		 * Insert an HTML element for the token.
-		 * Insert a marker at the end of the list of active formatting elements.
-		 * Set the frameset-ok flag to "not ok".
+		 * Reconstruct the active formatting elements, if any. Insert an HTML
+		 * element for the token. Insert a marker at the end of the list of
+		 * active formatting elements. Set the frameset-ok flag to "not ok".
 		 */
 		else if (tokenType == TokenType.start_tag
-				&& isOneOf(token.getValue(), new String[] { "applet", "marquee", "object"})) {
+				&& isOneOf(token.getValue(), new String[] { "applet",
+						"marquee", "object" })) {
 			if (!parserContext.getActiveFormattingElements().isEmpty()) {
 				ListOfActiveFormattingElements.reconstruct(parserContext);
 			}
@@ -909,108 +973,123 @@ public class InBody implements IInsertionMode {
 			parserContext.setFlagFramesetOk(false);
 		}
 		/*
-		 * An end tag token whose tag name is one of: "applet", "marquee", "object"
-		 * If the stack of open elements does not have an element in scope that is 
-		 * an HTML element and with the same tag name as that of the token, 
-		 * then this is a parse error; ignore the token.
-		 * Otherwise, run these steps:
-		 *     Generate implied end tags.
-		 *     If the current node is not an HTML element with the same tag name 
-		 *     as that of the token, then this is a parse error.
-		 *     Pop elements from the stack of open elements until 
-		 *     an HTML element with the same tag name as the token has been popped from the stack.
-		 *     Clear the list of active formatting elements up to the last marker.
+		 * An end tag token whose tag name is one of: "applet", "marquee",
+		 * "object" If the stack of open elements does not have an element in
+		 * scope that is an HTML element and with the same tag name as that of
+		 * the token, then this is a parse error; ignore the token. Otherwise,
+		 * run these steps: Generate implied end tags. If the current node is
+		 * not an HTML element with the same tag name as that of the token, then
+		 * this is a parse error. Pop elements from the stack of open elements
+		 * until an HTML element with the same tag name as the token has been
+		 * popped from the stack. Clear the list of active formatting elements
+		 * up to the last marker.
 		 */
 		else if (tokenType == TokenType.end_tag
-				&& isOneOf(token.getValue(), new String[] { "applet", "marquee", "object"})){
-			List<Element> list = new ArrayList<Element>();
-			list.addAll(parserContext.getOpenElements());
-			boolean flag = true;
-			for (Element e : list) {
-				if (ElementInScope.isInScope(parserContext, e.getNodeName())
-						&& e.getNamespaceURI().equals("http://www.w3.org/1999/xhtml")
-						&& e.getNodeName().equals(token.getValue())) {
-					flag = false;
-					break;
-				}
-			}
-			if (flag) {
-				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
-				return parserContext;
-			}else {
+				&& isOneOf(token.getValue(), new String[] { "applet",
+						"marquee", "object" })) {
+			
+			if (!ElementInScope.isInScope(parserContext, token.getValue())) {
+				parserContext
+						.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
+			} else {
 				GenerateImpliedEndTags.run(parserContext);
-				if (!parserContext.getCurrentNode().getNamespaceURI().
-						equals("http://www.w3.org/1999/xhtml")
-						|| !parserContext.getCurrentNode().getNodeName().equals(token.getValue())) {
-					parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
-				}
-				while (!parserContext.getOpenElements().isEmpty()) {
+				if (!parserContext.getCurrentNode().getNodeName()
+						.equals(token.getValue()))
+					parserContext
+							.addParseErrors(ParseErrorType.UnexpectedToken);
+				while (true) {
 					Element element = parserContext.getOpenElements().pop();
 					if (element.getNodeName().equals(token.getValue())) {
 						break;
 					}
 				}
-				ListOfActiveFormattingElements.clear(parserContext);
 			}
+//			List<Element> list = new ArrayList<Element>();
+//			list.addAll(parserContext.getOpenElements());
+//			boolean flag = true;
+//			for (Element e : list) {
+//				if (ElementInScope.isInScope(parserContext, e.getNodeName())
+//						&& e.getNamespaceURI().equals(
+//								"http://www.w3.org/1999/xhtml")
+//						&& e.getNodeName().equals(token.getValue())) {
+//					flag = false;
+//					break;
+//				}
+//			}
+//			if (flag) {
+//				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+//				return parserContext;
+//			} else {
+//				GenerateImpliedEndTags.run(parserContext);
+//				if (!parserContext.getCurrentNode().getNamespaceURI()
+//						.equals("http://www.w3.org/1999/xhtml")
+//						|| !parserContext.getCurrentNode().getNodeName()
+//								.equals(token.getValue())) {
+//					parserContext
+//							.addParseErrors(ParseErrorType.UnexpectedToken);
+//				}
+//				while (!parserContext.getOpenElements().isEmpty()) {
+//					Element element = parserContext.getOpenElements().pop();
+//					if (element.getNodeName().equals(token.getValue())) {
+//						break;
+//					}
+//				}
+//				ListOfActiveFormattingElements.clear(parserContext);
+//			}
 		}
 		/*
-		 * A start tag whose tag name is "table"
-		 * TODO If the Document is not set to quirks mode, 
-		 * and the stack of open elements has a p element in button scope,
-		 * then close a p element.
-		 * Insert an HTML element for the token.
-		 * Set the frameset-ok flag to "not ok".
-		 * Switch the insertion mode to "in table".
+		 * A start tag whose tag name is "table" TODO If the Document is not set
+		 * to quirks mode, and the stack of open elements has a p element in
+		 * button scope, then close a p element. Insert an HTML element for the
+		 * token. Set the frameset-ok flag to "not ok". Switch the insertion
+		 * mode to "in table".
 		 */
 		else if (tokenType == TokenType.end_tag
-				&& isOneOf(token.getValue(), new String[] {"table"})){
-			//TODO
+				&& isOneOf(token.getValue(), new String[] { "table" })) {
+			// TODO
 			InsertAnHTMLElement.run(parserContext, token);
 			parserContext.setFlagFramesetOk(false);
 			parserContext.setInsertionMode(factory
 					.getInsertionMode(InsertionMode.in_table));
 		}
 		/*
-		 *An end tag whose tag name is "br"
-		 *Parse error. Act as described in the next entry, 
-		 *as if this was a "br" start tag token, rather than an end tag token.
-		 *A start tag whose tag name is one of: "area", "br", "embed", "img", "keygen", "wbr"
-		 *Reconstruct the active formatting elements, if any.
-		 *Insert an HTML element for the token. 
-		 *Immediately pop the current node off the stack of open elements.
-		 *Acknowledge the token's self-closing flag, if it is set.
-		 *Set the frameset-ok flag to "not ok".
+		 * An end tag whose tag name is "br"Parse error. Act as described in the
+		 * next entry,as if this was a "br" start tag token, rather than an end
+		 * tag token.A start tag whose tag name is one of: "area", "br",
+		 * "embed", "img", "keygen", "wbr"Reconstruct the active formatting
+		 * elements, if any.Insert an HTML element for the token.Immediately pop
+		 * the current node off the stack of open elements.Acknowledge the
+		 * token's self-closing flag, if it is set.Set the frameset-ok flag to
+		 * "not ok".
 		 */
-		else if ((tokenType == TokenType.end_tag
-				&& isOneOf(token.getValue(), new String[] {"br"}))
-				||(tokenType == TokenType.start_tag
-						&& isOneOf(token.getValue(), new String[] {"area",
-							"br","embed", "img", "keygen", "wbr"
-						}))){
-			
+		else if ((tokenType == TokenType.end_tag && isOneOf(token.getValue(),
+				new String[] { "br" }))
+				|| (tokenType == TokenType.start_tag && isOneOf(
+						token.getValue(), new String[] { "area", "br", "embed",
+								"img", "keygen", "wbr" }))) {
+
 			if (token.getValue().equals("br")) {
 				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 			}
 			if (!parserContext.getActiveFormattingElements().isEmpty()) {
 				ListOfActiveFormattingElements.reconstruct(parserContext);
 			}
+			InsertAnHTMLElement.run(parserContext, token);
 			parserContext.getOpenElements().pop();
 			((TagToken) token).setFlagAcknowledgeSelfClosingTag(true);
 			parserContext.setFlagFramesetOk(false);
 		}
 		/*
-		 * A start tag whose tag name is "input"
-		 * Reconstruct the active formatting elements, if any.
-		 * Insert an HTML element for the token. 
+		 * A start tag whose tag name is "input" Reconstruct the active
+		 * formatting elements, if any. Insert an HTML element for the token.
 		 * Immediately pop the current node off the stack of open elements.
-		 * Acknowledge the token's self-closing flag, if it is set.
-		 * If the token does not have an attribute with the name "type",
-		 * or if it does,
-		 * but that attribute's value is not an ASCII case-insensitive match 
-		 * for the string "hidden", then: set the frameset-ok flag to "not ok".
+		 * Acknowledge the token's self-closing flag, if it is set. If the token
+		 * does not have an attribute with the name "type", or if it does, but
+		 * that attribute's value is not an ASCII case-insensitive match for the
+		 * string "hidden", then: set the frameset-ok flag to "not ok".
 		 */
 		else if (tokenType == TokenType.start_tag
-				&& token.getValue().equals("input")){
+				&& token.getValue().equals("input")) {
 			if (!parserContext.getActiveFormattingElements().isEmpty()) {
 				ListOfActiveFormattingElements.reconstruct(parserContext);
 			}
@@ -1020,30 +1099,26 @@ public class InBody implements IInsertionMode {
 		}
 		/*
 		 * A start tag whose tag name is one of: "param", "source", "track"
-		 * Insert an HTML element for the token. 
-		 * Immediately pop the current node off the stack of open elements.
-		 * Acknowledge the token's self-closing flag, if it is set.
+		 * Insert an HTML element for the token. Immediately pop the current
+		 * node off the stack of open elements. Acknowledge the token's
+		 * self-closing flag, if it is set.
 		 */
 		else if (tokenType == TokenType.start_tag
-				&& isOneOf(token.getValue(), new String[]{
-					"param", "source", "track"
-				})){
+				&& isOneOf(token.getValue(), new String[] { "param", "source",
+						"track" })) {
 			InsertAnHTMLElement.run(parserContext, token);
 			parserContext.getOpenElements().pop();
 			((TagToken) token).setFlagAcknowledgeSelfClosingTag(true);
 		}
-		/* A start tag whose tag name is "hr"
-		 * If the stack of open elements has a p element in button scope,
-		 * then close a p element.
-		 * Insert an HTML element for the token. 
-		 * Immediately pop the current node off the stack of open elements.
-		 * Acknowledge the token's self-closing flag, if it is set.
-		 * Set the frameset-ok flag to "not ok".
+		/*
+		 * A start tag whose tag name is "hr" If the stack of open elements has
+		 * a p element in button scope, then close a p element. Insert an HTML
+		 * element for the token. Immediately pop the current node off the stack
+		 * of open elements. Acknowledge the token's self-closing flag, if it is
+		 * set. Set the frameset-ok flag to "not ok".
 		 */
 		else if (tokenType == TokenType.start_tag
-				&& isOneOf(token.getValue(), new String[]{
-					"hr"
-				})){
+				&& isOneOf(token.getValue(), new String[] { "hr" })) {
 			if (ElementInScope.isInButtonScope(parserContext, "p"))
 				closeApElement(parserContext);
 			InsertAnHTMLElement.run(parserContext, token);
@@ -1052,79 +1127,98 @@ public class InBody implements IInsertionMode {
 			parserContext.setFlagFramesetOk(false);
 		}
 		/*
-		 * A start tag whose tag name is "image"
-		 * Parse error. Change the token's tag name to "img" and reprocess it. (Don't ask.)
+		 * A start tag whose tag name is "image" Parse error. Change the token's
+		 * tag name to "img" and reprocess it. (Don't ask.)
 		 */
 		else if (tokenType == TokenType.start_tag
-				&& isOneOf(token.getValue(), new String[]{
-					"image"
-				})){
+				&& isOneOf(token.getValue(), new String[] { "image" })) {
 			parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 			token.setValue("img");
 			parserContext.getTokenizerContext().setCurrentToken(token);
 			parserContext.setFlagReconsumeToken(true);
 		}
 		/*
-		 * A start tag whose tag name is "isindex"
-Parse error.
-
-If there is no template element on the stack of open elements and the form element pointer is not null, then ignore the token.
-
-Otherwise:
-
-Acknowledge the token's self-closing flag, if it is set.
-
-Set the frameset-ok flag to "not ok".
-
-If the stack of open elements has a p element in button scope, then close a p element.
-
-Insert an HTML element for a "form" start tag token with no attributes, and, if there is no template element on the stack of open elements, set the form element pointer to point to the element created.
-
-If the token has an attribute called "action", set the action attribute on the resulting form element to the value of the "action" attribute of the token.
-
-Insert an HTML element for an "hr" start tag token with no attributes. Immediately pop the current node off the stack of open elements.
-
-Reconstruct the active formatting elements, if any.
-
-Insert an HTML element for a "label" start tag token with no attributes.
-
-Insert characters (see below for what they should say).
-
-Insert an HTML element for an "input" start tag token with all the attributes from the "isindex" token except "name", "action", and "prompt", and with an attribute named "name" with the value "isindex". (This creates an input element with the name attribute set to the magic balue "isindex".) Immediately pop the current node off the stack of open elements.
-
-Insert more characters (see below for what they should say).
-
-Pop the current node (which will be the label element created earlier) off the stack of open elements.
-
-Insert an HTML element for an "hr" start tag token with no attributes. Immediately pop the current node off the stack of open elements.
-
-Pop the current node (which will be the form element created earlier) off the stack of open elements, and, if there is no template element on the stack of open elements, set the form element pointer back to null.
-
-Prompt: If the token has an attribute with the name "prompt", then the first stream of characters must be the same string as given in that attribute, and the second stream of characters must be empty. Otherwise, the two streams of character tokens together should, together with the input element, express the equivalent of "This is a searchable index. Enter search keywords: (input field)" in the user's preferred language.
+		 * A start tag whose tag name is "isindex" Parse error.
+		 * 
+		 * If there is no template element on the stack of open elements and the
+		 * form element pointer is not null, then ignore the token.
+		 * 
+		 * Otherwise:
+		 * 
+		 * Acknowledge the token's self-closing flag, if it is set.
+		 * 
+		 * Set the frameset-ok flag to "not ok".
+		 * 
+		 * If the stack of open elements has a p element in button scope, then
+		 * close a p element.
+		 * 
+		 * Insert an HTML element for a "form" start tag token with no
+		 * attributes, and, if there is no template element on the stack of open
+		 * elements, set the form element pointer to point to the element
+		 * created.
+		 * 
+		 * If the token has an attribute called "action", set the action
+		 * attribute on the resulting form element to the value of the "action"
+		 * attribute of the token.
+		 * 
+		 * Insert an HTML element for an "hr" start tag token with no
+		 * attributes. Immediately pop the current node off the stack of open
+		 * elements.
+		 * 
+		 * Reconstruct the active formatting elements, if any.
+		 * 
+		 * Insert an HTML element for a "label" start tag token with no
+		 * attributes.
+		 * 
+		 * Insert characters (see below for what they should say).
+		 * 
+		 * Insert an HTML element for an "input" start tag token with all the
+		 * attributes from the "isindex" token except "name", "action", and
+		 * "prompt", and with an attribute named "name" with the value
+		 * "isindex". (This creates an input element with the name attribute set
+		 * to the magic balue "isindex".) Immediately pop the current node off
+		 * the stack of open elements.
+		 * 
+		 * Insert more characters (see below for what they should say).
+		 * 
+		 * Pop the current node (which will be the label element created
+		 * earlier) off the stack of open elements.
+		 * 
+		 * Insert an HTML element for an "hr" start tag token with no
+		 * attributes. Immediately pop the current node off the stack of open
+		 * elements.
+		 * 
+		 * Pop the current node (which will be the form element created earlier)
+		 * off the stack of open elements, and, if there is no template element
+		 * on the stack of open elements, set the form element pointer back to
+		 * null.
+		 * 
+		 * Prompt: If the token has an attribute with the name "prompt", then
+		 * the first stream of characters must be the same string as given in
+		 * that attribute, and the second stream of characters must be empty.
+		 * Otherwise, the two streams of character tokens together should,
+		 * together with the input element, express the equivalent of
+		 * "This is a searchable index. Enter search keywords: (input field)" in
+		 * the user's preferred language.
 		 */
-		
-		
-		
-		
+
 		/*
-		 * A start tag whose tag name is "textarea"
-		 * Run these steps:
-		 *     Insert an HTML element for the token.
-		 *     If the next token is a "LF" (U+000A) character token, 
-		 *     then ignore that token and move on to the next one. 
-		 *     (Newlines at the start of textarea elements are ignored as an authoring convenience.)
-		 *     Switch the tokenizer to the RCDATA state.
-		 *     Let the original insertion mode be the current insertion mode.
-		 *     Set the frameset-ok flag to "not ok".
-		 *     Switch the insertion mode to "text".
+		 * A start tag whose tag name is "textarea" Run these steps: Insert an
+		 * HTML element for the token. If the next token is a "LF" (U+000A)
+		 * character token, then ignore that token and move on to the next one.
+		 * (Newlines at the start of textarea elements are ignored as an
+		 * authoring convenience.) Switch the tokenizer to the RCDATA state. Let
+		 * the original insertion mode be the current insertion mode. Set the
+		 * frameset-ok flag to "not ok". Switch the insertion mode to "text".
 		 */
 		else if (tokenType == TokenType.start_tag
-				&& isOneOf(token.getValue(), new String[]{
-					"textarea"
-				})){
+				&& isOneOf(token.getValue(), new String[] { "textarea" })) {
 			InsertAnHTMLElement.run(parserContext, token);
-			Token nextToken = parserContext.getTokenizerContext().getTokens().peek();
-			if (nextToken != null && nextToken.getValue().equals(String.valueOf(Character.toChars(0x000A)))) {
+			Token nextToken = parserContext.getTokenizerContext().getTokens()
+					.peek();
+			if (nextToken != null
+					&& nextToken.getValue().equals(
+							String.valueOf(Character.toChars(0x000A)))) {
 				parserContext.getTokenizerContext().getTokens().poll();
 			}
 			TokenizerStateFactory tokenStateFactory = TokenizerStateFactory
@@ -1138,80 +1232,70 @@ Prompt: If the token has an attribute with the name "prompt", then the first str
 					.getInsertionMode(InsertionMode.text));
 		}
 		/*
-		 * A start tag whose tag name is "xmp"
-		 * If the stack of open elements has a p element in button scope, 
-		 * then close a p element.
-		 * Reconstruct the active formatting elements, if any.
-		 * Set the frameset-ok flag to "not ok".
-		 * Follow the generic raw text element parsing algorithm.
+		 * A start tag whose tag name is "xmp" If the stack of open elements has
+		 * a p element in button scope, then close a p element. Reconstruct the
+		 * active formatting elements, if any. Set the frameset-ok flag to
+		 * "not ok". Follow the generic raw text element parsing algorithm.
 		 */
 		else if (tokenType == TokenType.start_tag
-				&& isOneOf(token.getValue(), new String[]{
-					"xmp"
-				})){
+				&& isOneOf(token.getValue(), new String[] { "xmp" })) {
 			if (ElementInScope.isInButtonScope(parserContext, "p"))
 				closeApElement(parserContext);
 			if (!parserContext.getActiveFormattingElements().isEmpty()) {
 				ListOfActiveFormattingElements.reconstruct(parserContext);
 			}
 			parserContext.setFlagFramesetOk(false);
-			GenericRawTextElementParsing.run(parserContext, (TagToken)token);
+			GenericRawTextElementParsing.run(parserContext, (TagToken) token);
 		}
 		/*
-		 * A start tag whose tag name is "iframe"
-		 * Set the frameset-ok flag to "not ok".
-		 * Follow the generic raw text element parsing algorithm.
+		 * A start tag whose tag name is "iframe" Set the frameset-ok flag to
+		 * "not ok". Follow the generic raw text element parsing algorithm.
 		 */
 		else if (tokenType == TokenType.start_tag
-				&& isOneOf(token.getValue(), new String[]{
-					"iframe"
-				})){
+				&& isOneOf(token.getValue(), new String[] { "iframe" })) {
 			parserContext.setFlagFramesetOk(false);
-			GenericRawTextElementParsing.run(parserContext, (TagToken)token);
+			GenericRawTextElementParsing.run(parserContext, (TagToken) token);
 		}
 		/*
-		 * A start tag whose tag name is "noembed"
-		 * A start tag whose tag name is "noscript", if the scripting flag is enabled
-		 * Follow the generic raw text element parsing algorithm.
+		 * A start tag whose tag name is "noembed" A start tag whose tag name is
+		 * "noscript", if the scripting flag is enabled Follow the generic raw
+		 * text element parsing algorithm.
 		 */
-		else if ((tokenType == TokenType.start_tag
-				&& token.getValue().equals("noembed"))
-				||(tokenType == TokenType.start_tag
-						&& token.getValue().equals("noscript")
-						&& parserContext.isFlagScripting())){
-			GenericRawTextElementParsing.run(parserContext, (TagToken)token);
+		else if ((tokenType == TokenType.start_tag && token.getValue().equals(
+				"noembed"))
+				|| (tokenType == TokenType.start_tag
+						&& token.getValue().equals("noscript") && parserContext
+							.isFlagScripting())) {
+			GenericRawTextElementParsing.run(parserContext, (TagToken) token);
 		}
 		/*
-		 * A start tag whose tag name is "select"
-		 * Reconstruct the active formatting elements, if any.
-		 * Insert an HTML element for the token.
-		 * Set the frameset-ok flag to "not ok".
-		 * TODO If the insertion mode is one of "in table", "in caption", 
-		 * "in table body", "in row", or "in cell", 
-		 * then switch the insertion mode to "in select in table". 
+		 * A start tag whose tag name is "select" Reconstruct the active
+		 * formatting elements, if any. Insert an HTML element for the token.
+		 * Set the frameset-ok flag to "not ok". TODO If the insertion mode is
+		 * one of "in table", "in caption", "in table body", "in row", or
+		 * "in cell", then switch the insertion mode to "in select in table".
 		 * Otherwise, switch the insertion mode to "in select".
 		 */
-		else if ((tokenType == TokenType.start_tag
-				&& token.getValue().equals("select"))){
+		else if ((tokenType == TokenType.start_tag && token.getValue().equals(
+				"select"))) {
 			if (!parserContext.getActiveFormattingElements().isEmpty()) {
 				ListOfActiveFormattingElements.reconstruct(parserContext);
 			}
 			InsertAnHTMLElement.run(parserContext, token);
 			parserContext.setFlagFramesetOk(false);
-			//TODO  "the insertion mode ? "
+			// TODO "the insertion mode ? "
 		}
 		/*
-		 * A start tag whose tag name is one of: "optgroup", "option"
-		 * If the current node is an option element,
-		 * then pop the current node off the stack of open elements.
-		 * Reconstruct the active formatting elements, if any.
-		 * Insert an HTML element for the token.
+		 * A start tag whose tag name is one of: "optgroup", "option" If the
+		 * current node is an option element, then pop the current node off the
+		 * stack of open elements. Reconstruct the active formatting elements,
+		 * if any. Insert an HTML element for the token.
 		 */
 		else if (tokenType == TokenType.start_tag
-				&& isOneOf(token.getValue(), new String[]{
-					"optgroup", "option"
-				})){
-			if (parserContext.getOpenElements().peek().getNodeName().equals("option")) {
+				&& isOneOf(token.getValue(), new String[] { "optgroup",
+						"option" })) {
+			if (parserContext.getOpenElements().peek().getNodeName()
+					.equals("option")) {
 				parserContext.getOpenElements().pop();
 			}
 			if (!parserContext.getActiveFormattingElements().isEmpty()) {
@@ -1220,16 +1304,13 @@ Prompt: If the token has an attribute with the name "prompt", then the first str
 			InsertAnHTMLElement.run(parserContext, token);
 		}
 		/*
-		 * A start tag whose tag name is one of: "rb", "rp", "rtc"
-		 * If the stack of open elements has a ruby element in scope, 
-		 * then generate implied end tags.
-		 * If the current node is not then a ruby element, this is a parse error.
-		 * Insert an HTML element for the token.
+		 * A start tag whose tag name is one of: "rb", "rp", "rtc" If the stack
+		 * of open elements has a ruby element in scope, then generate implied
+		 * end tags. If the current node is not then a ruby element, this is a
+		 * parse error. Insert an HTML element for the token.
 		 */
 		else if (tokenType == TokenType.start_tag
-				&& isOneOf(token.getValue(), new String[]{
-					"rb", "rp", "rtc"
-				})){
+				&& isOneOf(token.getValue(), new String[] { "rb", "rp", "rtc" })) {
 			if (ElementInScope.isInScope(parserContext, "ruby")) {
 				GenerateImpliedEndTags.run(parserContext);
 			}
@@ -1239,86 +1320,81 @@ Prompt: If the token has an attribute with the name "prompt", then the first str
 			InsertAnHTMLElement.run(parserContext, token);
 		}
 		/*
-		 * A start tag whose tag name is "rt"
-		 * If the stack of open elements has a ruby element in scope, 
-		 * then generate implied end tags, except for rtc elements. 
-		 * If the current node is not then a ruby element or an rtc element, 
-		 * this is a parse error.
-		 * Insert an HTML element for the token.
+		 * A start tag whose tag name is "rt" If the stack of open elements has
+		 * a ruby element in scope, then generate implied end tags, except for
+		 * rtc elements. If the current node is not then a ruby element or an
+		 * rtc element, this is a parse error. Insert an HTML element for the
+		 * token.
 		 */
 		else if (tokenType == TokenType.start_tag
-				&& token.getValue().equals("rt")){
+				&& token.getValue().equals("rt")) {
 			if (ElementInScope.isInScope(parserContext, "ruby")) {
-				GenerateImpliedEndTags.run(parserContext,"rtc");
+				GenerateImpliedEndTags.run(parserContext, "rtc");
 			}
 			if (!parserContext.getCurrentNode().getNodeName().equals("ruby")
-					|| !parserContext.getCurrentNode().getNodeName().equals("rtc")) {
+					|| !parserContext.getCurrentNode().getNodeName()
+							.equals("rtc")) {
 				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 			}
 			InsertAnHTMLElement.run(parserContext, token);
 		}
 		/*
-		 * A start tag whose tag name is "math"
-		 * Reconstruct the active formatting elements, if any.
-		 * Adjust MathML attributes for the token. 
-		 * (This fixes the case of MathML attributes that are not all lowercase.)
-		 * Adjust foreign attributes for the token. 
-		 * (This fixes the use of namespaced attributes, in particular XLink.)
-		 * Insert a foreign element for the token, in the MathML namespace.
-		 * If the token has its self-closing flag set, 
-		 * pop the current node off the stack of open elements and 
-		 * acknowledge the token's self-closing flag.
+		 * A start tag whose tag name is "math" Reconstruct the active
+		 * formatting elements, if any. Adjust MathML attributes for the token.
+		 * (This fixes the case of MathML attributes that are not all
+		 * lowercase.) Adjust foreign attributes for the token. (This fixes the
+		 * use of namespaced attributes, in particular XLink.) Insert a foreign
+		 * element for the token, in the MathML namespace. If the token has its
+		 * self-closing flag set, pop the current node off the stack of open
+		 * elements and acknowledge the token's self-closing flag.
 		 */
 		else if (tokenType == TokenType.start_tag
-				&& token.getValue().equals("math")){
+				&& token.getValue().equals("math")) {
 			if (!parserContext.getActiveFormattingElements().isEmpty()) {
 				ListOfActiveFormattingElements.reconstruct(parserContext);
 			}
-			AdjustMathMLAttributes.run((TagToken)token);
-			AdjustForeignAttributes.run((TagToken)token);
+			AdjustMathMLAttributes.run((TagToken) token);
+			AdjustForeignAttributes.run((TagToken) token);
 			InsertForeignElement.run(parserContext, token, Namespace.MathML);
 			parserContext.getOpenElements().pop();
-			((TagToken)token).setFlagAcknowledgeSelfClosingTag(true);
+			((TagToken) token).setFlagAcknowledgeSelfClosingTag(true);
 		}
 		/*
-		 * A start tag whose tag name is "svg"
-		 * Reconstruct the active formatting elements, if any.
-		 * Adjust SVG attributes for the token. 
-		 * (This fixes the case of SVG attributes that are not all lowercase.)
-		 * Adjust foreign attributes for the token. 
-		 * (This fixes the use of namespaced attributes, in particular XLink in SVG.)
-		 * Insert a foreign element for the token, in the SVG namespace.
-		 * If the token has its self-closing flag set, 
-		 * pop the current node off the stack of open elements and 
+		 * A start tag whose tag name is "svg" Reconstruct the active formatting
+		 * elements, if any. Adjust SVG attributes for the token. (This fixes
+		 * the case of SVG attributes that are not all lowercase.) Adjust
+		 * foreign attributes for the token. (This fixes the use of namespaced
+		 * attributes, in particular XLink in SVG.) Insert a foreign element for
+		 * the token, in the SVG namespace. If the token has its self-closing
+		 * flag set, pop the current node off the stack of open elements and
 		 * acknowledge the token's self-closing flag.
 		 */
 		else if (tokenType == TokenType.start_tag
-				&& token.getValue().equals("svg")){
+				&& token.getValue().equals("svg")) {
 			if (!parserContext.getActiveFormattingElements().isEmpty()) {
 				ListOfActiveFormattingElements.reconstruct(parserContext);
 			}
-			AdjustSVGAttributes.run((TagToken)token);
-			AdjustForeignAttributes.run((TagToken)token);
+			AdjustSVGAttributes.run((TagToken) token);
+			AdjustForeignAttributes.run((TagToken) token);
 			InsertForeignElement.run(parserContext, token, Namespace.SVG);
 			parserContext.getOpenElements().pop();
-			((TagToken)token).setFlagAcknowledgeSelfClosingTag(true);
+			((TagToken) token).setFlagAcknowledgeSelfClosingTag(true);
 		}
 		/*
-		 * A start tag whose tag name is one of: "caption", "col", "colgroup", "frame", "head", "tbody", "td", "tfoot", "th", "thead", "tr"
-			Parse error. Ignore the token.
+		 * A start tag whose tag name is one of: "caption", "col", "colgroup",
+		 * "frame", "head", "tbody", "td", "tfoot", "th", "thead", "tr" Parse
+		 * error. Ignore the token.
 		 */
 		else if (tokenType == TokenType.start_tag
-				&& isOneOf(token.getValue(), 
-						new String[]{
-					"caption", "col", "colgroup", "frame", 
-					"head", "tbody", "td", "tfoot", "th", "thead", "tr"})){
+				&& isOneOf(token.getValue(), new String[] { "caption", "col",
+						"colgroup", "frame", "head", "tbody", "td", "tfoot",
+						"th", "thead", "tr" })) {
 			parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 			return parserContext;
 		}
 		/*
-		 * Any other start tag
-           Reconstruct the active formatting elements, if any.
-           Insert an HTML element for the token.
+		 * Any other start tag Reconstruct the active formatting elements, if
+		 * any. Insert an HTML element for the token.
 		 */
 		else if (tokenType == TokenType.start_tag) {
 			if (!parserContext.getActiveFormattingElements().isEmpty()) {
@@ -1330,8 +1406,6 @@ Prompt: If the token has an attribute with the name "prompt", then the first str
 		else if (tokenType == TokenType.end_tag) {
 			anyOtherEndTag(parserContext);
 		}
-
-		
 
 		return parserContext;
 	}

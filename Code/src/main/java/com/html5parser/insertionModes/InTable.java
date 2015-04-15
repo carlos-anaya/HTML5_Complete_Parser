@@ -290,8 +290,6 @@ public class InTable implements IInsertionMode {
 		parserContext.setFlagFosterParenting(true);
 		parserContext = new InBody().process(parserContext);
 		parserContext.setFlagFosterParenting(false);
-
-		throw new UnsupportedOperationException();
 	}
 
 	private void clearTheStackBackToATableContext(ParserContext parserContext) {

@@ -1,6 +1,10 @@
 package com.html5parser.factories;
 
 import com.html5parser.classes.InsertionMode;
+import com.html5parser.insertionModes.AfterAfterBody;
+import com.html5parser.insertionModes.AfterAfterFrameset;
+import com.html5parser.insertionModes.AfterBody;
+import com.html5parser.insertionModes.AfterFrameset;
 import com.html5parser.insertionModes.AfterHead;
 import com.html5parser.insertionModes.BeforeHTML;
 import com.html5parser.insertionModes.BeforeHead;
@@ -8,6 +12,7 @@ import com.html5parser.insertionModes.InBody;
 import com.html5parser.insertionModes.InCaption;
 import com.html5parser.insertionModes.InCell;
 import com.html5parser.insertionModes.InColumnGroup;
+import com.html5parser.insertionModes.InFrameset;
 import com.html5parser.insertionModes.InHead;
 import com.html5parser.insertionModes.InHeadNoScript;
 import com.html5parser.insertionModes.InRow;
@@ -16,6 +21,7 @@ import com.html5parser.insertionModes.InSelectInTable;
 import com.html5parser.insertionModes.InTable;
 import com.html5parser.insertionModes.InTableBody;
 import com.html5parser.insertionModes.InTableText;
+import com.html5parser.insertionModes.InTemplate;
 import com.html5parser.insertionModes.Initial;
 import com.html5parser.insertionModes.Text;
 import com.html5parser.interfaces.IInsertionMode;
@@ -72,11 +78,17 @@ public class InsertionModeFactory {
 			return new Text();
 			
 		case after_after_body:
+			return new AfterAfterBody();
 		case after_after_frameset:
+			return new AfterAfterFrameset();
 		case after_body:
+			return new AfterBody();
 		case after_frameset:
+			return new AfterFrameset();
 		case in_frameset:
+			return new InFrameset();
 		case in_template:
+			return new InTemplate();
 		
 		default:
 			throw new UnsupportedOperationException();

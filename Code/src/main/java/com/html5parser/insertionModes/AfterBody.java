@@ -89,7 +89,8 @@ public class AfterBody implements IInsertionMode {
 			}
 			IInsertionMode insertionMode = factory
 					.getInsertionMode(InsertionMode.after_after_body);
-			return parserContext = insertionMode.process(parserContext);
+			parserContext.setInsertionMode(insertionMode);
+			return parserContext; // = insertionMode.process(parserContext);
 		}
 
 		/**
