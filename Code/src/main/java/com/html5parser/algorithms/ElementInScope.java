@@ -50,7 +50,7 @@ public class ElementInScope {
 			// the stack).
 			Element node = openElements.pop();
 			// If node is the target node, terminate in a match state.
-			if (node.getNodeName() == elementName)
+			if (node.getNodeName().equals(elementName))
 				return true;
 			// Otherwise, if node is one of the element types in list, terminate
 			// in a failure state.

@@ -39,16 +39,27 @@ public class InsertCharacter {
 
 		// If there is a Text node immediately before the adjusted insertion
 		// location, then append data to that Text node's data.
-		Node location = adjustedInsertionLocation.getReferenceNode();
+		Node referenceLocation = adjustedInsertionLocation.getReferenceNode();
 		Node beforeLocation = null;
-		if (location != null)
-			beforeLocation = location.getPreviousSibling();
+		if (referenceLocation != null)
+			beforeLocation = referenceLocation.getPreviousSibling();
+		// if it will be inserted before location
 		if (beforeLocation != null
 				&& beforeLocation.getNodeType() == Node.TEXT_NODE) {
 			beforeLocation.setNodeValue((beforeLocation.getNodeValue())
 					.concat(data));
 			return beforeLocation;
-		} else {
+		}// if it will be inserted as a last child
+		else if (adjustedInsertionLocation.getParent().getLastChild() != null
+				&& adjustedInsertionLocation.getParent().getLastChild()
+						.getNodeType() == Node.TEXT_NODE) {
+			Node location = adjustedInsertionLocation.getParent()
+					.getLastChild();
+			location.setNodeValue((location.getNodeValue()).concat(data));
+			return referenceLocation;
+		}
+
+		else {
 			// Otherwise, create a new Text node whose data is data and whose
 			// node document is the same as that of the element in which the
 			// adjusted insertion location finds itself, and insert the newly
