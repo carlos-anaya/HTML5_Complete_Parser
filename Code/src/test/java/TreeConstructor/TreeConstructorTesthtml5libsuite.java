@@ -202,6 +202,11 @@ public class TreeConstructorTesthtml5libsuite {
 	private void process_result(String input, Node element, String expected) {
 		String result = dom2string(element);
 		System.out.println();
+		System.out.println("****************** Input: "+input+ "  ******************");
+		System.out.println(input);
+		System.out.println("*******************");
+		System.out.println();
+		System.out.println();
 		System.out.println("****************** Expected: "+testName+ "  ******************");
 		System.out.println(expected);
 		System.out.println("*******************");
@@ -218,7 +223,7 @@ public class TreeConstructorTesthtml5libsuite {
 	private String indent(int ancestors) {
 		String str = "";
 		if (ancestors > 0) {
-			while (0 == --ancestors)
+			while (0 <= --ancestors)
 				str += "  ";
 		}
 		return str;

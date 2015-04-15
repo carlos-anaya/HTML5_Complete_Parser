@@ -71,7 +71,7 @@ public class InBody implements IInsertionMode {
 				ListOfActiveFormattingElements.reconstruct(parserContext);
 			}
 			InsertCharacter.run(parserContext, token);
-			parserContext.setFlagReconsumeToken(false);
+			parserContext.setFlagFramesetOk(false);
 		}
 		/*
 		 * A comment token Insert a comment.
