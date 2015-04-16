@@ -5,24 +5,17 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -34,13 +27,6 @@ import org.w3c.dom.NodeList;
 
 import com.html5parser.algorithms.ParsingHTMLFragments;
 import com.html5parser.classes.ParserContext;
-import com.html5parser.classes.Token;
-import com.html5parser.classes.Token.TokenType;
-import com.html5parser.classes.TokenizerState;
-import com.html5parser.classes.token.DocTypeToken;
-import com.html5parser.classes.token.TagToken;
-import com.html5parser.classes.token.TagToken.Attribute;
-import com.html5parser.factories.TokenizerStateFactory;
 import com.html5parser.parser.Parser;
 
 /* HTML5LIB FORMAT example
@@ -79,7 +65,12 @@ public class TreeConstructorTesthtml5libsuite {
 	public static Iterable<Object[]> test1() {
 		List<Object[]> testList = new ArrayList<Object[]>();
 
-		String[] resources = { "https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tree-construction/tests1.dat", };
+		String[] resources = {
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tree-construction/adoption01.dat",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tree-construction/adoption02.dat",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tree-construction/tables01.dat",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tree-construction/tricky01.dat",
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tree-construction/tests1.dat"};
 
 		for (String resource : resources) {
 			testList = addTestFile(testList, resource);
@@ -106,7 +97,7 @@ public class TreeConstructorTesthtml5libsuite {
 
 			for (int i = 1; i < tests.length; i++) {
 				String test = tests[i];
-				String testName = i + "";
+				String testName = test.split("\\n")[0]; // i + "";
 				testList.add(new Object[] { testName, test });
 			}
 
@@ -130,8 +121,6 @@ public class TreeConstructorTesthtml5libsuite {
 	public final void tests() {
 		String contextElement = null;
 
-		String output = "";
-
 		System.out.println("*************** " + testName);
 
 		int errorsStart = test.indexOf("\n#errors\n");
@@ -153,13 +142,17 @@ public class TreeConstructorTesthtml5libsuite {
 		}
 		System.out.println("Invalid test: " + test);
 
-
 	}
 
 	private void run_test(String input, String contextElement, String expected) {
 
-//		System.out.println("*************** " + input);
-//		System.out.println("******Expected " + expected);
+		// remove new line character if is the last character
+		if (expected.lastIndexOf('\n') == expected.length() - 1) {
+			expected = expected.substring(0, expected.length() - 1);
+		}
+
+		// System.out.println("*************** " + input);
+		// System.out.println("******Expected " + expected);
 		if (contextElement != null) {
 			Document document = null;
 			ParserContext parserContext = new ParserContext();
@@ -202,17 +195,20 @@ public class TreeConstructorTesthtml5libsuite {
 	private void process_result(String input, Node element, String expected) {
 		String result = dom2string(element);
 		System.out.println();
-		System.out.println("****************** Input: "+input+ "  ******************");
+		System.out.println("****************** Input: " + input
+				+ "  ******************");
 		System.out.println(input);
 		System.out.println("*******************");
 		System.out.println();
 		System.out.println();
-		System.out.println("****************** Expected: "+testName+ "  ******************");
+		System.out.println("****************** Expected: " + testName
+				+ "  ******************");
 		System.out.println(expected);
 		System.out.println("*******************");
 		System.out.println();
 		System.out.println();
-		System.out.println("****************** Result: "+testName+ "  ******************");
+		System.out.println("****************** Result: " + testName
+				+ "  ******************");
 		System.out.println(result);
 		System.out.println("*******************");
 		System.out.println();
@@ -268,15 +264,15 @@ public class TreeConstructorTesthtml5libsuite {
 				break;
 			case Node.ELEMENT_NODE:
 				str += "<";
-				if(current.getNamespaceURI() != null)
-				switch (current.getNamespaceURI()) {
-				case "http://www.w3.org/2000/svg":
-					str += "svg ";
-					break;
-				case "http://www.w3.org/1998/Math/MathML":
-					str += "math ";
-					break;
-				}
+				if (current.getNamespaceURI() != null)
+					switch (current.getNamespaceURI()) {
+					case "http://www.w3.org/2000/svg":
+						str += "svg ";
+						break;
+					case "http://www.w3.org/1998/Math/MathML":
+						str += "math ";
+						break;
+					}
 				if (current.getNamespaceURI() != null
 						&& current.getLocalName() != null) {
 					str += current.getLocalName();
@@ -293,18 +289,20 @@ public class TreeConstructorTesthtml5libsuite {
 						for (int j = 0; j < current.getAttributes().getLength(); j += 1) {
 							if (current.getAttributes().item(j) != null) {
 								String name = "";
-								switch (current.getAttributes().item(j)
-										.getNamespaceURI()) {
-								case "http://www.w3.org/XML/1998/namespace":
-									name += "xml ";
-									break;
-								case "http://www.w3.org/2000/xmlns/":
-									name += "xmlns ";
-									break;
-								case "http://www.w3.org/1999/xlink":
-									name += "xlink ";
-									break;
-								}
+								if (current.getAttributes().item(j)
+										.getNamespaceURI() != null)
+									switch (current.getAttributes().item(j)
+											.getNamespaceURI()) {
+									case "http://www.w3.org/XML/1998/namespace":
+										name += "xml ";
+										break;
+									case "http://www.w3.org/2000/xmlns/":
+										name += "xmlns ";
+										break;
+									case "http://www.w3.org/1999/xlink":
+										name += "xlink ";
+										break;
+									}
 								if (current.getAttributes().item(j)
 										.getLocalName() != null) {
 									name += current.getAttributes().item(j)

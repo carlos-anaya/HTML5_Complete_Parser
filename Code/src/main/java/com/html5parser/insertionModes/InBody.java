@@ -65,9 +65,7 @@ public class InBody implements IInsertionMode {
 		 * flag to "not ok".
 		 */
 		else if (tokenType == TokenType.character) {
-			if (parserContext.getActiveFormattingElements().size() > 0) {
-				ListOfActiveFormattingElements.reconstruct(parserContext);
-			}
+			ListOfActiveFormattingElements.reconstruct(parserContext);
 			InsertCharacter.run(parserContext, token);
 			parserContext.setFlagFramesetOk(false);
 		}
@@ -671,7 +669,7 @@ public class InBody implements IInsertionMode {
 		 * Close a p element.
 		 */
 		else if (tokenType == TokenType.end_tag && token.getValue().equals("p")) {
-			if (ElementInScope.isInButtonScope(parserContext, "p")) {
+			if (!ElementInScope.isInButtonScope(parserContext, "p")) {
 				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 				InsertAnHTMLElement.run(parserContext, new TagToken(
 						TokenType.start_tag, "p"));
@@ -896,6 +894,8 @@ public class InBody implements IInsertionMode {
 					if (list.size() < 1)
 						break;
 					Element last = list.get(list.size() - 1);
+					if(last == null)
+						break;
 					if (last.getNodeName().equals("a"))
 						parserContext.getActiveFormattingElements()
 								.remove(last);
@@ -987,7 +987,7 @@ public class InBody implements IInsertionMode {
 		else if (tokenType == TokenType.end_tag
 				&& isOneOf(token.getValue(), new String[] { "applet",
 						"marquee", "object" })) {
-			
+
 			if (!ElementInScope.isInScope(parserContext, token.getValue())) {
 				parserContext
 						.addParseErrors(ParseErrorType.UnexpectedInputCharacter);
@@ -1004,38 +1004,38 @@ public class InBody implements IInsertionMode {
 					}
 				}
 			}
-//			List<Element> list = new ArrayList<Element>();
-//			list.addAll(parserContext.getOpenElements());
-//			boolean flag = true;
-//			for (Element e : list) {
-//				if (ElementInScope.isInScope(parserContext, e.getNodeName())
-//						&& e.getNamespaceURI().equals(
-//								"http://www.w3.org/1999/xhtml")
-//						&& e.getNodeName().equals(token.getValue())) {
-//					flag = false;
-//					break;
-//				}
-//			}
-//			if (flag) {
-//				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
-//				return parserContext;
-//			} else {
-//				GenerateImpliedEndTags.run(parserContext);
-//				if (!parserContext.getCurrentNode().getNamespaceURI()
-//						.equals("http://www.w3.org/1999/xhtml")
-//						|| !parserContext.getCurrentNode().getNodeName()
-//								.equals(token.getValue())) {
-//					parserContext
-//							.addParseErrors(ParseErrorType.UnexpectedToken);
-//				}
-//				while (!parserContext.getOpenElements().isEmpty()) {
-//					Element element = parserContext.getOpenElements().pop();
-//					if (element.getNodeName().equals(token.getValue())) {
-//						break;
-//					}
-//				}
-//				ListOfActiveFormattingElements.clear(parserContext);
-//			}
+			// List<Element> list = new ArrayList<Element>();
+			// list.addAll(parserContext.getOpenElements());
+			// boolean flag = true;
+			// for (Element e : list) {
+			// if (ElementInScope.isInScope(parserContext, e.getNodeName())
+			// && e.getNamespaceURI().equals(
+			// "http://www.w3.org/1999/xhtml")
+			// && e.getNodeName().equals(token.getValue())) {
+			// flag = false;
+			// break;
+			// }
+			// }
+			// if (flag) {
+			// parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+			// return parserContext;
+			// } else {
+			// GenerateImpliedEndTags.run(parserContext);
+			// if (!parserContext.getCurrentNode().getNamespaceURI()
+			// .equals("http://www.w3.org/1999/xhtml")
+			// || !parserContext.getCurrentNode().getNodeName()
+			// .equals(token.getValue())) {
+			// parserContext
+			// .addParseErrors(ParseErrorType.UnexpectedToken);
+			// }
+			// while (!parserContext.getOpenElements().isEmpty()) {
+			// Element element = parserContext.getOpenElements().pop();
+			// if (element.getNodeName().equals(token.getValue())) {
+			// break;
+			// }
+			// }
+			// ListOfActiveFormattingElements.clear(parserContext);
+			// }
 		}
 		/*
 		 * A start tag whose tag name is "table" TODO If the Document is not set
@@ -1044,7 +1044,7 @@ public class InBody implements IInsertionMode {
 		 * token. Set the frameset-ok flag to "not ok". Switch the insertion
 		 * mode to "in table".
 		 */
-		else if (tokenType == TokenType.end_tag
+		else if (tokenType == TokenType.start_tag
 				&& isOneOf(token.getValue(), new String[] { "table" })) {
 			// TODO
 			InsertAnHTMLElement.run(parserContext, token);
@@ -1458,7 +1458,7 @@ public class InBody implements IInsertionMode {
 		// If the current node is not a p element, then this is a parse error.
 		// Pop elements from the stack of open elements until a p element has
 		// been popped from the stack.
-		GenerateAllImpliedEndTagsThoroughly.run(parserContext, "p");
+		GenerateImpliedEndTags.run(parserContext, "p");
 		if (!parserContext.getCurrentNode().getNodeName().equals("p"))
 			parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 		while (!parserContext.getOpenElements().isEmpty()) {

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -28,8 +27,6 @@ public class AdoptionAgencyAlgorithm {
 		Element node = null;
 		Element lastNode = null;
 
-		Document doc = parserContext.getDocument();
-
 		ArrayList<Element> stackOpenElements = new ArrayList<Element>();
 		ArrayList<Element> listFormattingElements = new ArrayList<Element>();
 
@@ -50,17 +47,19 @@ public class AdoptionAgencyAlgorithm {
 			// 1.4 Abort the adoption agency algorithm.
 			return parserContext;
 		}
+		stackOpenElements.addAll(parserContext.getOpenElements());
 		// 2 Let outer loop counter be zero.
 		// 3 Outer loop: If outer loop counter is greater than or equal to
 		// eight, then abort these steps.
 		// 4 Increment outer loop counter by one.
-		for (outerLoop = 1; outerLoop < 8; outerLoop++) {
+		for (outerLoop = 0; outerLoop < 8; outerLoop++) {
 
 			// 5 Let formatting element be the last element in the list of
 			// active formatting elements that:
 			// - is between the end of the list and the last scope marker in the
 			// list, if any, or the start of the list otherwise, and
 			// - has the tag name subject.
+			formattingElement = null;
 			listFormattingElements = parserContext
 					.getActiveFormattingElements();
 			for (int i = listFormattingElements.size() - 1; i >= (listFormattingElements
@@ -79,11 +78,14 @@ public class AdoptionAgencyAlgorithm {
 			// 6 If formatting element is not in the stack of open elements,
 			// then this is a parse error; remove the element from the list, and
 			// abort these steps.
-			if (!parserContext.getOpenElements().contains(formattingElement)) {
+			// if (!parserContext.getOpenElements().contains(formattingElement))
+			// {
+			if (!stackOpenElements.contains(formattingElement)) {
 				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 				parserContext.getActiveFormattingElements().remove(
 						formattingElement);
-				return parserContext;
+				break;
+				// return parserContext;
 			}
 
 			// 7 If formatting element is in the stack of open elements, but the
@@ -105,11 +107,14 @@ public class AdoptionAgencyAlgorithm {
 			// 9 Let furthest block be the topmost node in the stack of open
 			// elements that is lower in the stack than formatting element, and
 			// is an element in the special category. There might not be one.
-			stackOpenElements.addAll(parserContext.getOpenElements());
+			// stackOpenElements.addAll(parserContext.getOpenElements());
+			furthestBlock = null;
 			formattingElementIndex = stackOpenElements
 					.indexOf(formattingElement);
 			for (int i = formattingElementIndex + 1; i < stackOpenElements
 					.size(); i++)
+				// for (int i = stackOpenElements
+				// .size() - 1; i > formattingElementIndex; i--)
 				if (Arrays.asList(HTML5Elements.SPECIAL).contains(
 						stackOpenElements.get(i).getNodeName())) {
 					furthestBlock = stackOpenElements.get(i);
@@ -124,13 +129,17 @@ public class AdoptionAgencyAlgorithm {
 			// abort these steps.
 			if (furthestBlock == null) {
 				do {
-					Element e = parserContext.getOpenElements().pop();
+					// Element e = parserContext.getOpenElements().pop();
+					Element e = stackOpenElements.remove(stackOpenElements
+							.size() - 1);
 					if (e.equals(formattingElement))
 						break;
-				} while (!parserContext.getOpenElements().isEmpty());
+					// } while (!parserContext.getOpenElements().isEmpty());
+				} while (!stackOpenElements.isEmpty());
 				parserContext.getActiveFormattingElements().remove(
 						formattingElement);
-				return parserContext;
+				break;
+				// return parserContext;
 			}
 
 			// 11 Let common ancestor be the element immediately above
@@ -156,15 +165,14 @@ public class AdoptionAgencyAlgorithm {
 
 				// 13.3 Let node be the element immediately above node in the
 				// stack of open elements, or if node is no longer in the stack
-				// of
-				// open elements (e.g. because it got removed by this
+				// of open elements (e.g. because it got removed by this
 				// algorithm), the
 				// element that was immediately above node in the stack of open
 				// elements before node was removed.
-				if (stackOpenElements.contains(node))
-					node = stackOpenElements.get(nodeIndex - 1);
-				else
-					node = stackOpenElements.get(nodeIndex);
+				// if (stackOpenElements.contains(node))
+				// node = stackOpenElements.get(nodeIndex - 1);
+				// else
+				node = stackOpenElements.get(nodeIndex - 1);
 				nodeIndex = stackOpenElements.indexOf(node);
 
 				// 13.4 If node is formatting element, then go to the next step
@@ -174,8 +182,7 @@ public class AdoptionAgencyAlgorithm {
 
 				// 13.5 If inner loop counter is greater than three and node is
 				// in the list of active formatting elements, then remove node
-				// from
-				// the list of active formatting elements.
+				// from the list of active formatting elements.
 				if (innerLoop > 3) {
 					if (listFormattingElements.contains(node))
 						listFormattingElements.remove(node);
@@ -197,7 +204,6 @@ public class AdoptionAgencyAlgorithm {
 				// elements with an entry for the new element, and let node be
 				// the new element.
 
-				// TODO add new element
 				TagToken t = (TagToken) node.getUserData("0");
 				Element newElement = CreateAnElementForAToken.run(
 						commonAncestor, Namespace.HTML, t, parserContext);
@@ -216,11 +222,9 @@ public class AdoptionAgencyAlgorithm {
 
 				// 13.9 Insert last node into node, first removing it from its
 				// previous parent node if any.
-				try {
-					doc.removeChild(lastNode);
-				} finally {
-					node.appendChild(lastNode);
-				}
+				if (lastNode.getParentNode() != null)
+					lastNode.getParentNode().removeChild(lastNode);
+				node.appendChild(lastNode);
 
 				// 13.10 Let last node be node.
 				lastNode = node;
@@ -231,16 +235,14 @@ public class AdoptionAgencyAlgorithm {
 			// at the appropriate place for inserting a node, but using common
 			// ancestor as the override target.
 
-			// TODO add last node at the appropriate place
 			AdjustedInsertionLocation loc = AppropiatePlaceForInsertingANode
 					.run(parserContext, commonAncestor);
-			loc.getParent().appendChild(lastNode);
+			loc.getParent().insertBefore(lastNode, loc.getReferenceNode());
 
 			// 15 Create an element for the token for which formatting element
 			// was created, in the HTML namespace, with furthest block as the
 			// intended parent.
 
-			// TODO create element for formatting element token
 			TagToken t = (TagToken) formattingElement.getUserData("0");
 			Element newElement = CreateAnElementForAToken.run(furthestBlock,
 					Namespace.HTML, t, parserContext);
@@ -248,9 +250,9 @@ public class AdoptionAgencyAlgorithm {
 			// 16 Take all of the child nodes of furthest block and append them
 			// to the element created in the last step.
 			NodeList nl = furthestBlock.getChildNodes();
-			for (int i = 0; i < nl.getLength(); i++) {
-				newElement.appendChild(nl.item(i).cloneNode(true));
-			}
+			while (nl.getLength() > 0)
+				newElement.appendChild(nl.item(0));
+
 			while (furthestBlock.getChildNodes().getLength() > 0)
 				furthestBlock.removeChild(furthestBlock.getFirstChild());
 
@@ -270,11 +272,12 @@ public class AdoptionAgencyAlgorithm {
 			// insert the new element into the stack of open elements
 			// immediately below the position of furthest block in that stack.
 			stackOpenElements.remove(formattingElement);
-			stackOpenElements.add(stackOpenElements.indexOf(furthestBlock) - 1,
+			stackOpenElements.add(stackOpenElements.indexOf(furthestBlock) + 1,
 					newElement);
 
 			// 20 Jump back to the step labeled outer loop.
 		}
+
 		Stack<Element> s = new Stack<>();
 		s.addAll(stackOpenElements);
 		parserContext.setOpenElements(s);

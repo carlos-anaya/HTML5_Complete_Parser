@@ -8,6 +8,7 @@ import com.html5parser.classes.InsertionMode;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
 import com.html5parser.classes.Token.TokenType;
+import com.html5parser.classes.token.TagToken;
 import com.html5parser.factories.InsertionModeFactory;
 import com.html5parser.interfaces.IInsertionMode;
 import com.html5parser.parseError.ParseErrorType;
@@ -43,7 +44,7 @@ public class InTableBody implements IInsertionMode {
 			case "td":
 				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 				clearTheStackBackToATableBodyContext(parserContext);
-				InsertAnHTMLElement.run(parserContext, new Token(
+				InsertAnHTMLElement.run(parserContext, new TagToken(
 						TokenType.start_tag, "tr"));
 				parserContext.setInsertionMode(factory
 						.getInsertionMode(InsertionMode.in_row));
@@ -134,9 +135,9 @@ public class InTableBody implements IInsertionMode {
 		// Pop the current node from the stack of open elements. Switch the
 		// insertion mode to "in table".
 		// Reprocess the token.
-		if (!ElementInScope.isInTableScope(parserContext, "tbody")
-				|| !ElementInScope.isInTableScope(parserContext, "thead")
-				|| !ElementInScope.isInTableScope(parserContext, "tfoot"))
+		if (!(ElementInScope.isInTableScope(parserContext, "tbody")
+				|| ElementInScope.isInTableScope(parserContext, "thead")
+				|| ElementInScope.isInTableScope(parserContext, "tfoot")))
 			parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 		else {
 			clearTheStackBackToATableBodyContext(parserContext);

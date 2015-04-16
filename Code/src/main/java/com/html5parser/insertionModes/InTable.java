@@ -22,7 +22,6 @@ public class InTable implements IInsertionMode {
 
 		InsertionModeFactory factory = InsertionModeFactory.getInstance();
 		Token token = parserContext.getTokenizerContext().getCurrentToken();
-		String currentNodeName = parserContext.getCurrentNode().getNodeName();
 
 		switch (token.getType()) {
 
@@ -32,6 +31,8 @@ public class InTable implements IInsertionMode {
 		// Let the original insertion mode be the current insertion mode.
 		// Switch the insertion mode to "in table text" and reprocess the token.
 		case character:
+			String currentNodeName = parserContext.getCurrentNode()
+					.getNodeName();
 			if (currentNodeName.equals("table")
 					|| currentNodeName.equals("tbody")
 					|| currentNodeName.equals("tfoot")
@@ -94,7 +95,7 @@ public class InTable implements IInsertionMode {
 			case "col":
 				clearTheStackBackToATableContext(parserContext);
 				InsertAnHTMLElement.run(parserContext, new TagToken(
-						TokenType.start_tag, "colgrup"));
+						TokenType.start_tag, "colgroup"));
 				parserContext.setInsertionMode(factory
 						.getInsertionMode(InsertionMode.in_column_group));
 				parserContext.setFlagReconsumeToken(true);
@@ -277,11 +278,6 @@ public class InTable implements IInsertionMode {
 	}
 
 	public void anythingElse(ParserContext parserContext) {
-		anythingElse(parserContext, parserContext.getTokenizerContext()
-				.getCurrentToken());
-	}
-
-	public void anythingElse(ParserContext parserContext, Token token) {
 		// Anything else
 		// Parse error. Enable foster parenting, process the token using the
 		// rules for the "in body" insertion mode, and then disable foster

@@ -2,9 +2,10 @@ package com.html5parser.algorithms;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.token.TagToken;
@@ -33,24 +34,71 @@ public class ListOfActiveFormattingElements {
 		// attributes if all their parsed attributes can be paired such that the
 		// two attributes in each pair have identical names, namespaces, and
 		// values (the order of the attributes does not matter).
-		List<Element> sublist = list.subList(list.lastIndexOf(null) + 1,
-				list.size());
-		if (sublist.size() > 2) {
-			Boolean repeated = false;
-			for (Element e : sublist) {
-				if (e.isEqualNode(element)) {
-					list.remove(e);
-					repeated = true;
-					break;
-				}
-			}
-			if (!repeated) {
-				list.remove(list.lastIndexOf(null) + 1);
+
+		int count = 0;
+		int index = 0;
+		for (int i = list.size() - 1; i >= 0; i--) {
+			Element e = list.get(i);
+			if(e == null)
+				break;
+			if (isSameNode(e, element)) {
+				count++;
+				index = i;
 			}
 		}
+
+		if (count > 2)
+			list.remove(index);
+
 		// 2 Add element to the list of active formatting elements.
 		list.add(element);
 		parserContext.setActiveFormattingElements(list);
+	}
+
+	private static boolean isSameNode(Element e1, Element e2) {
+		// compare name
+		if (!e1.getNodeName().equals(e2.getNodeName()))
+			return false;
+
+		// compare ns
+		String expectedNS = e1.getNamespaceURI();
+		String actualNS = e2.getNamespaceURI();
+		if ((expectedNS == null && actualNS != null)
+				|| (expectedNS != null && !expectedNS.equals(actualNS))) {
+			return false;
+		}
+
+		// compare attributes
+		NamedNodeMap expectedAttrs = e1.getAttributes();
+		NamedNodeMap actualAttrs = e2.getAttributes();
+		if (expectedAttrs.getLength() != actualAttrs.getLength())
+			return false;
+
+		for (int i = 0; i < expectedAttrs.getLength(); i++) {
+			Attr expectedAttr = (Attr) expectedAttrs.item(i);
+			if (expectedAttr.getName().startsWith("xmlns")) {
+				continue;
+			}
+			Attr actualAttr = null;
+			if (expectedAttr.getNamespaceURI() == null) {
+				actualAttr = (Attr) actualAttrs.getNamedItem(expectedAttr
+						.getName());
+			} else {
+				actualAttr = (Attr) actualAttrs.getNamedItemNS(
+						expectedAttr.getNamespaceURI(),
+						expectedAttr.getLocalName());
+			}
+			if (actualAttr == null) {
+				// Attribute not found
+				return false;
+			}
+			if (!expectedAttr.getValue().equals(actualAttr.getValue())) {
+				// Attribute values do not match value
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public static void insertMarker(ParserContext parserContext) {
@@ -65,9 +113,12 @@ public class ListOfActiveFormattingElements {
 		// list has been cleared up to the last marker.
 		// 4 Go to step 1.
 		ArrayList<Element> list = parserContext.getActiveFormattingElements();
-		int indexLastMarker = list.lastIndexOf(null) + 1;
+		//int indexLastMarker = list.lastIndexOf(null) + 1;
+		int indexLastMarker = list.lastIndexOf(null);
+		if (indexLastMarker == -1)
+			indexLastMarker++;
 		while (list.size() > indexLastMarker)
-			list.remove(indexLastMarker);
+			list.remove(list.size() -1);
 	}
 
 	public static void reconstruct(ParserContext parserContext) {

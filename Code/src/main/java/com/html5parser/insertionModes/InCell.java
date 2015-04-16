@@ -37,8 +37,8 @@ public class InCell implements IInsertionMode {
 			case "th":
 			case "thead":
 			case "tr":
-				if (!ElementInScope.isInTableScope(parserContext, "td")
-						|| !ElementInScope.isInTableScope(parserContext, "th"))
+				if (!(ElementInScope.isInTableScope(parserContext, "td")
+						|| ElementInScope.isInTableScope(parserContext, "th")))
 					parserContext
 							.addParseErrors(ParseErrorType.UnexpectedToken);
 				else {
@@ -81,7 +81,7 @@ public class InCell implements IInsertionMode {
 							.equals(token.getValue()))
 						parserContext
 								.addParseErrors(ParseErrorType.UnexpectedToken);
-					while (true) {
+					while (!parserContext.getOpenElements().isEmpty()) {
 						Element element = parserContext.getOpenElements().pop();
 						if (element.getNodeName().equals(token.getValue())) {
 							break;
