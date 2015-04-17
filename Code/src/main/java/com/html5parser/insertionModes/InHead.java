@@ -197,6 +197,17 @@ public class InHead implements IInsertionMode {
 					.getInsertionMode(InsertionMode.after_head));
 		}
 		/*
+		 * An end tag whose tag name is one of: "body", "html", "br"
+		 * Act as described in the "anything else" entry below.
+		 */
+		else if (tokenType == TokenType.end_tag
+				&& token.getValue().equals("head")
+				|| token.getValue().equals("html")
+				|| token.getValue().equals("br")
+				) {
+			anythingElse(parserContext);
+		}
+		/*
 		 * A start tag whose tag name is "template" Insert an HTML element for
 		 * the token. Insert a marker at the end of the list of active
 		 * formatting elements. Set the frameset-ok flag to "not ok". Switch the
@@ -229,11 +240,16 @@ public class InHead implements IInsertionMode {
 		 * "after head". Reprocess the token.
 		 */
 		else {
-			parserContext.getOpenElements().pop();
-			parserContext.setInsertionMode(factory
-					.getInsertionMode(InsertionMode.after_head));
-			parserContext.setFlagReconsumeToken(true);
+			anythingElse(parserContext);
 		}
 		return parserContext;
+	}
+	
+	private void anythingElse(ParserContext parserContext){
+		parserContext.getOpenElements().pop();
+		InsertionModeFactory factory = InsertionModeFactory.getInstance();
+		parserContext.setInsertionMode(factory
+				.getInsertionMode(InsertionMode.after_head));
+		parserContext.setFlagReconsumeToken(true);
 	}
 }
