@@ -690,12 +690,12 @@ public class InBody implements IInsertionMode {
 		 */
 		else if (tokenType == TokenType.end_tag
 				&& token.getValue().equals("li")) {
-			if (ElementInScope.isInListItemScope(parserContext, "li")) {
+			if (!ElementInScope.isInListItemScope(parserContext, "li")) {
 				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 				return parserContext;
 			} else {
 				GenerateImpliedEndTags.run(parserContext, "li");
-				if (parserContext.getCurrentNode().getNodeName().equals("li")) {
+				if (!parserContext.getCurrentNode().getNodeName().equals("li")) {
 					parserContext
 							.addParseErrors(ParseErrorType.UnexpectedToken);
 				}
@@ -1496,13 +1496,14 @@ public class InBody implements IInsertionMode {
 		    if(!parserContext.getCurrentNode().getNodeName().equals("li")){
 			parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 		    }
-			while (true) {
+			while (!parserContext.getOpenElements().isEmpty()) {
 				Element element = parserContext.getOpenElements().pop();
 				if (element.getNodeName().equals("li")){
 					break;
 				}
 			}
 		done(parserContext);
+		break;
 		}
 	}
 	private void done(ParserContext parserContext){
