@@ -99,7 +99,7 @@ public class InFrameset implements IInsertionMode {
 		 */
 		if (tokenType == TokenType.end_tag
 				&& token.getValue().equals("frameset")) {
-			String currentNode = parserContext.getCurrentNode().getLocalName();
+			String currentNode = parserContext.getCurrentNode().getNodeName();
 
 			if (currentNode.equals("html")) {
 				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
