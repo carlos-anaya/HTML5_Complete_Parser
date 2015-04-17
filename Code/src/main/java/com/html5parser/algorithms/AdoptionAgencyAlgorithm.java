@@ -73,6 +73,7 @@ public class AdoptionAgencyAlgorithm {
 			// act as described in the "any other end tag" entry above.
 			if (formattingElement == null) {
 				new InBody().anyOtherEndTag(parserContext);
+				return parserContext;
 			}
 
 			// 6 If formatting element is not in the stack of open elements,
