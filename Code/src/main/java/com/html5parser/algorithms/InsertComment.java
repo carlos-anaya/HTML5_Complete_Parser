@@ -46,6 +46,11 @@ public class InsertComment {
 		// insertion location finds itself.
 		Document document = adjustedInsertionLocation.getParent()
 				.getOwnerDocument();
+		
+		// If doc is null it means it is the document
+				if (document == null)
+					document = ((Document) adjustedInsertionLocation.getParent());
+				
 		Node textNode = document.createComment(data);
 		adjustedInsertionLocation.insertElement(textNode);
 		return textNode;

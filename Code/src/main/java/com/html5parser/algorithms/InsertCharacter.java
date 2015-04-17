@@ -66,6 +66,11 @@ public class InsertCharacter {
 			// created node at the adjusted insertion location.
 			Document document = adjustedInsertionLocation.getParent()
 					.getOwnerDocument();
+			
+			// If doc is null it means it is the document
+			if (document == null)
+				document = ((Document) adjustedInsertionLocation.getParent());
+			
 			Node textNode = document.createTextNode(data);
 			adjustedInsertionLocation.insertElement(textNode);
 			return textNode;

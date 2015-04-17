@@ -28,7 +28,7 @@ public class Initial implements IInsertionMode {
 		// A comment token
 		// Insert a comment as the last child of the Document object.
 		case comment:
-			InsertComment.run(parserContext, token);
+			InsertComment.run(parserContext, token,parserContext.getDocument());
 			break;
 
 		// TODO A DOCTYPE token
