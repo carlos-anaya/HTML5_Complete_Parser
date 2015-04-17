@@ -154,7 +154,7 @@ public class InFrameset implements IInsertionMode {
 		if (tokenType == TokenType.end_of_file) {
 			String currentNode = parserContext.getCurrentNode().getLocalName();
 
-			if (!currentNode.equals("html")) {
+			if (!("html").equals(currentNode)) {
 				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 			}
 			parserContext.setFlagStopParsing(true);
