@@ -4,14 +4,18 @@ import com.html5parser.algorithms.InsertComment;
 import com.html5parser.classes.InsertionMode;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
+import com.html5parser.classes.token.DocTypeToken;
+import com.html5parser.classes.token.TagToken;
 import com.html5parser.factories.InsertionModeFactory;
 import com.html5parser.interfaces.IInsertionMode;
+import com.html5parser.parseError.ParseErrorType;
 
 public class Initial implements IInsertionMode {
 
 	public ParserContext process(ParserContext parserContext) {
 
 		Token token = parserContext.getTokenizerContext().getCurrentToken();
+		
 
 		switch (token.getType()) {
 		// A character token that is one of U+0009 CHARACTER TABULATION, "LF"
@@ -29,8 +33,35 @@ public class Initial implements IInsertionMode {
 
 		// TODO A DOCTYPE token
 		case DOCTYPE:
-			throw new UnsupportedOperationException();
-
+			DocTypeToken thisToken = (DocTypeToken)token;
+			String tagName = thisToken.getValue();
+			String publicIdentifier = thisToken.getPublicIdentifier();
+			String systemIdentifier = thisToken.getSystemIdentifier();
+			if ((tagName.equals("html")
+					||  publicIdentifier != null 
+					|| ( systemIdentifier!= null 
+					&& !tagName.equals("about:legacy-compat")))
+					&& !(
+							((tagName.equals("html"))
+							&& publicIdentifier.equals("-//W3C//DTD HTML 4.0//EN")	
+							&& (systemIdentifier == null 
+							|| systemIdentifier.equals( "http://www.w3.org/TR/REC-html40/strict.dtd")))
+							|| ((tagName.equals("html"))
+									&& publicIdentifier.equals("-//W3C//DTD HTML 4.01//EN")	
+									&& (systemIdentifier == null 
+									|| systemIdentifier.equals("http://www.w3.org/TR/html4/strict.dtd")))
+							|| ((tagName.equals("html"))
+									&& publicIdentifier.equals("-//W3C//DTD XHTML 1.0 Strict//EN")	
+									&& systemIdentifier.equals("http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"))
+							|| ((tagName.equals("html"))
+									&& publicIdentifier.equals("-//W3C//DTD XHTML 1.1//EN")	
+									&& systemIdentifier.equals("http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"))
+							
+							)){
+				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+			}
+			InsertionModeFactory factory = InsertionModeFactory.getInstance();
+			parserContext.setInsertionMode(factory.getInsertionMode(InsertionMode.before_html));
 		default:
 			anythingElse(parserContext);
 			break;
