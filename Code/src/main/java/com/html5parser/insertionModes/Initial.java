@@ -43,17 +43,23 @@ public class Initial implements IInsertionMode {
 					&& !tagName.equals("about:legacy-compat")))
 					&& !(
 							((tagName.equals("html"))
+									&& publicIdentifier != null
 							&& publicIdentifier.equals("-//W3C//DTD HTML 4.0//EN")	
 							&& (systemIdentifier == null 
 							|| systemIdentifier.equals( "http://www.w3.org/TR/REC-html40/strict.dtd")))
 							|| ((tagName.equals("html"))
+									&& publicIdentifier != null
 									&& publicIdentifier.equals("-//W3C//DTD HTML 4.01//EN")	
 									&& (systemIdentifier == null 
 									|| systemIdentifier.equals("http://www.w3.org/TR/html4/strict.dtd")))
 							|| ((tagName.equals("html"))
+									&& publicIdentifier != null
+									&& systemIdentifier != null
 									&& publicIdentifier.equals("-//W3C//DTD XHTML 1.0 Strict//EN")	
 									&& systemIdentifier.equals("http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"))
 							|| ((tagName.equals("html"))
+									&& publicIdentifier != null
+									&& systemIdentifier != null
 									&& publicIdentifier.equals("-//W3C//DTD XHTML 1.1//EN")	
 									&& systemIdentifier.equals("http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"))
 							
