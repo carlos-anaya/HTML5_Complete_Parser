@@ -62,7 +62,7 @@ public class InSelect implements IInsertionMode {
 				if (currentNodeName.equals("option"))
 					parserContext.getOpenElements().pop();
 				InsertAnHTMLElement.run(parserContext, token);
-
+				break;
 				// A start tag whose tag name is "optgroup"
 				// If the current node is an option element, pop that node from
 				// the stack of open elements.
