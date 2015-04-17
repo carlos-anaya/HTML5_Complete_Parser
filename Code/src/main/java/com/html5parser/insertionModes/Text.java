@@ -36,8 +36,9 @@ public class Text implements IInsertionMode {
 			break;
 		case end_tag:
 			// TODO An end tag whose tag name is "script"
-			if (token.getValue().equals("script"))
-				throw new UnsupportedOperationException();
+			if (token.getValue().equals("script")){}
+				//throw new UnsupportedOperationException();
+				
 			// Any other end tag
 			// Pop the current node off the stack of open elements.
 			// Switch the insertion mode to the original insertion mode.
