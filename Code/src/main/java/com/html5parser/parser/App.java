@@ -22,8 +22,7 @@ public class App {
 	public static void main(String[] args) {
 		System.out.println("Hello World!");
 		Parser parser = new Parser();
-		String html = "<title>abcd";
-		
+		String html = "<!Doctype html>";
 		ParserContext parserContext = parser
 				.tokenize(new ParserContext(), html);
 		parser.printTokens(parserContext);
