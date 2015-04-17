@@ -431,12 +431,16 @@ public class InBody implements IInsertionMode {
 									+ "summary, table, tbody, td, template, textarea, tfoot, th, thead, "
 									+ "title, tr, track, ul, wbr, xmp, mi, mo, mn, ms, mtext, annotation-xml, "
 									+ "foreignObject, desc, title").split(", "))) {
-
+				done(parserContext);
 			} else {
-
+				if (parserContext.getOpenElements().size() > 1) {
+					Element buttomNode  = parserContext.getOpenElements().pop();
+					Node previousEntry = parserContext.getOpenElements().peek();
+					parserContext.getOpenElements().push(buttomNode);
+					loop(parserContext, previousEntry);
+				}
 			}
-			GenerateImpliedEndTags.run(parserContext, "li");
-			// TODO
+			InsertAnHTMLElement.run(parserContext, token);
 		}
 		/*
 		 * A start tag whose tag name is one of: "dd", "dt" Run these steps: Set
@@ -1474,5 +1478,26 @@ public class InBody implements IInsertionMode {
 				return true;
 
 		return false;
+	}
+	
+	private void loop(ParserContext parserContext,Node node){
+		while (node.getNodeName().equals("li")) {
+			GenerateImpliedEndTags.run(parserContext, "li");
+		    if(!parserContext.getCurrentNode().getNodeName().equals("li")){
+			parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+		    }
+			while (true) {
+				Element element = parserContext.getOpenElements().pop();
+				if (element.getNodeName().equals("li")){
+					break;
+				}
+			}
+		done(parserContext);
+		}
+	}
+	private void done(ParserContext parserContext){
+		if (ElementInScope.isInButtonScope(parserContext, "p")) {
+			closeApElement(parserContext);
+		}
 	}
 }
