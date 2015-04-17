@@ -1287,7 +1287,17 @@ public class InBody implements IInsertionMode {
 			}
 			InsertAnHTMLElement.run(parserContext, token);
 			parserContext.setFlagFramesetOk(false);
-			// TODO "the insertion mode ? "
+			IInsertionMode currentMode = parserContext.getInsertionMode();
+			if (currentMode instanceof InTable 
+					|| currentMode instanceof InCaption
+					|| currentMode instanceof InTableBody
+					|| currentMode instanceof InRow
+					|| currentMode instanceof InCell) {
+				parserContext.setInsertionMode(factory.getInsertionMode(InsertionMode.in_select_in_table));
+			}else {
+				parserContext.setInsertionMode(factory.getInsertionMode(InsertionMode.in_select));
+				
+			}
 		}
 		/*
 		 * A start tag whose tag name is one of: "optgroup", "option" If the
