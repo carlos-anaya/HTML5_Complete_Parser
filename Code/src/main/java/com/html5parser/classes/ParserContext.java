@@ -253,10 +253,12 @@ public class ParserContext {
 	}
 	
 	public boolean openElementsContain(String elementName){
+		List<Element> list = new ArrayList<Element>();
+		list.addAll(openElements);
 		int n = openElements.size();
 		boolean flag = false;
 		for (int i = 0; i < n; i++) {
-			Element element = openElements.pop();
+			Element element = list.get(i);
 			if (element.getNodeName().equals(elementName)) {
 				flag = true;
 			}
