@@ -1001,7 +1001,7 @@ public class InBody implements IInsertionMode {
 						.equals(token.getValue()))
 					parserContext
 							.addParseErrors(ParseErrorType.UnexpectedToken);
-				while (true) {
+				while (!parserContext.getOpenElements().isEmpty()) {
 					Element element = parserContext.getOpenElements().pop();
 					if (element.getNodeName().equals(token.getValue())) {
 						break;
