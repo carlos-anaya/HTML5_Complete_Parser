@@ -437,7 +437,7 @@ public class InBody implements IInsertionMode {
 					Element buttomNode  = parserContext.getOpenElements().pop();
 					Node previousEntry = parserContext.getOpenElements().peek();
 					parserContext.getOpenElements().push(buttomNode);
-					loop(parserContext, previousEntry);
+					loop(parserContext, previousEntry,"li");
 				}
 			}
 			InsertAnHTMLElement.run(parserContext, token);
@@ -482,7 +482,45 @@ public class InBody implements IInsertionMode {
 		 */
 		else if (tokenType == TokenType.start_tag
 				&& isOneOf(token.getValue(), new String[] { "dd", "dt" })) {
-			// TODO
+			parserContext.setFlagFramesetOk(false);
+			Node node = parserContext.getCurrentNode();
+			if (node.getNodeName().equals("dt")) {
+				GenerateImpliedEndTags.run(parserContext, "dt");
+				if (parserContext.getCurrentNode().getNodeName().equals("dt")) {
+					parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+				}
+				while (!parserContext.getOpenElements().isEmpty()) {
+					Element element = parserContext.getOpenElements().pop();
+					if (element.getNodeName().equals("dt")) {
+						break;
+					}
+				}
+				done(parserContext);
+			}
+			if (isOneOf(
+					node.getNodeName(),
+					new String(
+							"applet, area, article, aside, base, basefont, bgsound, "
+									+ "blockquote, body, br, button, caption, center, col, colgroup, dd, "
+									+ "details, dir, dl, dt, embed, fieldset, figcaption, figure, "
+									+ "footer, form, frame, frameset, h1, h2, h3, h4, h5, h6, head, header, "
+									+ "hgroup, hr, html, iframe, img, input, isindex, li, link, listing, "
+									+ "main, marquee, meta, nav, noembed, noframes, noscript, object, ol, "
+									+ "param, plaintext, pre, script, section, select, source, style, "
+									+ "summary, table, tbody, td, template, textarea, tfoot, th, thead, "
+									+ "title, tr, track, ul, wbr, xmp, mi, mo, mn, ms, mtext, annotation-xml, "
+									+ "foreignObject, desc, title").split(", "))) {
+				done(parserContext);
+			}else {
+				if (parserContext.getOpenElements().size() > 1) {
+					Element buttomNode  = parserContext.getOpenElements().pop();
+					Node previousEntry = parserContext.getOpenElements().peek();
+					parserContext.getOpenElements().push(buttomNode);
+					loop(parserContext, previousEntry,"dd");
+				}
+			}
+			InsertAnHTMLElement.run(parserContext, token);
+			
 		}
 		/*
 		 * start tag whose tag name is "plaintext" If the stack of open elements
@@ -557,53 +595,14 @@ public class InBody implements IInsertionMode {
 						.equals(token.getValue()))
 					parserContext
 							.addParseErrors(ParseErrorType.UnexpectedToken);
-				while (true) {
+				while (!parserContext.getOpenElements().isEmpty()) {
 					Element element = parserContext.getOpenElements().pop();
 					if (element.getNodeName().equals(token.getValue())) {
 						break;
 					}
 				}
 			}
-			// List<Element> list = new ArrayList<Element>();
-			// list.addAll(parserContext.getOpenElements());
-			// for (Element element : list) {
-			// if (!element.getNamespaceURI().equals(
-			// "http://www.w3.org/1999/xhtml")) {
-			// list.remove(element);
-			// }
-			// }
-			// boolean flag = false;
-			// for (Element element : list) {
-			// if (element.getNodeName().equals(token.getValue())) {
-			// flag = true;
-			// }
-			// }
-			// String[] elementsInHTMLns = { "applet", "caption", "html",
-			// "table",
-			// "td", "th", "marquee", "object", "template" };
-			//
-			// if (!(isOneOf(token.getValue(), elementsInHTMLns) && flag)) {
-			// parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
-			// return parserContext;
-			// } else {
-			// GenerateImpliedEndTags.run(parserContext);
-			// if (!parserContext.getCurrentNode().getNamespaceURI()
-			// .equals("http://www.w3.org/1999/xhtml")
-			// || !parserContext.getCurrentNode().getNodeName()
-			// .equals(token.getValue())) {
-			// parserContext
-			// .addParseErrors(ParseErrorType.UnexpectedToken);
-			// }
-			// while (!parserContext.getOpenElements().isEmpty()) {
-			// Element element = parserContext.getOpenElements().pop();
-			// if (element.getNamespaceURI().equals(
-			// "http://www.w3.org/1999/xhtml")
-			// && element.getNodeName().equals(token.getValue())) {
-			// break;
-			// }
-			//
-			// }
-			// }
+			
 		}
 		/*
 		 * An end tag whose tag name is "form" If there is no template element
@@ -740,46 +739,7 @@ public class InBody implements IInsertionMode {
 				}
 			}
 
-			// List<Element> list = new ArrayList<Element>();
-			// list.addAll(parserContext.getOpenElements());
-			// for (Element element : list) {
-			// if (!element.getNamespaceURI().equals(
-			// "http://www.w3.org/1999/xhtml")) {
-			// list.remove(element);
-			// }
-			// }
-			// boolean flag = false;
-			// for (Element element : list) {
-			// if (element.getNodeName().equals(token.getValue())) {
-			// flag = true;
-			// }
-			// }
-			// String[] elementsInHTMLns = { "applet", "caption", "html",
-			// "table",
-			// "td", "th", "marquee", "object", "template" };
-			//
-			// if (!(isOneOf(token.getValue(), elementsInHTMLns) && flag)) {
-			// parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
-			// return parserContext;
-			// } else {
-			// GenerateImpliedEndTags.run(parserContext, token.getValue());
-			// if (!parserContext.getCurrentNode().getNamespaceURI()
-			// .equals("http://www.w3.org/1999/xhtml")
-			// || !parserContext.getCurrentNode().getNodeName()
-			// .equals(token.getValue())) {
-			// parserContext
-			// .addParseErrors(ParseErrorType.UnexpectedToken);
-			// }
-			// }
-			// while (!parserContext.getOpenElements().isEmpty()) {
-			// Element element = parserContext.getOpenElements().pop();
-			// if (element.getNamespaceURI().equals(
-			// "http://www.w3.org/1999/xhtml")
-			// && element.getNodeName().equals(token.getValue())) {
-			// break;
-			// }
-			//
-			// }
+			
 		}
 		/*
 		 * An end tag whose tag name is one of: "h1", "h2", "h3", "h4", "h5",
@@ -814,39 +774,6 @@ public class InBody implements IInsertionMode {
 				}
 			}
 
-			// List<Element> list = new ArrayList<Element>();
-			// list.addAll(parserContext.getOpenElements());
-			// boolean flag = true;
-			// for (Element e : list) {
-			// if (ElementInScope.isInScope(parserContext, e.getNodeName())
-			// && e.getNamespaceURI().equals(
-			// "http://www.w3.org/1999/xhtml")
-			// && isOneOf(e.getNodeName(), new String[] { "h1", "h2",
-			// "h3", "h4", "h5", "h6" })) {
-			// flag = false;
-			// break;
-			// }
-			// }
-			// if (flag) {
-			// parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
-			// return parserContext;
-			// } else {
-			// if (!parserContext.getCurrentNode().getNamespaceURI()
-			// .equals("http://www.w3.org/1999/xhtml")
-			// || !parserContext.getCurrentNode().getNodeName()
-			// .equals(token.getValue())) {
-			// parserContext
-			// .addParseErrors(ParseErrorType.UnexpectedToken);
-			// }
-			// while (!parserContext.getOpenElements().isEmpty()) {
-			// Element element = parserContext.getOpenElements().pop();
-			// if (isOneOf(element.getNodeName(), new String[] { "h1",
-			// "h2", "h3", "h4", "h5", "h6" })) {
-			// break;
-			// }
-			//
-			// }
-			// }
 		}
 		/*
 		 * An end tag whose tag name is "sarcasm" Take a deep breath, then act
@@ -885,8 +812,8 @@ public class InBody implements IInsertionMode {
 				&& token.getValue().equals("a")) {
 			ArrayList<Element> list = parserContext
 					.getActiveFormattingElements();
-			List<Element> sublist = list.subList(list.lastIndexOf(null) + 1,
-					list.size());
+			List<Element> sublist = new ArrayList<Element>(list.subList(list.lastIndexOf(null) + 1,
+					list.size()));
 			for (Element e : sublist)
 				if (e.getNodeName().equals("a")) {
 					parserContext
@@ -1490,15 +1417,15 @@ public class InBody implements IInsertionMode {
 		return false;
 	}
 	
-	private void loop(ParserContext parserContext,Node node){
-		while (node.getNodeName().equals("li")) {
-			GenerateImpliedEndTags.run(parserContext, "li");
-		    if(!parserContext.getCurrentNode().getNodeName().equals("li")){
+	private void loop(ParserContext parserContext,Node node,String nodeName){
+		while (node.getNodeName().equals(nodeName)) {
+			GenerateImpliedEndTags.run(parserContext, nodeName);
+		    if(!parserContext.getCurrentNode().getNodeName().equals(nodeName)){
 			parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 		    }
 			while (!parserContext.getOpenElements().isEmpty()) {
 				Element element = parserContext.getOpenElements().pop();
-				if (element.getNodeName().equals("li")){
+				if (element.getNodeName().equals(nodeName)){
 					break;
 				}
 			}
@@ -1510,5 +1437,9 @@ public class InBody implements IInsertionMode {
 		if (ElementInScope.isInButtonScope(parserContext, "p")) {
 			closeApElement(parserContext);
 		}
+	}
+	
+	private void loopInDDandDT(ParserContext parserContext,Node node){
+		
 	}
 }
