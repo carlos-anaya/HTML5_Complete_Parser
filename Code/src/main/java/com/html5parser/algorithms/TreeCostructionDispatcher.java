@@ -47,8 +47,9 @@ public class TreeCostructionDispatcher {
 		 */
 		Element adjustedCurrentNode = context.getAdjustedCurrentNode();
 		Token currentToken = context.getTokenizerContext().getCurrentToken();
-		if ((adjustedCurrentNode != null && adjustedCurrentNode
-				.getNamespaceURI().equals(Namespace.HTML))
+		if (adjustedCurrentNode == null
+				|| (adjustedCurrentNode != null && adjustedCurrentNode
+						.getNamespaceURI().equals(Namespace.HTML))
 				|| (IntegrationPoint
 						.isMathMLTextIntegrationPoint(adjustedCurrentNode)
 						&& currentToken.getType().equals(TokenType.start_tag) && (currentToken

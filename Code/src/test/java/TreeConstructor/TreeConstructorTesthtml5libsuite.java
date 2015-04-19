@@ -95,7 +95,7 @@ public class TreeConstructorTesthtml5libsuite {
 			String testFile = scanner.useDelimiter("\\A").next();
 			String[] tests = testFile.split("(^|\n\n)#data\n");
 
-			resource = resource.split("/")[resource.split("/").length - 1].split(".")[0];
+			resource = resource.split("/")[resource.split("/").length - 1];
 			for (int i = 1; i < tests.length; i++) {
 				String test = tests[i];
 				String testName = i + " (" + resource + ") "
