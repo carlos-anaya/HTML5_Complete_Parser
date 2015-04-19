@@ -1318,8 +1318,10 @@ public class InBody implements IInsertionMode {
 			AdjustSVGAttributes.run((TagToken) token);
 			AdjustForeignAttributes.run((TagToken) token);
 			InsertForeignElement.run(parserContext, token, Namespace.SVG);
-			parserContext.getOpenElements().pop();
-			((TagToken) token).setFlagAcknowledgeSelfClosingTag(true);
+			if (!((TagToken)token).isFlagAcknowledgeSelfClosingTag()) {
+				parserContext.getOpenElements().pop();
+				((TagToken) token).setFlagAcknowledgeSelfClosingTag(true);
+			}
 		}
 		/*
 		 * A start tag whose tag name is one of: "caption", "col", "colgroup",
