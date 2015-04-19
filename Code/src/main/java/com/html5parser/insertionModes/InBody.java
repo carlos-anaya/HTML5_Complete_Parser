@@ -896,9 +896,7 @@ public class InBody implements IInsertionMode {
 		else if (tokenType == TokenType.start_tag
 				&& isOneOf(token.getValue(), new String[] { "applet",
 						"marquee", "object" })) {
-			if (!parserContext.getActiveFormattingElements().isEmpty()) {
-				ListOfActiveFormattingElements.reconstruct(parserContext);
-			}
+			ListOfActiveFormattingElements.reconstruct(parserContext);
 			InsertAnHTMLElement.run(parserContext, token);
 			ListOfActiveFormattingElements.insertMarker(parserContext);
 			parserContext.setFlagFramesetOk(false);
@@ -935,38 +933,7 @@ public class InBody implements IInsertionMode {
 					}
 				}
 			}
-			// List<Element> list = new ArrayList<Element>();
-			// list.addAll(parserContext.getOpenElements());
-			// boolean flag = true;
-			// for (Element e : list) {
-			// if (ElementInScope.isInScope(parserContext, e.getNodeName())
-			// && e.getNamespaceURI().equals(
-			// "http://www.w3.org/1999/xhtml")
-			// && e.getNodeName().equals(token.getValue())) {
-			// flag = false;
-			// break;
-			// }
-			// }
-			// if (flag) {
-			// parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
-			// return parserContext;
-			// } else {
-			// GenerateImpliedEndTags.run(parserContext);
-			// if (!parserContext.getCurrentNode().getNamespaceURI()
-			// .equals("http://www.w3.org/1999/xhtml")
-			// || !parserContext.getCurrentNode().getNodeName()
-			// .equals(token.getValue())) {
-			// parserContext
-			// .addParseErrors(ParseErrorType.UnexpectedToken);
-			// }
-			// while (!parserContext.getOpenElements().isEmpty()) {
-			// Element element = parserContext.getOpenElements().pop();
-			// if (element.getNodeName().equals(token.getValue())) {
-			// break;
-			// }
-			// }
-			// ListOfActiveFormattingElements.clear(parserContext);
-			// }
+			ListOfActiveFormattingElements.clear(parserContext);
 		}
 		/*
 		 * A start tag whose tag name is "table" TODO If the Document is not set
@@ -1439,9 +1406,5 @@ public class InBody implements IInsertionMode {
 		if (ElementInScope.isInButtonScope(parserContext, "p")) {
 			closeApElement(parserContext);
 		}
-	}
-	
-	private void loopInDDandDT(ParserContext parserContext,Node node){
-		
-	}
+	}	
 }

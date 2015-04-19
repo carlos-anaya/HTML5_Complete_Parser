@@ -39,9 +39,9 @@ public class CreateAnElementForAToken {
 		if (doc == null)
 			doc = ((Document) intendedParentElement);
 
-		// Element element = doc.createElementNS(namespace,
-		// currentToken.getValue());
-		Element element = doc.createElement(currentToken.getValue());
+		Element element = doc.createElementNS(namespace,
+				currentToken.getValue());
+		// Element element = doc.createElement(currentToken.getValue());
 		// The new element saves a reference of the token that created it
 		element.setUserData("0", currentToken, null);
 

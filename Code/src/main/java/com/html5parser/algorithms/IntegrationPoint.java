@@ -13,7 +13,7 @@ public class IntegrationPoint {
 	 */
 	public static Boolean isMathMLTextIntegrationPoint(Element e) {
 
-		if (e.getNamespaceURI().equals(Namespace.MathML)) {
+		if (e != null && e.getNamespaceURI().equals(Namespace.MathML)) {
 			if (e.getNodeName().equals("mi") || e.getNodeName().equals("mo")
 					|| e.getNodeName().equals("mn")
 					|| e.getNodeName().equals("ms")
@@ -39,20 +39,20 @@ public class IntegrationPoint {
 	// A title element in the SVG namespace
 
 	public static Boolean isHtmlIntegrationPoint(Element e) {
-		if ((e.getNodeName().equals("annotation-xml")
-				&& e.getNamespaceURI().equals(Namespace.MathML)
-				&& e.hasAttribute("encoding") && (e.getAttribute("encoding")
-				.equalsIgnoreCase("text/html") || e.getAttribute("encoding")
-				.equalsIgnoreCase("application/xhtml+xml")))
-				|| (e.getNamespaceURI().equals(Namespace.SVG) && (e
+		if (e != null
+				&& ((e.getNodeName().equals("annotation-xml")
+						&& e.getNamespaceURI().equals(Namespace.MathML)
+						&& e.hasAttribute("encoding") && (e.getAttribute(
+						"encoding").equalsIgnoreCase("text/html") || e
+						.getAttribute("encoding").equalsIgnoreCase(
+								"application/xhtml+xml"))) || (e
+						.getNamespaceURI().equals(Namespace.SVG) && (e
 						.getNodeName().equals("foreignObject")
 						|| e.getNodeName().equals("desc") || e.getNodeName()
-						.equals("title")))
-
-		) {
+						.equals("title"))))) {
 			return true;
 		}
-		throw new UnsupportedOperationException();
+		return false;
 
 	}
 }

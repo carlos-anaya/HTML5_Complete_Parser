@@ -14,7 +14,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 
 import com.html5parser.algorithms.ForeignContent;
-import com.html5parser.algorithms.StopParsing;
 import com.html5parser.algorithms.TreeCostructionDispatcher;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
@@ -28,20 +27,20 @@ import com.html5parser.parseError.ParseError;
 import com.html5parser.parseError.ParseErrorType;
 
 public class Parser implements IParser {
-	
+
 	Document doc;
 	ParserContext parserContext;
 	Tokenizer tokenizer;
 	StreamPreprocessor streamPreprocessor;
 	TreeConstructor treeConstructor;
-	
+
 	public Parser() {
-		
-		 parserContext = new ParserContext();
-		 tokenizer = new Tokenizer();
-		 streamPreprocessor = new StreamPreprocessor();
-		 treeConstructor = new TreeConstructor();
-		
+
+		parserContext = new ParserContext();
+		tokenizer = new Tokenizer();
+		streamPreprocessor = new StreamPreprocessor();
+		treeConstructor = new TreeConstructor();
+
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder;
 		try {
@@ -53,7 +52,6 @@ public class Parser implements IParser {
 			e.printStackTrace();
 		}
 	}
-		
 
 	public Document parse(String htmlString) {
 		return parse(new ByteArrayInputStream(htmlString.getBytes()));
@@ -63,8 +61,6 @@ public class Parser implements IParser {
 
 		BufferedReader in;
 		try {
-
-			
 
 			in = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 
@@ -152,8 +148,8 @@ public class Parser implements IParser {
 				}
 
 			}
-			//TODO Run stop parsing algorithm
-			//StopParsing.run(parserContext);
+			// TODO Run stop parsing algorithm
+			// StopParsing.run(parserContext);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -356,22 +352,18 @@ public class Parser implements IParser {
 		}
 	}
 
-
 	public Document getDoc() {
 		return doc;
 	}
-
 
 	public void setDoc(Document doc) {
 		parserContext.setDocument(doc);
 		this.doc = doc;
 	}
 
-
 	public ParserContext getParserContext() {
 		return parserContext;
 	}
-
 
 	public void setParserContext(ParserContext parserContext) {
 		this.parserContext = parserContext;

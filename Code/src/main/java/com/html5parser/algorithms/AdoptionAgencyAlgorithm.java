@@ -35,18 +35,37 @@ public class AdoptionAgencyAlgorithm {
 		int formattingElementIndex = 0;
 		int nodeIndex = 0;
 
+		/*
+		 * W3C spec mistake
+		 */
+		// // 1 If the current node is an HTML element whose tag name is
+		// subject,
+		// // then run these substeps:
+		// if (currentNode.getNodeName().equals(subject)) {
+		// // 1.1 Let element be the current node.
+		// // 1.2 Pop element off the stack of open elements.
+		// parserContext.getOpenElements().pop();
+		// // 1.3 If element is also in the list of active formatting elements,
+		// // remove the element from the list.
+		// parserContext.getActiveFormattingElements().remove(currentNode);
+		// // 1.4 Abort the adoption agency algorithm.
+		// return parserContext;
+		// }
+
+		/*
+		 * whatwg Living standard correction
+		 */
 		// 1 If the current node is an HTML element whose tag name is subject,
-		// then run these substeps:
-		if (currentNode.getNodeName().equals(subject)) {
-			// 1.1 Let element be the current node.
-			// 1.2 Pop element off the stack of open elements.
+		// and the current node is not in the list of active formatting
+		// elements, then pop the current node off the stack of open elements,
+		// and abort these steps.
+		if (currentNode.getNodeName().equals(subject)
+				&& !parserContext.getActiveFormattingElements().contains(
+						currentNode)) {
 			parserContext.getOpenElements().pop();
-			// 1.3 If element is also in the list of active formatting elements,
-			// remove the element from the list.
-			parserContext.getActiveFormattingElements().remove(currentNode);
-			// 1.4 Abort the adoption agency algorithm.
 			return parserContext;
 		}
+
 		stackOpenElements.addAll(parserContext.getOpenElements());
 		// 2 Let outer loop counter be zero.
 		// 3 Outer loop: If outer loop counter is greater than or equal to

@@ -39,7 +39,7 @@ public class ListOfActiveFormattingElements {
 		int index = 0;
 		for (int i = list.size() - 1; i >= 0; i--) {
 			Element e = list.get(i);
-			if(e == null)
+			if (e == null)
 				break;
 			if (isSameNode(e, element)) {
 				count++;
@@ -113,12 +113,12 @@ public class ListOfActiveFormattingElements {
 		// list has been cleared up to the last marker.
 		// 4 Go to step 1.
 		ArrayList<Element> list = parserContext.getActiveFormattingElements();
-		//int indexLastMarker = list.lastIndexOf(null) + 1;
+		// int indexLastMarker = list.lastIndexOf(null) + 1;
 		int indexLastMarker = list.lastIndexOf(null);
 		if (indexLastMarker == -1)
 			indexLastMarker++;
 		while (list.size() > indexLastMarker)
-			list.remove(list.size() -1);
+			list.remove(list.size() - 1);
 	}
 
 	public static void reconstruct(ParserContext parserContext) {
@@ -153,10 +153,11 @@ public class ListOfActiveFormattingElements {
 		// stack of open elements, go to the step labeled rewind.
 		for (lastInList = lastEntry; lastInList >= 0; lastInList--) {
 			entry = list.get(lastInList);
-			if (entry == null)
+			if (entry == null
+					|| parserContext.getOpenElements().contains(entry)) {
+				entry = list.get(lastInList + 1);
 				break;
-			if (parserContext.getOpenElements().contains(entry))
-				break;
+			}
 		}
 
 		// 7 Advance: Let entry be the element one later than entry in the list

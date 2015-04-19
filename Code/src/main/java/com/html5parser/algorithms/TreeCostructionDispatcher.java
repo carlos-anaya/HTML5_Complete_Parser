@@ -17,10 +17,7 @@ public class TreeCostructionDispatcher {
 	 */
 	public static Boolean processTokenInInsertionMode(ParserContext context) {
 		/*
-		 * If the stack of open elements is empty
-		 * 
-		 * there is no adjusted current node If the adjusted current node is an
-		 * element in the HTML namespace
+		 * If the adjusted current node is an element in the HTML namespace
 		 * 
 		 * If the adjusted current node is a MathML text integration point and
 		 * the token is a start tag whose tag name is neither "mglyph" nor
@@ -33,38 +30,50 @@ public class TreeCostructionDispatcher {
 		 * MathML namespace and the token is a start tag whose tag name is "svg"
 		 * 
 		 * If the adjusted current node is an HTML integration point and the
-		 * token is a start tag If the adjusted current node is an HTML
-		 * integration point and the token is a character token If the token is
-		 * an end-of-file token
+		 * token is a start tag
+		 * 
+		 * If the adjusted current node is an HTML integration point and the
+		 * token is a character token
+		 * 
+		 * If the token is an end-of-file token
+		 * 
+		 * Process the token according to the rules given in the section
+		 * corresponding to the current insertion mode in HTML content.
+		 * 
+		 * Otherwise
+		 * 
+		 * Process the token according to the rules given in the section for
+		 * parsing tokens in foreign content.
 		 */
 		Element adjustedCurrentNode = context.getAdjustedCurrentNode();
 		Token currentToken = context.getTokenizerContext().getCurrentToken();
-		if (!(context.getOpenElements().isEmpty()
-				|| currentToken.getType().equals(TokenType.end_of_file)
-				|| adjustedCurrentNode == null
-				|| adjustedCurrentNode.getNamespaceURI().equals(Namespace.HTML)
+		if ((adjustedCurrentNode != null && adjustedCurrentNode
+				.getNamespaceURI().equals(Namespace.HTML))
 				|| (IntegrationPoint
-						.isMathMLTextIntegrationPoint(adjustedCurrentNode) && !(currentToken
+						.isMathMLTextIntegrationPoint(adjustedCurrentNode)
+						&& currentToken.getType().equals(TokenType.start_tag) && (currentToken
 						.getValue().equals("mglyph") || currentToken.getValue()
 						.equals("malignmark")))
 				|| (IntegrationPoint
 						.isMathMLTextIntegrationPoint(adjustedCurrentNode) && currentToken
 						.getType().equals(TokenType.character))
-				|| (adjustedCurrentNode.getNamespaceURI().equals(
-						Namespace.MathML)
+				|| (adjustedCurrentNode != null
+						&& adjustedCurrentNode.getNamespaceURI().equals(
+								Namespace.MathML)
 						&& adjustedCurrentNode.getNodeName().equals(
 								"annotation-xml")
 						&& currentToken.getValue().equals("svg") && currentToken
 						.getType().equals(TokenType.start_tag))
 				|| (IntegrationPoint
 						.isHtmlIntegrationPoint(adjustedCurrentNode) && currentToken
-						.getType().equals(TokenType.start_tag)) || (IntegrationPoint
-				.isHtmlIntegrationPoint(adjustedCurrentNode) && currentToken
-				.getType().equals(TokenType.character)))) {
-			return false;
-
+						.getType().equals(TokenType.start_tag))
+				|| (IntegrationPoint
+						.isHtmlIntegrationPoint(adjustedCurrentNode) && currentToken
+						.getType().equals(TokenType.character))
+				|| currentToken.getType().equals(TokenType.end_of_file)) {
+			return true;
 		}
-		return true;
+		return false;
 
 	}
 

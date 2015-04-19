@@ -70,7 +70,7 @@ public class TreeConstructorTesthtml5libsuite {
 				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tree-construction/adoption02.dat",
 				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tree-construction/tables01.dat",
 				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tree-construction/tricky01.dat",
-				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tree-construction/tests1.dat"};
+				"https://raw.githubusercontent.com/html5lib/html5lib-tests/master/tree-construction/tests1.dat" };
 
 		for (String resource : resources) {
 			testList = addTestFile(testList, resource);
@@ -95,9 +95,11 @@ public class TreeConstructorTesthtml5libsuite {
 			String testFile = scanner.useDelimiter("\\A").next();
 			String[] tests = testFile.split("(^|\n\n)#data\n");
 
+			resource = resource.split("/")[resource.split("/").length - 1].split(".")[0];
 			for (int i = 1; i < tests.length; i++) {
 				String test = tests[i];
-				String testName = test.split("\\n")[0]; // i + "";
+				String testName = i + " (" + resource + ") "
+						+ test.split("\\n")[0]; // i + "";
 				testList.add(new Object[] { testName, test });
 			}
 
