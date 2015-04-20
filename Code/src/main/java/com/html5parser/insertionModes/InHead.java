@@ -178,8 +178,8 @@ public class InHead implements IInsertionMode {
 					TokenizerStateFactory.getInstance().getState(
 							TokenizerState.Script_data_state));
 
-			parserContext.setOriginalInsertionMode(InsertionModeFactory
-					.getInstance().getInsertionMode(InsertionMode.in_head));
+			parserContext.setOriginalInsertionMode(parserContext
+					.getInsertionMode());
 			
 			parserContext.setInsertionMode(InsertionModeFactory
 					.getInstance().getInsertionMode(InsertionMode.text));
