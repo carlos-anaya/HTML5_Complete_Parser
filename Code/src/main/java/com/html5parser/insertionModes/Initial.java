@@ -1,5 +1,9 @@
 package com.html5parser.insertionModes;
 
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+
 import com.html5parser.algorithms.InsertComment;
 import com.html5parser.classes.InsertionMode;
 import com.html5parser.classes.ParserContext;
@@ -66,8 +70,16 @@ public class Initial implements IInsertionMode {
 							)){
 				parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
 			}
+			Document doc = parserContext.getDocument();
+			DOMImplementation domImpl = doc.getImplementation();
+			DocumentType doctype = domImpl.createDocumentType(token.getValue(),
+				    thisToken.getPublicIdentifier(),
+				    thisToken.getSystemIdentifier());
+			doc.appendChild(doctype);
+//			doc.appendChild(doc.createElement(thisToken.getValue()));
 			InsertionModeFactory factory = InsertionModeFactory.getInstance();
 			parserContext.setInsertionMode(factory.getInsertionMode(InsertionMode.before_html));
+			break;
 		default:
 			anythingElse(parserContext);
 			break;

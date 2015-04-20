@@ -238,7 +238,7 @@ public class TreeConstructorTesthtml5libsuite {
 		for (;;) {
 			str += "\n| " + indent(ancestors);
 			switch (current.getNodeType()) {
-			case Node.DOCUMENT_NODE:
+			case Node.DOCUMENT_TYPE_NODE:
 				str += "<!DOCTYPE " + current.getNodeName() + '>';
 				break;
 			case Node.COMMENT_NODE:
