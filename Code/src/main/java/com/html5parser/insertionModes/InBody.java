@@ -418,29 +418,40 @@ public class InBody implements IInsertionMode {
 				&& token.getValue().equals("li")) {
 			parserContext.setFlagFramesetOk(false);
 			Node node = parserContext.getCurrentNode();
-			if (isOneOf(
-					node.getNodeName(),
-					new String(
-							"applet, area, article, aside, base, basefont, bgsound, "
-									+ "blockquote, body, br, button, caption, center, col, colgroup, dd, "
-									+ "details, dir, dl, dt, embed, fieldset, figcaption, figure, "
-									+ "footer, form, frame, frameset, h1, h2, h3, h4, h5, h6, head, header, "
-									+ "hgroup, hr, html, iframe, img, input, isindex, li, link, listing, "
-									+ "main, marquee, meta, nav, noembed, noframes, noscript, object, ol, "
-									+ "param, plaintext, pre, script, section, select, source, style, "
-									+ "summary, table, tbody, td, template, textarea, tfoot, th, thead, "
-									+ "title, tr, track, ul, wbr, xmp, mi, mo, mn, ms, mtext, annotation-xml, "
-									+ "foreignObject, desc, title").split(", "))) {
-				done(parserContext);
-			} else {
-				if (parserContext.getOpenElements().size() > 1) {
-					Element buttomNode  = parserContext.getOpenElements().pop();
-					Node previousEntry = parserContext.getOpenElements().peek();
-					parserContext.getOpenElements().push(buttomNode);
-					loop(parserContext, previousEntry,"li");
+			
+			done:
+				while(true){
+					if(node.getNodeName().equals("li")){
+						GenerateImpliedEndTags.run(parserContext, "li");
+						if(!parserContext.getCurrentNode().getNodeName().equals("li")){
+							parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+						}
+						Node popped;
+						do{
+							popped = parserContext.getOpenElements().pop();
+						}while(!popped.getNodeName().equals("li"));
+						break done;
+					}
+					if (isOneOf(
+							node.getNodeName(),
+							new String(
+									"applet, area, article, aside, base, basefont, bgsound, "
+											+ "blockquote, body, br, button, caption, center, col, colgroup, dd, "
+											+ "details, dir, dl, dt, embed, fieldset, figcaption, figure, "
+											+ "footer, form, frame, frameset, h1, h2, h3, h4, h5, h6, head, header, "
+											+ "hgroup, hr, html, iframe, img, input, isindex, li, link, listing, "
+											+ "main, marquee, meta, nav, noembed, noframes, noscript, object, ol, "
+											+ "param, plaintext, pre, script, section, select, source, style, "
+											+ "summary, table, tbody, td, template, textarea, tfoot, th, thead, "
+											+ "title, tr, track, ul, wbr, xmp, mi, mo, mn, ms, mtext, annotation-xml, "
+											+ "foreignObject, desc, title").split(", "))) {
+						break done;
+					}
+					node = parserContext.getOpenElements().get(parserContext.getOpenElements().indexOf(node)-1);
 				}
-			}
+			done(parserContext);
 			InsertAnHTMLElement.run(parserContext, token);
+			
 		}
 		/*
 		 * A start tag whose tag name is one of: "dd", "dt" Run these steps: Set
@@ -480,47 +491,56 @@ public class InBody implements IInsertionMode {
 		 * 
 		 * Finally, insert an HTML element for the token.
 		 */
+		
+		
+		
 		else if (tokenType == TokenType.start_tag
 				&& isOneOf(token.getValue(), new String[] { "dd", "dt" })) {
 			parserContext.setFlagFramesetOk(false);
 			Node node = parserContext.getCurrentNode();
-			if (node.getNodeName().equals("dt")) {
-				GenerateImpliedEndTags.run(parserContext, "dt");
-				if (parserContext.getCurrentNode().getNodeName().equals("dt")) {
-					parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
-				}
-				while (!parserContext.getOpenElements().isEmpty()) {
-					Element element = parserContext.getOpenElements().pop();
-					if (element.getNodeName().equals("dt")) {
-						break;
-					}
-				}
-				done(parserContext);
-			}
-			if (isOneOf(
-					node.getNodeName(),
-					new String(
-							"applet, area, article, aside, base, basefont, bgsound, "
-									+ "blockquote, body, br, button, caption, center, col, colgroup, dd, "
-									+ "details, dir, dl, dt, embed, fieldset, figcaption, figure, "
-									+ "footer, form, frame, frameset, h1, h2, h3, h4, h5, h6, head, header, "
-									+ "hgroup, hr, html, iframe, img, input, isindex, li, link, listing, "
-									+ "main, marquee, meta, nav, noembed, noframes, noscript, object, ol, "
-									+ "param, plaintext, pre, script, section, select, source, style, "
-									+ "summary, table, tbody, td, template, textarea, tfoot, th, thead, "
-									+ "title, tr, track, ul, wbr, xmp, mi, mo, mn, ms, mtext, annotation-xml, "
-									+ "foreignObject, desc, title").split(", "))) {
-				done(parserContext);
-			}else {
-				if (parserContext.getOpenElements().size() > 1) {
-					Element buttomNode  = parserContext.getOpenElements().pop();
-					Node previousEntry = parserContext.getOpenElements().peek();
-					parserContext.getOpenElements().push(buttomNode);
-					loop(parserContext, previousEntry,"dd");
-				}
-			}
-			InsertAnHTMLElement.run(parserContext, token);
 			
+			done:
+				while(true){
+					if(node.getNodeName().equals("dd")){
+						GenerateImpliedEndTags.run(parserContext, "dd");
+						if(!parserContext.getCurrentNode().getNodeName().equals("dd")){
+							parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+						}
+						Node popped;
+						do{
+							popped = parserContext.getOpenElements().pop();
+						}while(!popped.getNodeName().equals("dd"));
+						break done;
+					}else if(node.getNodeName().equals("dt")){
+						GenerateImpliedEndTags.run(parserContext, "dt");
+						if(!parserContext.getCurrentNode().getNodeName().equals("dt")){
+							parserContext.addParseErrors(ParseErrorType.UnexpectedToken);
+						}
+						Node popped;
+						do{
+							popped = parserContext.getOpenElements().pop();
+						}while(!popped.getNodeName().equals("dt"));
+						break done;
+					}
+					if (isOneOf(
+							node.getNodeName(),
+							new String(
+									"applet, area, article, aside, base, basefont, bgsound, "
+											+ "blockquote, body, br, button, caption, center, col, colgroup, dd, "
+											+ "details, dir, dl, dt, embed, fieldset, figcaption, figure, "
+											+ "footer, form, frame, frameset, h1, h2, h3, h4, h5, h6, head, header, "
+											+ "hgroup, hr, html, iframe, img, input, isindex, li, link, listing, "
+											+ "main, marquee, meta, nav, noembed, noframes, noscript, object, ol, "
+											+ "param, plaintext, pre, script, section, select, source, style, "
+											+ "summary, table, tbody, td, template, textarea, tfoot, th, thead, "
+											+ "title, tr, track, ul, wbr, xmp, mi, mo, mn, ms, mtext, annotation-xml, "
+											+ "foreignObject, desc, title").split(", "))) {
+						break done;
+					}
+					node = parserContext.getOpenElements().get(parserContext.getOpenElements().indexOf(node)-1);
+				}
+			done(parserContext);
+			InsertAnHTMLElement.run(parserContext, token);
 		}
 		/*
 		 * start tag whose tag name is "plaintext" If the stack of open elements
@@ -597,7 +617,7 @@ public class InBody implements IInsertionMode {
 							.addParseErrors(ParseErrorType.UnexpectedToken);
 				while (!parserContext.getOpenElements().isEmpty()) {
 					Element element = parserContext.getOpenElements().pop();
-					if (element.getNodeName().equals(token.getValue())) {
+					if (element.getNodeName().equals(token.getValue()) && element.getNamespaceURI().equals(Namespace.HTML)) {
 						break;
 					}
 				}
@@ -814,25 +834,21 @@ public class InBody implements IInsertionMode {
 					.getActiveFormattingElements();
 			List<Element> sublist = new ArrayList<Element>(list.subList(list.lastIndexOf(null) + 1,
 					list.size()));
-			for (Element e : sublist)
-				if (e.getNodeName().equals("a")) {
+			for (Element element : sublist)
+				if (element.getNodeName().equals("a")) {
 					parserContext
 							.addParseErrors(ParseErrorType.UnexpectedToken);
 
 					parserContext = AdoptionAgencyAlgorithm.Run(parserContext,
 							token.getValue());
+					
 					list = parserContext.getActiveFormattingElements();
-					if (list.size() < 1)
-						break;
-					Element last = list.get(list.size() - 1);
-					if(last == null)
-						break;
-					if (last.getNodeName().equals("a"))
-						parserContext.getActiveFormattingElements()
-								.remove(last);
-					last = parserContext.getOpenElements().peek();
-					if (last.getNodeName().equals("a"))
-						parserContext.getOpenElements().pop();
+					list.remove(element);
+					
+					if(parserContext.getOpenElements().contains(element)){
+						parserContext.getOpenElements().remove(element);	
+					}
+					break;
 				}
 			ListOfActiveFormattingElements.reconstruct(parserContext);
 			Element e = InsertAnHTMLElement.run(parserContext, token);
