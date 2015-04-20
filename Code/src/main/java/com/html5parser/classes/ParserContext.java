@@ -30,7 +30,8 @@ public class ParserContext {
 	 */
 	private IInsertionMode insertionMode = new Initial();
 	private IInsertionMode originalInsertionMode;
-	// private IInsertionMode currentTemplateInsertionMode;is the last ins. mode pushed onto the stack
+	// private IInsertionMode currentTemplateInsertionMode;is the last ins. mode
+	// pushed onto the stack
 
 	/*
 	 * Stacks
@@ -55,7 +56,8 @@ public class ParserContext {
 	 * Others
 	 */
 	private ArrayList<Element> activeFormattingElements = new ArrayList<Element>();
-	//private Element currentNode; //is the last element pushed onto the stack of open elements
+	// private Element currentNode; //is the last element pushed onto the stack
+	// of open elements
 	private Element adjustedCurrentNode;
 	private Element headElementPointer;
 	private Element formElementPointer;
@@ -178,7 +180,17 @@ public class ParserContext {
 	}
 
 	public Element getAdjustedCurrentNode() {
-		return adjustedCurrentNode;
+		// The adjusted current node is the context element if the stack of open
+		// elements has only one element in it and the parser was created by the
+		// HTML fragment parsing algorithm; otherwise, the adjusted current node
+		// is the current node.
+		if (this.flagHTMLFragmentParser && this.openElements.size() == 1)
+			// TODO return context node
+			return openElements.peek();
+		else if (openElements.size() > 0)
+			return openElements.peek();
+		else
+			return null;
 	}
 
 	public void setAdjustedCurrentNode(Element adjustedCurrentNode) {
@@ -251,8 +263,8 @@ public class ParserContext {
 	public void setFlagFosterParenting(boolean flagFosterParenting) {
 		this.flagFosterParenting = flagFosterParenting;
 	}
-	
-	public boolean openElementsContain(String elementName){
+
+	public boolean openElementsContain(String elementName) {
 		List<Element> list = new ArrayList<Element>();
 		list.addAll(openElements);
 		int n = openElements.size();
@@ -273,6 +285,5 @@ public class ParserContext {
 	public void setFlagHTMLFragmentParser(boolean flagHTMLFragmentParser) {
 		this.flagHTMLFragmentParser = flagHTMLFragmentParser;
 	}
-	
-	
+
 }

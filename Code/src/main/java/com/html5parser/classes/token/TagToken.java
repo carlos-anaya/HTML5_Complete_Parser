@@ -38,6 +38,14 @@ public class TagToken extends Token {
 		this.flagAcknowledgeSelfClosingTag = value;
 	}
 	
+	public Boolean hasAttribute(String[] attributeNames){
+		for(Attribute att : this.attributes)
+			for (String s : attributeNames)
+				if (att.equals(s))
+					return true;
+		return false;
+	}
+	
 	public List<Attribute> getAttributes() {
 		return attributes;
 	}

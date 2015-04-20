@@ -11,13 +11,15 @@ public class IntegrationPoint {
 	 * MathML namespace An mn element in the MathML namespace An ms element in
 	 * the MathML namespace An mtext element in the MathML namespace
 	 */
-	public static Boolean isMathMLTextIntegrationPoint(Element e) {
+	public static Boolean isMathMLTextIntegrationPoint(Element element) {
 
-		if (e != null && e.getNamespaceURI().equals(Namespace.MathML)) {
-			if (e.getNodeName().equals("mi") || e.getNodeName().equals("mo")
-					|| e.getNodeName().equals("mn")
-					|| e.getNodeName().equals("ms")
-					|| e.getNodeName().equals("mtext")) {
+		if (element != null
+				&& element.getNamespaceURI().equals(Namespace.MathML)) {
+			if (element.getNodeName().equals("mi")
+					|| element.getNodeName().equals("mo")
+					|| element.getNodeName().equals("mn")
+					|| element.getNodeName().equals("ms")
+					|| element.getNodeName().equals("mtext")) {
 				return true;
 			}
 		}
@@ -38,18 +40,18 @@ public class IntegrationPoint {
 	// A desc element in the SVG namespace
 	// A title element in the SVG namespace
 
-	public static Boolean isHtmlIntegrationPoint(Element e) {
-		if (e != null
-				&& ((e.getNodeName().equals("annotation-xml")
-						&& e.getNamespaceURI().equals(Namespace.MathML)
-						&& e.hasAttribute("encoding") && (e.getAttribute(
-						"encoding").equalsIgnoreCase("text/html") || e
+	public static Boolean isHtmlIntegrationPoint(Element element) {
+		if (element != null
+				&& ((element.getNodeName().equals("annotation-xml")
+						&& element.getNamespaceURI().equals(Namespace.MathML)
+						&& element.hasAttribute("encoding") && (element
+						.getAttribute("encoding").equalsIgnoreCase("text/html") || element
 						.getAttribute("encoding").equalsIgnoreCase(
-								"application/xhtml+xml"))) || (e
-						.getNamespaceURI().equals(Namespace.SVG) && (e
+								"application/xhtml+xml"))) || (element
+						.getNamespaceURI().equals(Namespace.SVG) && (element
 						.getNodeName().equals("foreignObject")
-						|| e.getNodeName().equals("desc") || e.getNodeName()
-						.equals("title"))))) {
+						|| element.getNodeName().equals("desc") || element
+						.getNodeName().equals("title"))))) {
 			return true;
 		}
 		return false;

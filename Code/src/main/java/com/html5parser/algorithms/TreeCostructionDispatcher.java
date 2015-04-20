@@ -17,6 +17,8 @@ public class TreeCostructionDispatcher {
 	 */
 	public static Boolean processTokenInInsertionMode(ParserContext context) {
 		/*
+		 * If there is no adjusted current node
+		 * 
 		 * If the adjusted current node is an element in the HTML namespace
 		 * 
 		 * If the adjusted current node is a MathML text integration point and
@@ -48,7 +50,7 @@ public class TreeCostructionDispatcher {
 		Element adjustedCurrentNode = context.getAdjustedCurrentNode();
 		Token currentToken = context.getTokenizerContext().getCurrentToken();
 		if (adjustedCurrentNode == null
-				|| (adjustedCurrentNode != null && adjustedCurrentNode
+				|| (adjustedCurrentNode.getNamespaceURI() != null && adjustedCurrentNode
 						.getNamespaceURI().equals(Namespace.HTML))
 				|| (IntegrationPoint
 						.isMathMLTextIntegrationPoint(adjustedCurrentNode)
@@ -58,7 +60,7 @@ public class TreeCostructionDispatcher {
 				|| (IntegrationPoint
 						.isMathMLTextIntegrationPoint(adjustedCurrentNode) && currentToken
 						.getType().equals(TokenType.character))
-				|| (adjustedCurrentNode != null
+				|| (adjustedCurrentNode.getNamespaceURI() != null
 						&& adjustedCurrentNode.getNamespaceURI().equals(
 								Namespace.MathML)
 						&& adjustedCurrentNode.getNodeName().equals(

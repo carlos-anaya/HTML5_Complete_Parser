@@ -1,7 +1,5 @@
 package com.html5parser.insertionModes;
 
-import org.w3c.dom.Node;
-
 import com.html5parser.algorithms.InsertCharacter;
 import com.html5parser.classes.ParserContext;
 import com.html5parser.classes.Token;
@@ -39,7 +37,7 @@ public class Text implements IInsertionMode {
 		case end_tag:
 			// TODO An end tag whose tag name is "script"
 			if (token.getValue().equals("script")) {
-				Node script = parserContext.getCurrentNode();
+				// Node script = parserContext.getCurrentNode();
 				parserContext.getOpenElements().pop();
 				parserContext.setInsertionMode(parserContext
 						.getOriginalInsertionMode());
